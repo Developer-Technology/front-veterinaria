@@ -9,16 +9,16 @@
         </div>
         <div class="col-md-8 ps-md-0">
           <div class="auth-form-wrapper px-4 py-5">
-            <a routerLink="." class="nobleui-logo d-block mb-2">Mega<span>Rest</span></a>
-            <h5 class="text-muted fw-normal mb-4">¡Bienvenido de nuevo! Inicia sesión en tu cuenta.</h5>
+            <a routerLink="." class="nobleui-logo d-block mb-2">Mega<span>Vet</span></a>
+            <h5 class="text-muted fw-normal mb-4">¡Inicia sesión para seguir adelante!</h5>
             <form class="forms-sample" (submit)="onSubmit()">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Correo Electrónico</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" [(ngModel)]="email" name="email" required>
+                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Correo Electrónico" [(ngModel)]="email" name="email" required>
               </div>
               <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Password" name="password" [(ngModel)]="password">
+                <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="contraseña" name="password" [(ngModel)]="password">
               </div>
               <div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="authCheck">
@@ -27,11 +27,11 @@
                 </label>
               </div>
               <div>
-                <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0">Ingresar</button>
-                <!--<button type="button" class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0">
-                  <i class="feather icon-twitter btn-icon-prepend"></i>
-                  Login with twitter
-                </button>-->
+                <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0" [disabled]="isLoading">
+                  <span *ngIf="!isLoading">Ingresar</span>
+                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  <span *ngIf="isLoading" class="sr-only"> Validando...</span>
+                </button>
               </div>
               <!--<a routerLink="/auth/register" class="d-block mt-3 text-muted">Not a user? Sign up</a>-->
             </form>
