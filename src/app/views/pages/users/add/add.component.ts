@@ -18,7 +18,7 @@ export class AddComponent implements OnInit {
     phone: '',
     password: '',
     password_confirmation: '',
-    username: '', // Nuevo campo para el nombre de usuario
+    username: '',
     status: 'Activo',
     privilege: 'User'
   };
@@ -51,6 +51,11 @@ export class AddComponent implements OnInit {
     }
   }
 
+  // Método para verificar si las contraseñas coinciden en tiempo real
+  onPasswordInput(): void {
+    this.passwordMismatch = this.newUser.password !== this.newUser.password_confirmation;
+  }
+
   // Verificar coincidencia de contraseñas y enviar formulario
   onSubmit(): void {
     this.passwordMismatch = this.newUser.password !== this.newUser.password_confirmation;
@@ -61,7 +66,7 @@ export class AddComponent implements OnInit {
     this.apiService.post('auth/register', this.newUser, true).subscribe(
       (response) => {
         if (response.success) {
-          this.showAlert('success', 'Usuario agregado correctamente');
+          this.showAlert('success', response.message);
           this.router.navigate(['/users']);
         }
       },
@@ -69,10 +74,35 @@ export class AddComponent implements OnInit {
         if (error.status === 422) { // Errores de validación desde el backend
           this.errors = error.error.errors;
         } else {
-          Swal.fire('Error', 'No se pudo agregar el usuario', 'error');
+          this.showAlert('error', 'No se pudo agregar el usuario');
         }
       }
     );
+  }
+
+  // Método para resetear el formulario
+  resetForm(userForm: any): void {
+    userForm.resetForm();  // Resetear los campos del formulario
+    this.newUser = {       // Restablecer el estado inicial del objeto
+      doc: '',
+      name: '',
+      sex: '',
+      email: '',
+      phone: '',
+      password: '',
+      password_confirmation: '',
+      username: '',
+      status: 'Activo',
+      privilege: 'User'
+    };
+    this.passwordMismatch = false;
+    this.errors = {};
+    this.emailTouched = false;
+  }
+
+  // Método para regresar a "/users"
+  goBack(): void {
+    this.router.navigate(['/users']);
   }
 
   // Mostrar alertas con SweetAlert2

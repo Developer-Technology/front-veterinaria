@@ -63,7 +63,7 @@
                     <div class="col-md-4">
                         <label for="password" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password"
-                            name="password" required minlength="8">
+                            name="password" required minlength="8" (input)="onPasswordInput()">
                         <div *ngIf="errors?.password" class="text-danger small">{{ errors.password[0] }}</div>
                     </div>
 
@@ -72,7 +72,7 @@
                         <label for="confirmPassword" class="form-label">Repetir Contraseña</label>
                         <input type="password" class="form-control" id="confirmPassword"
                             [(ngModel)]="newUser.password_confirmation" name="password_confirmation" required
-                            minlength="8">
+                            minlength="8" (input)="onPasswordInput()">
                         <div *ngIf="passwordMismatch" class="text-danger small">Las contraseñas no coinciden</div>
                     </div>
 
@@ -95,8 +95,20 @@
                         </select>
                     </div>
 
-                    <!-- Botón de enviar -->
+                    <!-- Botones -->
                     <div class="col-12 text-end">
+
+                        <!-- Botón para regresar a "/users" -->
+                        <button type="button" class="btn btn-dark me-2" (click)="goBack()">
+                            <i class="feather icon-arrow-left-circle"></i> Regresar
+                        </button>
+
+                        <!-- Botón para resetear el formulario -->
+                        <button type="button" class="btn btn-danger me-2" (click)="resetForm(userForm)">
+                            <i class="feather icon-refresh-cw"></i> Resetear
+                        </button>
+
+                        <!-- Botón para enviar el formulario -->
                         <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || passwordMismatch">
                             <i class="feather icon-check-circle"></i> Crear Usuario
                         </button>
