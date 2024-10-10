@@ -70,14 +70,14 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     this.apiService.put(`clients/${this.client.id}`, this.client, true).subscribe(
       (response) => {
-        Swal.fire('Éxito', 'Cliente actualizado correctamente', 'success');
+        this.showAlert('success','Cliente actualizado correctamente.');
         this.router.navigate(['/clients']);
       },
       (error) => {
         if (error.status === 422) {
           this.errors = error.error.errors;
         } else {
-          Swal.fire('Error', 'No se pudo actualizar el cliente', 'error');
+          this.showAlert('error','No se pudo actualizar el cliente.');
         }
       }
     );

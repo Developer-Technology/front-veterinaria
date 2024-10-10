@@ -9,7 +9,13 @@
     <div class="col-md-12 stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Gestión de Usuarios</h4>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Gestión de Usuarios</h4>
+                    <!-- Botón Agregar Usuario alineado a la derecha -->
+                    <button class="btn btn-primary btn-sm" routerLink="/users/add">
+                        <i class="feather icon-plus"></i> Agregar Usuario
+                    </button>
+                </div>
 
                 <!-- Buscador -->
                 <div class="row mb-3 align-items-center">
@@ -18,11 +24,7 @@
                             placeholder="Buscar por documento, nombre, apellido, correo o teléfono..."
                             [(ngModel)]="searchQuery" (input)="onSearch()">
                     </div>
-                    <div class="col-md-6 text-end">
-                        <button class="btn btn-primary btn-sm" routerLink="/users/add">
-                            <i class="feather icon-plus"></i> Agregar Usuario
-                        </button>
-                    </div>
+                    <div class="col-md-6 text-end"></div>
                 </div>
 
                 <!-- Mostrar el total de registros y resultados -->

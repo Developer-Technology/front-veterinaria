@@ -45,6 +45,40 @@ export class ClientsComponent implements OnInit {
     );
   }
 
+  deleteClient(id: string): void {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¡Esta acción no se puede deshacer!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.apiService.delete(`clients/${id}`, true).subscribe(
+          (response) => {
+            // Eliminar el cliente de la lista local sin recargar
+            this.clients = this.clients.filter(client => client.id !== id);
+            this.filteredClients = this.filteredClients.filter(client => client.id !== id);
+
+            // Verificar si no quedan clientes
+            if (this.clients.length === 0) {
+              this.currentPage = 1; // Reiniciar la paginación
+            }
+            this.showAlert('success','El cliente ha sido eliminado.');
+            //Swal.fire('Eliminado', 'El cliente ha sido eliminado.', 'success');
+          },
+          (error) => {
+            this.showAlert('error','No se pudo eliminar el cliente.');
+            //Swal.fire('Error', 'No se pudo eliminar el cliente.', 'error');
+          }
+        );
+      }
+    });
+  }
+
   // Ordenar los datos
   sortData(column: string): void {
     if (this.sortColumn === column) {
@@ -133,6 +167,19 @@ export class ClientsComponent implements OnInit {
   editClient(id: string): void {
     const encodedId = btoa(id);
     this.router.navigate(['/clients/edit', encodedId]);  // Redirige a la ruta de edición
+  }
+
+  // Mostrar alertas con SweetAlert2
+  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: type,
+      text: message,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
   }
 
 }
