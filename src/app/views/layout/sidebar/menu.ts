@@ -1,10 +1,10 @@
 import { MenuItem } from './menu.model';
 
 export const MENU: MenuItem[] = [
-  {
+  /*{
     label: 'Main',
     isTitle: true
-  },
+  },*/
   {
     label: 'Dashboard',
     icon: 'home',
@@ -45,6 +45,28 @@ export const MENU: MenuItem[] = [
       variant: 'primary',
       text: 'Event',
     }
+  },
+  {
+    label: 'Menú de Navegación',
+    isTitle: true
+  },
+  {
+    label: 'Personas',
+    icon: 'users',
+    subItems: [
+      {
+        label: 'Clientes',
+        link: '/apps/email/inbox',
+      },
+      {
+        label: 'Proveedores',
+        link: '/apps/email/read'
+      },
+      {
+        label: 'Usuarios',
+        link: 'users'
+      },
+    ]
   },
   {
     label: 'Components',

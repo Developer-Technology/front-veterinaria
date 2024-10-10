@@ -1,0 +1,104 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Usuarios</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Gestión de Usuarios</h4>
+
+                <!-- Buscador -->
+                <div class="row mb-3 align-items-center">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control form-control-sm"
+                            placeholder="Buscar por documento, nombre, apellido, correo o teléfono..."
+                            [(ngModel)]="searchQuery" (input)="onSearch()">
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary btn-sm">
+                            <i class="feather icon-plus"></i> Agregar Usuario
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mostrar el total de registros y resultados -->
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <p class="mb-0 text-muted small"><strong>{{ totalRecords }}</strong></p>
+                    <p class="mb-0 text-muted small"><strong>{{ showingRecords }}</strong></p>
+                </div>
+
+                <!-- Efecto de carga -->
+                <div *ngIf="isLoading" class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+
+                <!-- Tabla de usuarios -->
+                <div class="table-responsive" *ngIf="!isLoading">
+                    <table class="table table-sm table-bordered align-middle">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Documento</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of paginatedUsers">
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.doc }}</td>
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.last_name }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone }}</td>
+                                <td>
+                                    <span class="badge"
+                                        [ngClass]="user.status === 'Activo' ? 'bg-success' : 'bg-secondary'">{{
+                                        user.status }}</span>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-outline-warning btn-xs">
+                                        <i class="feather icon-edit-2"></i>
+                                    </button>
+                                    <button class="btn btn-outline-danger btn-xs">
+                                        <i class="feather icon-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr *ngIf="!paginatedUsers.length && !isLoading">
+                                <td colspan="8" class="text-center">No se encontraron usuarios</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Paginación -->
+                <nav>
+                    <ul class="pagination pagination-sm">
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link" (click)="changePage(currentPage - 1)"
+                                href="javascript:void(0)">Anterior</a>
+                        </li>
+                        <li *ngFor="let page of totalPages" class="page-item" [class.active]="currentPage === page">
+                            <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{ page }}</a>
+                        </li>
+                        <li class="page-item" [class.disabled]="currentPage === totalPages.length">
+                            <a class="page-link" (click)="changePage(currentPage + 1)"
+                                href="javascript:void(0)">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
