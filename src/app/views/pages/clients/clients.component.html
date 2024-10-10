@@ -1,7 +1,7 @@
 <nav class="page-breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a routerLink="/">Dashboard</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Usuarios</li>
+        <li class="breadcrumb-item active" aria-current="page">Clientes</li>
     </ol>
 </nav>
 
@@ -9,18 +9,18 @@
     <div class="col-md-12 stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Gestión de Usuarios</h4>
+                <h4 class="card-title">Gestión de Clientes</h4>
 
                 <!-- Buscador -->
                 <div class="row mb-3 align-items-center">
                     <div class="col-md-6">
                         <input type="text" class="form-control form-control-sm"
-                            placeholder="Buscar por documento, nombre, apellido, correo o teléfono..."
-                            [(ngModel)]="searchQuery" (input)="onSearch()">
+                            placeholder="Buscar por documento, nombre, correo o teléfono..." [(ngModel)]="searchQuery"
+                            (input)="onSearch()">
                     </div>
                     <div class="col-md-6 text-end">
-                        <button class="btn btn-primary btn-sm" routerLink="/users/add">
-                            <i class="feather icon-plus"></i> Agregar Usuario
+                        <button class="btn btn-primary btn-sm" routerLink="/clients/add">
+                            <i class="feather icon-plus"></i> Agregar Cliente
                         </button>
                     </div>
                 </div>
@@ -38,49 +38,42 @@
                     </div>
                 </div>
 
-                <!-- Tabla de usuarios -->
+                <!-- Tabla de clientes -->
                 <div class="table-responsive" *ngIf="!isLoading">
                     <table class="table table-sm table-bordered align-middle compact-table">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Documento</th>
-                                <th (click)="sortData('name')" class="sortable-column">Nombre <i
-                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('name')"></i></th>
-                                <th (click)="sortData('email')" class="sortable-column">Email <i
-                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('email')"></i></th>
+                                <th (click)="sortData('clientName')" class="sortable-column">Nombre <i
+                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('clientName')"></i>
+                                </th>
+                                <th (click)="sortData('clientEmail')" class="sortable-column">Email <i
+                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('clientEmail')"></i>
+                                </th>
                                 <th>Teléfono</th>
-                                <th (click)="sortData('sex')" class="sortable-column">Género <i
-                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('sex')"></i></th>
-                                <th (click)="sortData('status')" class="sortable-column">Estado <i
-                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('status')"></i></th>
+                                <th (click)="sortData('clientGender')" class="sortable-column">Género <i
+                                        class="feather icon-chevron-up-down"
+                                        [ngClass]="getSortIcon('clientGender')"></i></th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let user of paginatedUsers; let i = index">
+                            <tr *ngFor="let client of paginatedClients; let i = index">
                                 <td>{{ getRecordNumber(i) }}</td>
-                                <td>{{ user.doc }}</td>
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.phone }}</td>
-                                <td>{{ user.sex }}</td>
-                                <td>
-                                    <span class="badge"
-                                        [ngClass]="user.status === 'Activo' ? 'bg-success' : 'bg-secondary'">{{
-                                        user.status }}</span>
-                                </td>
+                                <td>{{ client.clientDoc }}</td>
+                                <td>{{ client.clientName }}</td>
+                                <td>{{ client.clientEmail }}</td>
+                                <td>{{ client.clientPhone }}</td>
+                                <td>{{ client.clientGender }}</td>
                                 <td class="text-center btn-table">
-                                    <div *ngIf="user.id !== 1 && user.privilege !== 'Super Admin'">
-                                        <button class="btn btn-warning btn-xs" (click)="editUser(user.id)"><i
-                                                class="feather icon-edit-2"></i></button>
-                                        <button class="btn btn-danger btn-xs"><i
-                                                class="feather icon-trash"></i></button>
-                                    </div>
+                                    <button class="btn btn-warning btn-xs" (click)="editClient(client.id)"><i
+                                            class="feather icon-edit-2"></i></button>
+                                    <button class="btn btn-danger btn-xs"><i class="feather icon-trash"></i></button>
                                 </td>
                             </tr>
-                            <tr *ngIf="!paginatedUsers.length && !isLoading">
-                                <td colspan="8" class="text-center">No se encontraron usuarios</td>
+                            <tr *ngIf="!paginatedClients.length && !isLoading">
+                                <td colspan="7" class="text-center">No se encontraron clientes</td>
                             </tr>
                         </tbody>
                     </table>

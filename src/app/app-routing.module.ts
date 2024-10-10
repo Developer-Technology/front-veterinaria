@@ -60,6 +60,10 @@ const routes: Routes = [
         path: 'users',
         loadChildren: () => import('./views/pages/users/users.module').then(m => m.UsersModule)
       },
+      {
+        path: 'clients',
+        loadChildren: () => import('./views/pages/clients/clients.module').then(m => m.ClientsModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },

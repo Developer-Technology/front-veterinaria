@@ -1,0 +1,103 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/clients">Clientes</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar Cliente</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Editar Cliente</h4>
+                <p class="text-muted mb-3">Modifique los siguientes campos para actualizar la información del cliente.
+                </p>
+
+                <!-- Spinner de carga -->
+                <div *ngIf="isLoading" class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+
+                <!-- Formulario para editar un cliente -->
+                <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #clientForm="ngForm" class="row g-3">
+
+                    <!-- Documento -->
+                    <div class="col-md-3">
+                        <label for="clientDoc" class="form-label">Documento</label>
+                        <input type="text" class="form-control" id="clientDoc" [(ngModel)]="client.clientDoc"
+                            name="clientDoc" required>
+                        <div *ngIf="errors?.clientDoc" class="text-danger small">{{ errors.clientDoc[0] }}</div>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-5">
+                        <label for="clientName" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="clientName" [(ngModel)]="client.clientName"
+                            name="clientName" required>
+                        <div *ngIf="errors?.clientName" class="text-danger small">{{ errors.clientName[0] }}</div>
+                    </div>
+
+                    <!-- Sexo -->
+                    <div class="col-md-4">
+                        <label for="clientGender" class="form-label">Sexo</label>
+                        <select class="form-select" id="clientGender" [(ngModel)]="client.clientGender"
+                            name="clientGender" required>
+                            <option value="" disabled selected>Seleccione el sexo</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                        <div *ngIf="errors?.clientGender" class="text-danger small">{{ errors.clientGender[0] }}</div>
+                    </div>
+
+                    <!-- Correo Electrónico -->
+                    <div class="col-md-8">
+                        <label for="clientEmail" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="clientEmail" [(ngModel)]="client.clientEmail"
+                            name="clientEmail" required (input)="onEmailInput()">
+                        <div *ngIf="emailTouched && !isValidEmail(client.clientEmail)" class="text-danger small">El
+                            formato del correo electrónico no es válido</div>
+                        <div *ngIf="errors?.clientEmail" class="text-danger small">{{ errors.clientEmail[0] }}</div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="col-md-4">
+                        <label for="clientPhone" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="clientPhone" [(ngModel)]="client.clientPhone"
+                            name="clientPhone" required>
+                        <div *ngIf="errors?.clientPhone" class="text-danger small">{{ errors.clientPhone[0] }}</div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="col-md-8">
+                        <label for="clientAddress" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="clientAddress" [(ngModel)]="client.clientAddress"
+                            name="clientAddress">
+                        <div *ngIf="errors?.clientAddress" class="text-danger small">{{ errors.clientAddress[0] }}</div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 text-end">
+
+                        <!-- Botón para regresar a "/clients" -->
+                        <button type="button" class="btn btn-dark me-2" (click)="goBack()">
+                            <i class="feather icon-arrow-left-circle"></i> Regresar
+                        </button>
+
+                        <!-- Botón para resetear el formulario -->
+                        <button type="button" class="btn btn-danger me-2" (click)="resetForm(clientForm)">
+                            <i class="feather icon-refresh-cw"></i> Resetear
+                        </button>
+
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" class="btn btn-primary" [disabled]="clientForm.invalid">
+                            <i class="feather icon-check-circle"></i> Actualizar Cliente
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

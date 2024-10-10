@@ -56,7 +56,7 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         label: 'Clientes',
-        link: '/apps/email/inbox',
+        link: 'clients',
       },
       {
         label: 'Proveedores',

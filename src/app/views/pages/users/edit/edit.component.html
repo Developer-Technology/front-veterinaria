@@ -38,9 +38,9 @@
 
                     <!-- Sexo -->
                     <div class="col-md-4">
-                        <label for="sex" class="form-label">Sexo</label>
+                        <label for="sex" class="form-label">Género</label>
                         <select class="form-select" id="sex" [(ngModel)]="user.sex" name="sex" required>
-                            <option value="" disabled>Seleccione el sexo</option>
+                            <option value="" disabled>Seleccione el Género</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Femenino">Femenino</option>
                         </select>
@@ -52,6 +52,8 @@
                         <label for="email" class="form-label">Correo Electrónico</label>
                         <input type="email" class="form-control" id="email" [(ngModel)]="user.email" name="email"
                             required>
+                        <div *ngIf="emailTouched && !isValidEmail(user.email)" class="text-danger small">El
+                            formato del correo electrónico no es válido</div>
                         <div *ngIf="errors?.email" class="text-danger small">{{ errors.email[0] }}</div>
                     </div>
 
