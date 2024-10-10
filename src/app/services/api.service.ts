@@ -11,24 +11,57 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  // Método GET genérico
-  get(endpoint: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/${endpoint}`);
+  // Obtener el token almacenado en localStorage
+  private getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
-  // Método POST genérico
-  post(endpoint: string, data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/${endpoint}`, data);
+  // Método GET genérico con cabeceras (token opcional)
+  get(endpoint: string, authenticated: boolean = true): Observable<any> {
+    let headers = new HttpHeaders();
+    if (authenticated) {
+      const token = this.getToken();
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return this.http.get(`${this.baseUrl}/${endpoint}`, { headers });
   }
 
-  // Método PUT genérico
-  put(endpoint: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/${endpoint}`, data);
+  // Método POST genérico con cabeceras (token opcional)
+  post(endpoint: string, data: any, authenticated: boolean = true): Observable<any> {
+    let headers = new HttpHeaders();
+    if (authenticated) {
+      const token = this.getToken();
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data, { headers });
   }
 
-  // Método DELETE genérico
-  delete(endpoint: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/${endpoint}`);
+  // Método PUT genérico con cabeceras (token opcional)
+  put(endpoint: string, data: any, authenticated: boolean = true): Observable<any> {
+    let headers = new HttpHeaders();
+    if (authenticated) {
+      const token = this.getToken();
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return this.http.put(`${this.baseUrl}/${endpoint}`, data, { headers });
   }
 
+  // Método DELETE genérico con cabeceras (token opcional)
+  delete(endpoint: string, authenticated: boolean = true): Observable<any> {
+    let headers = new HttpHeaders();
+    if (authenticated) {
+      const token = this.getToken();
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return this.http.delete(`${this.baseUrl}/${endpoint}`, { headers });
+  }
+  
 }

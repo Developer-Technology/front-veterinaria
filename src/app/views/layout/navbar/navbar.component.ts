@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-navbar',
@@ -9,13 +10,26 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
 
+  userData: any = {};
+
   constructor(
-    @Inject(DOCUMENT) private document: Document, 
+    @Inject(DOCUMENT) private document: Document,
     private renderer: Renderer2,
-    private router: Router
+    private router: Router,
+    private apiService: ApiService
   ) { }
 
   ngOnInit(): void {
+    this.apiService.post('auth/me', true).subscribe(
+      (response) => {
+        if (response.success) {
+          this.userData = response.data;
+        }
+      },
+      (error) => {
+        console.log('Error al obtener los datos del usuario', error);
+      }
+    );
   }
 
   /**
