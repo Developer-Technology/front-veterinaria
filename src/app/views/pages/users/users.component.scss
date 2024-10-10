@@ -55,12 +55,14 @@
 .sortable-column i {
     margin-left: 5px;
     color: #6c757d;
-    /* Color por defecto */
 }
 
-.sortable-column i.icon-arrow-up,
-.sortable-column i.icon-arrow-down {
-    color: #007bff;
+.icon-arrow-up {
+    content: '\25B2';
+}
+
+.icon-arrow-down {
+    content: '\25BC';
 }
 
 .icon-chevron-up-down::before {
