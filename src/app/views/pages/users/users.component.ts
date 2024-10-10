@@ -100,7 +100,7 @@ export class UsersComponent implements OnInit {
     this.filteredUsers = this.users.filter(user =>
       user.doc.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       user.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      user.last_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+      user.sex.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       user.email.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       user.phone.toLowerCase().includes(this.searchQuery.toLowerCase())
     );

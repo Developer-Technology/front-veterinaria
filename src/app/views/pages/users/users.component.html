@@ -46,10 +46,10 @@
                                 <th>#</th>
                                 <th>Documento</th>
                                 <th (click)="sortData('name')" class="sortable-column">Nombre <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('name')"></i></th>
-                                <th (click)="sortData('last_name')" class="sortable-column">Apellido <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('last_name')"></i></th>
                                 <th (click)="sortData('email')" class="sortable-column">Email <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('email')"></i></th>
-                                <th (click)="sortData('status')" class="sortable-column">Teléfono <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('status')"></i></th>
-                                <th>Estado</th>
+                                <th>Teléfono</th>
+                                <th (click)="sortData('sex')" class="sortable-column">Sexo <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('sex')"></i></th>
+                                <th (click)="sortData('status')" class="sortable-column">Estado <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('status')"></i></th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -58,9 +58,9 @@
                                 <td>{{ getRecordNumber(i) }}</td>
                                 <td>{{ user.doc }}</td>
                                 <td>{{ user.name }}</td>
-                                <td>{{ user.last_name }}</td>
                                 <td>{{ user.email }}</td>
                                 <td>{{ user.phone }}</td>
+                                <td>{{ user.sex }}</td>
                                 <td>
                                     <span class="badge"
                                         [ngClass]="user.status === 'Activo' ? 'bg-success' : 'bg-secondary'">{{
