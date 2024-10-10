@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   returnUrl: any;
   emailTouched: boolean = false;  // Para verificar si el usuario interactuó con el campo
   passwordTouched: boolean = false;  // Para verificar si el usuario interactuó con el campo
+  validationErrors: any = {}; // Almacenar errores de validación
 
   constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
 
@@ -27,11 +28,13 @@ export class LoginComponent implements OnInit {
   // Este método se llama cuando el usuario interactúa con el campo de correo
   onEmailInput() {
     this.emailTouched = true;
+    this.validationErrors.email = null; // Limpiar el error al interactuar
   }
 
   // Este método se llama cuando el usuario interactúa con el campo de contraseña
   onPasswordInput() {
     this.passwordTouched = true;
+    this.validationErrors.password = null; // Limpiar el error al interactuar
   }
 
   // Valida si el formulario es válido (ambos campos con algún valor)
@@ -43,16 +46,26 @@ export class LoginComponent implements OnInit {
     if (!this.isFormValid()) return;
 
     this.isLoading = true;
+    this.validationErrors = {}; // Limpiar errores previos
     this.apiService.post('api/auth/login', { email: this.email, password: this.password }).subscribe(
       (response) => {
-        localStorage.setItem('isLoggedin', 'true');
-        localStorage.setItem('token', response.access_token);
-        this.router.navigate([this.returnUrl]);
-        //this.isLoading = false;
+        if (response.success) {
+          //this.showAlert('success', 'Bienvenido');
+          localStorage.setItem('isLoggedin', 'true');
+          localStorage.setItem('token', response.token);
+          this.router.navigate([this.returnUrl]);
+        } else {
+          this.isLoading = false;
+          this.showAlert('error', response.message);
+        }
       },
       (error) => {
         this.isLoading = false;
-        this.showErrorAlert();
+        if (error.status === 422) {  // Errores de validación
+          this.validationErrors = error.error.errors; // Capturamos los errores del API
+        } else {
+          this.showAlert('error', error.error.message);
+        }
       }
     );
   }
@@ -62,19 +75,15 @@ export class LoginComponent implements OnInit {
     return emailPattern.test(email);
   }
 
-  showErrorAlert() {
+  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
     Swal.fire({
       toast: true,
       position: 'top-end',
+      icon: type,
+      text: message,
       showConfirmButton: false,
       timer: 3000,
-      timerProgressBar: true,
-      title: 'Correo o contraseña incorrectos',
-      icon: 'error',
-      didOpen: (toast) => {
-        toast.addEventListener('mouseenter', Swal.stopTimer);
-        toast.addEventListener('mouseleave', Swal.resumeTimer);
-      }
+      timerProgressBar: true
     });
   }
 

@@ -15,20 +15,23 @@
                 <label for="exampleInputEmail1" class="form-label">Correo Electrónico</label>
                 <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Correo Electrónico"
                   [(ngModel)]="email" name="email" (input)="onEmailInput()"
-                  [ngClass]="{'is-invalid': emailTouched && !isValidEmail(email)}" required>
+                  [ngClass]="{'is-invalid': (emailTouched && !isValidEmail(email)) || validationErrors.email}" required>
+                <!-- Mostrar error de validación del email -->
+                <div *ngIf="validationErrors.email" class="invalid-feedback">
+                  {{ validationErrors.email[0] }}
+                </div>
               </div>
               <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password"
                   placeholder="contraseña" name="password" [(ngModel)]="password" (input)="onPasswordInput()"
-                  [ngClass]="{'is-invalid': passwordTouched && password === ''}" required>
+                  [ngClass]="{'is-invalid': (passwordTouched && password === '') || validationErrors.password}"
+                  required>
+                <!-- Mostrar error de validación de la contraseña -->
+                <div *ngIf="validationErrors.password" class="invalid-feedback">
+                  {{ validationErrors.password[0] }}
+                </div>
               </div>
-              <!--<div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="authCheck">
-                <label class="form-check-label" for="authCheck">
-                  Recordar
-                </label>
-              </div>-->
               <div>
                 <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0"
                   [disabled]="!isFormValid() || isLoading">
