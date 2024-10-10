@@ -27,7 +27,8 @@ export class EditComponent implements OnInit {
   constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    const userId = this.route.snapshot.paramMap.get('id') || ''; // Si es null, será ''
+    const encodedUserId = this.route.snapshot.paramMap.get('id') || '';
+    const userId = atob(encodedUserId);
     this.loadUser(userId);
   }
 
@@ -42,18 +43,21 @@ export class EditComponent implements OnInit {
 
           // Verificar si es Super Admin o tiene id = 1
           if (this.user.id === 1 || this.user.privilege === 'Super Admin') {
-            this.isLoading = true;
-            this.isSuperAdmin = true;  // Marcar que es Super Admin o id = 1
             this.router.navigate(['/users']);
             this.showAlert('warning', 'No puedes editar este usuario');
           }
-
         }
       },
       (error) => {
-        this.isLoading = true;  // Detener el estado de carga en caso de error
+        this.isLoading = false;  // Detener el estado de carga en caso de error
+        if (error.status === 404) {
+          // Usuario no encontrado
+          this.showAlert('error', 'Usuario no encontrado');
+        } else {
+          // Otro tipo de error
+          this.showAlert('error', 'No se pudo cargar el usuario');
+        }
         this.router.navigate(['/users']);
-        this.showAlert('error', 'No se pudo cargar el usuario');
       }
     );
   }

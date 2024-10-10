@@ -132,7 +132,8 @@ export class UsersComponent implements OnInit {
 
   // Función para redirigir al formulario de edición
   editUser(id: string): void {
-    this.router.navigate(['/users/edit', id]);  // Redirige a la ruta de edición
+    const encodedId = btoa(id);
+    this.router.navigate(['/users/edit', encodedId]);  // Redirige a la ruta de edición
   }
 
 }
