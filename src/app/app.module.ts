@@ -15,7 +15,7 @@ import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 @NgModule({
   declarations: [
     AppComponent,
-    ErrorPageComponent,
+    ErrorPageComponent
   ],
   imports: [
     BrowserModule,

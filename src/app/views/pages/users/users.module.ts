@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { UsersComponent } from './users.component';
+import { AddComponent } from './add/add.component';
 
 // Rutas para el CRUD de usuarios
 const routes: Routes = [
@@ -13,7 +14,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [UsersComponent],
+  declarations: [UsersComponent, AddComponent],
   imports: [
     CommonModule,
     FormsModule,

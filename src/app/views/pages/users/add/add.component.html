@@ -1,0 +1,95 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/users">Usuarios</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Agregar Usuario</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Crear Nuevo Usuario</h4>
+                <p class="text-muted mb-3">Complete los siguientes campos para crear un nuevo usuario en el sistema.</p>
+
+                <!-- Formulario para crear un nuevo usuario -->
+                <form (ngSubmit)="onSubmit()" #userForm="ngForm" class="row g-3">
+
+                    <!-- Documento (más corto) y Nombre (más largo) -->
+                    <div class="col-md-3">
+                        <label for="doc" class="form-label">Documento</label>
+                        <input type="text" class="form-control" id="doc" [(ngModel)]="newUser.doc" name="doc" required>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="name" [(ngModel)]="newUser.name" name="name"
+                            required>
+                    </div>
+
+                    <!-- Sexo (más corto) y Correo Electrónico (más largo) -->
+                    <div class="col-md-4">
+                        <label for="sex" class="form-label">Sexo</label>
+                        <select class="form-select" id="sex" [(ngModel)]="newUser.sex" name="sex" required>
+                            <option value="" disabled selected>Seleccione el sexo</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-8">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email"
+                            required>
+                    </div>
+
+                    <!-- Teléfono (mediano) y Contraseña (más largo) -->
+                    <div class="col-md-4">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="phone" [(ngModel)]="newUser.phone" name="phone"
+                            required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password"
+                            name="password" required minlength="6">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="confirmPassword" class="form-label">Repetir Contraseña</label>
+                        <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword"
+                            name="confirmPassword" required minlength="6">
+                        <div *ngIf="passwordMismatch" class="text-danger small">Las contraseñas no coinciden</div>
+                    </div>
+
+                    <!-- Estado (más corto) y Privilegio (más corto) -->
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">Estado</label>
+                        <select class="form-select" id="status" [(ngModel)]="newUser.status" name="status" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="privilege" class="form-label">Privilegio</label>
+                        <select class="form-select" id="privilege" [(ngModel)]="newUser.privilege" name="privilege"
+                            required>
+                            <option value="User">Usuario</option>
+                            <option value="Admin">Administrador</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón de enviar -->
+                    <div class="col-12 text-end">
+                        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid || passwordMismatch">
+                            <i class="feather icon-check-circle"></i> Crear Usuario
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
