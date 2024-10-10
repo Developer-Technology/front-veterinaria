@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -33,9 +34,25 @@ export class LoginComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        this.errorMessage = 'Invalid email or password'; // Mostrar mensaje de error
+        this.showErrorAlert();
       }
     );
+  }
+
+  showErrorAlert() {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      title: 'Correo o contraseña incorrectos',
+      icon: 'error',
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+      }
+    });
   }
 
 }
