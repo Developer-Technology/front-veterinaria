@@ -12,8 +12,15 @@
                 <h4 class="card-title">Editar Usuario</h4>
                 <p class="text-muted mb-3">Modifique los campos para actualizar la información del usuario.</p>
 
+                <!-- Spinner de carga -->
+                <div *ngIf="isLoading" class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+
                 <!-- Formulario para editar un usuario -->
-                <form (ngSubmit)="onSubmit()" #userForm="ngForm" class="row g-3">
+                <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #userForm="ngForm" class="row g-3">
 
                     <!-- Documento -->
                     <div class="col-md-3">

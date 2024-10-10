@@ -20,6 +20,7 @@ export class EditComponent implements OnInit {
     privilege: 'User'
   };
 
+  isLoading: boolean = true;  // Variable para el efecto de carga
   errors: any = {}; // Para manejar errores del backend
 
   constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
@@ -31,13 +32,16 @@ export class EditComponent implements OnInit {
 
   // Cargar los datos del usuario desde la API
   loadUser(id: string): void {
+    this.isLoading = true;  // Iniciar el estado de carga
     this.apiService.get(`users/${id}`, true).subscribe(
       (response) => {
         if (response.success) {
           this.user = response.data;
+          this.isLoading = false;  // Detener el estado de carga
         }
       },
       (error) => {
+        this.isLoading = false;  // Detener el estado de carga en caso de error
         Swal.fire('Error', 'No se pudo cargar el usuario', 'error');
       }
     );
@@ -70,4 +74,5 @@ export class EditComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/users']);
   }
+  
 }
