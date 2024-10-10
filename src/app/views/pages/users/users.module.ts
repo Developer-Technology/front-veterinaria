@@ -1,25 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
 import { UsersComponent } from './users.component';
 import { AddComponent } from './add/add.component';
-
-// Rutas para el CRUD de usuarios
-const routes: Routes = [
-  {
-    path: '',
-    component: UsersComponent
-  }
-];
+import { EditComponent } from './edit/edit.component';
+import { UsersRoutingModule } from './users-routing.module';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [UsersComponent, AddComponent],
+  declarations: [
+    UsersComponent,
+    AddComponent,
+    EditComponent
+  ],
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule.forChild(routes)
+    UsersRoutingModule,
+    FormsModule
   ]
 })
 export class UsersModule { }

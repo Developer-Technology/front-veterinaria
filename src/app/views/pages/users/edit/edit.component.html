@@ -1,0 +1,101 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/users">Usuarios</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar Usuario</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Editar Usuario</h4>
+                <p class="text-muted mb-3">Modifique los campos para actualizar la información del usuario.</p>
+
+                <!-- Formulario para editar un usuario -->
+                <form (ngSubmit)="onSubmit()" #userForm="ngForm" class="row g-3">
+
+                    <!-- Documento -->
+                    <div class="col-md-3">
+                        <label for="doc" class="form-label">Documento</label>
+                        <input type="text" class="form-control" id="doc" [(ngModel)]="user.doc" name="doc" required>
+                        <div *ngIf="errors?.doc" class="text-danger small">{{ errors.doc[0] }}</div>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-5">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="name" [(ngModel)]="user.name" name="name" required>
+                        <div *ngIf="errors?.name" class="text-danger small">{{ errors.name[0] }}</div>
+                    </div>
+
+                    <!-- Sexo -->
+                    <div class="col-md-4">
+                        <label for="sex" class="form-label">Sexo</label>
+                        <select class="form-select" id="sex" [(ngModel)]="user.sex" name="sex" required>
+                            <option value="" disabled>Seleccione el sexo</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                        <div *ngIf="errors?.sex" class="text-danger small">{{ errors.sex[0] }}</div>
+                    </div>
+
+                    <!-- Correo Electrónico -->
+                    <div class="col-md-8">
+                        <label for="email" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="email" [(ngModel)]="user.email" name="email"
+                            required>
+                        <div *ngIf="errors?.email" class="text-danger small">{{ errors.email[0] }}</div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="col-md-4">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="phone" [(ngModel)]="user.phone" name="phone"
+                            required>
+                        <div *ngIf="errors?.phone" class="text-danger small">{{ errors.phone[0] }}</div>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="col-md-2">
+                        <label for="status" class="form-label">Estado</label>
+                        <select class="form-select" id="status" [(ngModel)]="user.status" name="status" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <!-- Privilegio -->
+                    <div class="col-md-2">
+                        <label for="privilege" class="form-label">Privilegio</label>
+                        <select class="form-select" id="privilege" [(ngModel)]="user.privilege" name="privilege"
+                            required>
+                            <option value="User">Usuario</option>
+                            <option value="Admin">Administrador</option>
+                        </select>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 text-end">
+
+                        <!-- Botón para regresar a "/users" -->
+                        <button type="button" class="btn btn-dark me-2" (click)="goBack()">
+                            <i class="feather icon-arrow-left-circle"></i> Regresar
+                        </button>
+
+                        <!-- Botón para resetear el formulario -->
+                        <button type="button" class="btn btn-danger me-2" (click)="resetForm(userForm)">
+                            <i class="feather icon-refresh-cw"></i> Resetear
+                        </button>
+
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" class="btn btn-primary" [disabled]="userForm.invalid">
+                            <i class="feather icon-check-circle"></i> Guardar Cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,7 +4,6 @@ import { BaseComponent } from './views/layout/base/base.component';
 import { AuthGuard } from './core/guard/auth.guard';
 import { LoginGuard } from './core/guard/login.guard';
 import { ErrorPageComponent } from './views/pages/error-page/error-page.component';
-import { AddComponent } from './views/pages/users/add/add.component';
 
 const routes: Routes = [
   {
@@ -61,7 +60,6 @@ const routes: Routes = [
         path: 'users',
         loadChildren: () => import('./views/pages/users/users.module').then(m => m.UsersModule)
       },
-      { path: 'users/add', component: AddComponent },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },
