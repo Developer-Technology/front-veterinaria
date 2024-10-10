@@ -45,11 +45,15 @@
                             <tr>
                                 <th>#</th>
                                 <th>Documento</th>
-                                <th (click)="sortData('name')" class="sortable-column">Nombre <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('name')"></i></th>
-                                <th (click)="sortData('email')" class="sortable-column">Email <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('email')"></i></th>
+                                <th (click)="sortData('name')" class="sortable-column">Nombre <i
+                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('name')"></i></th>
+                                <th (click)="sortData('email')" class="sortable-column">Email <i
+                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('email')"></i></th>
                                 <th>Teléfono</th>
-                                <th (click)="sortData('sex')" class="sortable-column">Sexo <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('sex')"></i></th>
-                                <th (click)="sortData('status')" class="sortable-column">Estado <i class="feather icon-chevron-up-down" [ngClass]="getSortIcon('status')"></i></th>
+                                <th (click)="sortData('sex')" class="sortable-column">Sexo <i
+                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('sex')"></i></th>
+                                <th (click)="sortData('status')" class="sortable-column">Estado <i
+                                        class="feather icon-chevron-up-down" [ngClass]="getSortIcon('status')"></i></th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -67,8 +71,12 @@
                                         user.status }}</span>
                                 </td>
                                 <td class="text-center btn-table">
-                                    <button class="btn btn-warning btn-xs"><i class="feather icon-edit-2"></i></button>
-                                    <button class="btn btn-danger btn-xs"><i class="feather icon-trash"></i></button>
+                                    <div *ngIf="user.id !== 1 && user.privilege !== 'Super Admin'">
+                                        <button class="btn btn-warning btn-xs"><i
+                                                class="feather icon-edit-2"></i></button>
+                                        <button class="btn btn-danger btn-xs"><i
+                                                class="feather icon-trash"></i></button>
+                                    </div>
                                 </td>
                             </tr>
                             <tr *ngIf="!paginatedUsers.length && !isLoading">
@@ -100,15 +108,13 @@
                                 <!-- Enlace para "Primero" -->
                                 <li class="page-item" [class.disabled]="currentPage === 1">
                                     <a class="page-link" (click)="changePage(1)" href="javascript:void(0)">
-                                        <<
-                                    </a>
+                                        << </a>
                                 </li>
                                 <!-- Enlace para "Anterior" -->
                                 <li class="page-item" [class.disabled]="currentPage === 1">
                                     <a class="page-link" (click)="changePage(currentPage - 1)"
                                         href="javascript:void(0)">
-                                        <
-                                    </a>
+                                        < </a>
                                 </li>
                                 <!-- Enlaces de paginación numerados -->
                                 <li *ngFor="let page of totalPages" class="page-item"
