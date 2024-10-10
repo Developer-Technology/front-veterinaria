@@ -1,6 +1,6 @@
 .table-sm th,
 .table-sm td {
-    padding: 0.5rem;
+    padding: 0.3rem;
     text-align: center;
     vertical-align: middle;
 }
@@ -14,37 +14,42 @@
 .table thead {
     background-color: #f8f9fa;
     text-transform: uppercase;
-    font-size: 0.9rem;
+    font-size: 13px;
+}
+
+.table td {
+    font-size: 13px;
 }
 
 .compact-table {
-    font-size: 0.875rem;
+    font-size: 13px;
     white-space: nowrap;
 }
 
 .badge {
     padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 10px;
 }
 
 .btn-xs {
     padding: 0.2rem 0.5rem;
-    font-size: 0.75rem;
+    font-size: 10px;
 }
 
-.select-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
+.pagin span,
+.pagin select {
+    font-size: 13px;
 }
 
-.pagination .page-link:hover {
-    background-color: #007bff;
-    color: white;
+.pagin select {
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
-.pagination .page-item.active .page-link {
-    background-color: #007bff;
-    border-color: #007bff;
+.page-link {
+    font-size: 13px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .sortable-column {
