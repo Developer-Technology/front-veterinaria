@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('isLoggedin', 'true');
         localStorage.setItem('token', response.access_token);
         this.router.navigate([this.returnUrl]);
-        this.isLoading = false;
+        //this.isLoading = false;
       },
       (error) => {
         this.isLoading = false;

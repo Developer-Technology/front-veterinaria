@@ -3,7 +3,7 @@
     <div class="card">
       <div class="row">
         <div class="col-md-4 pe-md-0">
-          <div class="auth-side-wrapper" [ngStyle]="{ 'background-image': 'url(https://via.placeholder.com/219x452)' }">
+          <div class="auth-side-wrapper" [ngStyle]="{ 'background-image': 'url(/assets/images/auth/login.jpg)' }">
           </div>
         </div>
         <div class="col-md-8 ps-md-0">
@@ -23,12 +23,12 @@
                   placeholder="contraseña" name="password" [(ngModel)]="password" (input)="onPasswordInput()"
                   [ngClass]="{'is-invalid': passwordTouched && password === ''}" required>
               </div>
-              <div class="form-check mb-3">
+              <!--<div class="form-check mb-3">
                 <input type="checkbox" class="form-check-input" id="authCheck">
                 <label class="form-check-label" for="authCheck">
                   Recordar
                 </label>
-              </div>
+              </div>-->
               <div>
                 <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0"
                   [disabled]="!isFormValid() || isLoading">
