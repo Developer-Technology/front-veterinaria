@@ -7,28 +7,28 @@ import { environment } from '../../environments/environment'; // Asegúrate de a
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl: string = environment.URL_BACKEND; // Base URL desde el archivo de entorno
+  private baseUrl: string = environment.URL_SERVICIOS; // Base URL desde el archivo de entorno
 
   constructor(private http: HttpClient) { }
 
   // Método GET genérico
   get(endpoint: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}${endpoint}`);
+    return this.http.get(`${this.baseUrl}/${endpoint}`);
   }
 
   // Método POST genérico
   post(endpoint: string, data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}${endpoint}`, data);
+    return this.http.post(`${this.baseUrl}/${endpoint}`, data);
   }
 
   // Método PUT genérico
   put(endpoint: string, data: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}${endpoint}`, data);
+    return this.http.put(`${this.baseUrl}/${endpoint}`, data);
   }
 
   // Método DELETE genérico
   delete(endpoint: string): Observable<any> {
-    return this.http.delete(`${this.baseUrl}${endpoint}`);
+    return this.http.delete(`${this.baseUrl}/${endpoint}`);
   }
 
 }

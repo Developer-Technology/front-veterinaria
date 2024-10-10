@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
 
     this.isLoading = true;
     this.validationErrors = {}; // Limpiar errores previos
-    this.apiService.post('api/auth/login', { email: this.email, password: this.password }).subscribe(
+    this.apiService.post('auth/login', { email: this.email, password: this.password }).subscribe(
       (response) => {
         if (response.success) {
           //this.showAlert('success', 'Bienvenido');
