@@ -45,6 +45,10 @@ export class UsersComponent implements OnInit {
     );
   }
 
+  getRecordNumber(index: number): number {
+    return (this.currentPage - 1) * this.itemsPerPage + (index + 1);
+  }
+
   // Paginación: Obtener usuarios de la página actual
   get paginatedUsers(): any[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -54,6 +58,9 @@ export class UsersComponent implements OnInit {
 
   // Cambiar página
   changePage(page: number): void {
+    if (page < 1 || page > this.totalPages.length) {
+      return; // Evitar que se salga de los límites
+    }
     this.currentPage = page;
   }
 

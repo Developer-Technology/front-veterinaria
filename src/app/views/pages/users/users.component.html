@@ -54,8 +54,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr *ngFor="let user of paginatedUsers">
-                                <td>{{ user.id }}</td>
+                            <tr *ngFor="let user of paginatedUsers; let i = index">
+                                <td>{{ getRecordNumber(i) }}</td>
                                 <td>{{ user.doc }}</td>
                                 <td>{{ user.name }}</td>
                                 <td>{{ user.last_name }}</td>
@@ -97,21 +97,37 @@
                     <div class="col-md-6 text-end mt-3">
                         <nav>
                             <ul class="pagination pagination-sm justify-content-end">
+                                <!-- Enlace para "Primero" -->
+                                <li class="page-item" [class.disabled]="currentPage === 1">
+                                    <a class="page-link" (click)="changePage(1)" href="javascript:void(0)">
+                                        <<
+                                    </a>
+                                </li>
+                                <!-- Enlace para "Anterior" -->
                                 <li class="page-item" [class.disabled]="currentPage === 1">
                                     <a class="page-link" (click)="changePage(currentPage - 1)"
                                         href="javascript:void(0)">
-                                        Anterior
+                                        <
                                     </a>
                                 </li>
+                                <!-- Enlaces de paginación numerados -->
                                 <li *ngFor="let page of totalPages" class="page-item"
                                     [class.active]="currentPage === page">
                                     <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{ page
                                         }}</a>
                                 </li>
+                                <!-- Enlace para "Siguiente" -->
                                 <li class="page-item" [class.disabled]="currentPage === totalPages.length">
                                     <a class="page-link" (click)="changePage(currentPage + 1)"
                                         href="javascript:void(0)">
-                                        Siguiente
+                                        >
+                                    </a>
+                                </li>
+                                <!-- Enlace para "Último" -->
+                                <li class="page-item" [class.disabled]="currentPage === totalPages.length">
+                                    <a class="page-link" (click)="changePage(totalPages.length)"
+                                        href="javascript:void(0)">
+                                        >>
                                     </a>
                                 </li>
                             </ul>
