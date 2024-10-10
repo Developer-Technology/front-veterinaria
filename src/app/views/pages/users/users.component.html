@@ -72,7 +72,7 @@
                                 </td>
                                 <td class="text-center btn-table">
                                     <div *ngIf="user.id !== 1 && user.privilege !== 'Super Admin'">
-                                        <button class="btn btn-warning btn-xs"><i
+                                        <button class="btn btn-warning btn-xs" (click)="editUser(user.id)"><i
                                                 class="feather icon-edit-2"></i></button>
                                         <button class="btn btn-danger btn-xs"><i
                                                 class="feather icon-trash"></i></button>

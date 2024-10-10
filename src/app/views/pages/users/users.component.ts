@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -20,7 +21,7 @@ export class UsersComponent implements OnInit {
   sortColumn: string = '';  // Columna que se está ordenando
   sortDirection: 'asc' | 'desc' = 'asc';  // Dirección de ordenación
 
-  constructor(private apiService: ApiService) { }
+  constructor(private apiService: ApiService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -127,6 +128,11 @@ export class UsersComponent implements OnInit {
   // Método para cambiar la cantidad de ítems por página
   onChangeItemsPerPage(): void {
     this.currentPage = 1;  // Reinicia la página a la primera
+  }
+
+  // Función para redirigir al formulario de edición
+  editUser(id: string): void {
+    this.router.navigate(['/users/edit', id]);  // Redirige a la ruta de edición
   }
 
 }
