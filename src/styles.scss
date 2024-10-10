@@ -25,3 +25,88 @@
 
 // NobleUI styles for LTR
 @import "./assets/scss/style";
+
+/* Tablas Personalizadas Compacta */
+.table-sm th,
+.table-sm td {
+    padding: 0.3rem;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.table-bordered {
+    border: 1px solid #dee2e6;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.table td {
+    font-size: 13px;
+}
+
+.compact-table {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 10px;
+}
+
+.btn-table .btn-xs {
+    padding: 0.2rem 0.5rem;
+    font-size: 10px;
+}
+
+.pagin span,
+.pagin select {
+    font-size: 13px;
+}
+
+.pagin select {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.page-link {
+    font-size: 13px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.sortable-column {
+    cursor: pointer;
+    position: relative;
+}
+
+.sortable-column i {
+    margin-left: 5px;
+    color: #6c757d;
+}
+
+.icon-arrow-up {
+    content: '\25B2';
+}
+
+.icon-arrow-down {
+    content: '\25BC';
+}
+
+.icon-chevron-up-down::before {
+    content: "\2195";
+}
+
+.icon-arrow-up::before {
+    content: "\25B2";
+}
+
+.icon-arrow-down::before {
+    content: "\25BC";
+}
