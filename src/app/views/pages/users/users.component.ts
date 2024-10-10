@@ -86,4 +86,9 @@ export class UsersComponent implements OnInit {
     return `Total de registros: ${this.users.length}`;
   }
 
+  // Método para cambiar la cantidad de ítems por página
+  onChangeItemsPerPage(): void {
+    this.currentPage = 1;  // Reinicia la página a la primera
+  }
+
 }

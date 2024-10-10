@@ -1,16 +1,56 @@
 .table-sm th,
 .table-sm td {
-    padding: 0.35rem;
+    padding: 0.5rem;
+    text-align: center;
+    vertical-align: middle;
 }
 
-.pagination-sm .page-link {
+.table-bordered {
+    border: 1px solid #dee2e6;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+.table thead {
+    background-color: #f8f9fa;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.compact-table {
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.badge {
     padding: 0.25rem 0.5rem;
-}
-
-.table-responsive {
-    margin-bottom: 1rem;
+    font-size: 0.75rem;
 }
 
 .btn-xs {
-    padding: 0.2rem 0.8rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.pagination-sm .page-link {
+    padding: 0.25rem 0.75rem;
+}
+
+.select-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+.pagination .page-link:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
 }

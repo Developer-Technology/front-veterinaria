@@ -40,7 +40,7 @@
 
                 <!-- Tabla de usuarios -->
                 <div class="table-responsive" *ngIf="!isLoading">
-                    <table class="table table-sm table-bordered align-middle">
+                    <table class="table table-sm table-bordered align-middle compact-table">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -67,12 +67,8 @@
                                         user.status }}</span>
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-outline-warning btn-xs">
-                                        <i class="feather icon-edit-2"></i>
-                                    </button>
-                                    <button class="btn btn-outline-danger btn-xs">
-                                        <i class="feather icon-trash"></i>
-                                    </button>
+                                    <button class="btn btn-warning btn-xs"><i class="feather icon-edit-2"></i></button>
+                                    <button class="btn btn-danger btn-xs"><i class="feather icon-trash"></i></button>
                                 </td>
                             </tr>
                             <tr *ngIf="!paginatedUsers.length && !isLoading">
@@ -83,21 +79,45 @@
                 </div>
 
                 <!-- Paginación -->
-                <nav>
-                    <ul class="pagination pagination-sm">
-                        <li class="page-item" [class.disabled]="currentPage === 1">
-                            <a class="page-link" (click)="changePage(currentPage - 1)"
-                                href="javascript:void(0)">Anterior</a>
-                        </li>
-                        <li *ngFor="let page of totalPages" class="page-item" [class.active]="currentPage === page">
-                            <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{ page }}</a>
-                        </li>
-                        <li class="page-item" [class.disabled]="currentPage === totalPages.length">
-                            <a class="page-link" (click)="changePage(currentPage + 1)"
-                                href="javascript:void(0)">Siguiente</a>
-                        </li>
-                    </ul>
-                </nav>
+                <div class="row align-items-center">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <span class="me-2">Ir a página:</span>
+                        <select class="form-select form-select-sm w-auto" [(ngModel)]="currentPage"
+                            (change)="changePage(currentPage)">
+                            <option *ngFor="let page of totalPages" [value]="page">{{ page }}</option>
+                        </select>
+                        <span class="ms-3 me-2">Mostrar:</span>
+                        <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
+                            (change)="onChangeItemsPerPage()">
+                            <option [value]="5">5</option>
+                            <option [value]="10">10</option>
+                            <option [value]="20">20</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 text-end mt-2">
+                        <nav>
+                            <ul class="pagination pagination-sm justify-content-end">
+                                <li class="page-item" [class.disabled]="currentPage === 1">
+                                    <a class="page-link" (click)="changePage(currentPage - 1)"
+                                        href="javascript:void(0)">
+                                        Anterior
+                                    </a>
+                                </li>
+                                <li *ngFor="let page of totalPages" class="page-item"
+                                    [class.active]="currentPage === page">
+                                    <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{ page
+                                        }}</a>
+                                </li>
+                                <li class="page-item" [class.disabled]="currentPage === totalPages.length">
+                                    <a class="page-link" (click)="changePage(currentPage + 1)"
+                                        href="javascript:void(0)">
+                                        Siguiente
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
