@@ -15,6 +15,8 @@ export class LoginComponent implements OnInit {
   errorMessage: string = '';
   isLoading: boolean = false;
   returnUrl: any;
+  emailTouched: boolean = false;  // Para verificar si el usuario interactuó con el campo
+  passwordTouched: boolean = false;  // Para verificar si el usuario interactuó con el campo
 
   constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
 
@@ -22,14 +24,30 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
+  // Este método se llama cuando el usuario interactúa con el campo de correo
+  onEmailInput() {
+    this.emailTouched = true;
+  }
+
+  // Este método se llama cuando el usuario interactúa con el campo de contraseña
+  onPasswordInput() {
+    this.passwordTouched = true;
+  }
+
+  // Valida si el formulario es válido (ambos campos con algún valor)
+  isFormValid(): boolean {
+    return this.email.trim() !== '' && this.password.trim() !== '';
+  }
+
   onSubmit() {
+    if (!this.isFormValid()) return;
+
     this.isLoading = true;
     this.apiService.post('api/auth/login', { email: this.email, password: this.password }).subscribe(
       (response) => {
         localStorage.setItem('isLoggedin', 'true');
+        localStorage.setItem('token', response.access_token);
         this.router.navigate([this.returnUrl]);
-        localStorage.setItem('token', response.access_token); // Guardar el token
-        this.router.navigate(['/dashboard']); // Redirigir al dashboard
         this.isLoading = false;
       },
       (error) => {
@@ -37,6 +55,11 @@ export class LoginComponent implements OnInit {
         this.showErrorAlert();
       }
     );
+  }
+
+  isValidEmail(email: string): boolean {
+    const emailPattern = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    return emailPattern.test(email);
   }
 
   showErrorAlert() {
