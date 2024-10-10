@@ -16,12 +16,11 @@ export class UsersComponent implements OnInit {
   searchQuery: string = '';  // Query de búsqueda
   isDropdownOpen: boolean = false;
   isLoading: boolean = true;  // Variable de carga
+  // Variables de ordenación
+  sortColumn: string = '';  // Columna que se está ordenando
+  sortDirection: 'asc' | 'desc' = 'asc';  // Dirección de ordenación
 
   constructor(private apiService: ApiService) { }
-
-  toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
 
   ngOnInit(): void {
     this.loadUsers();
@@ -43,6 +42,38 @@ export class UsersComponent implements OnInit {
         Swal.fire('Error', 'No se pudieron cargar los usuarios', 'error');
       }
     );
+  }
+
+  // Ordenar los datos
+  sortData(column: string): void {
+    if (this.sortColumn === column) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';  // Cambiar dirección si es la misma columna
+    } else {
+      this.sortColumn = column;
+      this.sortDirection = 'asc';  // Si es una nueva columna, orden ascendente
+    }
+
+    this.filteredUsers.sort((a, b) => {
+      const valueA = a[column];
+      const valueB = b[column];
+
+      let comparison = 0;
+      if (valueA > valueB) {
+        comparison = 1;
+      } else if (valueA < valueB) {
+        comparison = -1;
+      }
+
+      return this.sortDirection === 'asc' ? comparison : -comparison;
+    });
+  }
+
+  // Obtener el icono de ordenación para la columna actual
+  getSortIcon(column: string): string {
+    if (this.sortColumn === column) {
+      return this.sortDirection === 'asc' ? 'icon-arrow-up' : 'icon-arrow-down';
+    }
+    return '';
   }
 
   getRecordNumber(index: number): number {

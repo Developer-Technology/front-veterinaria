@@ -46,3 +46,31 @@
     background-color: #007bff;
     border-color: #007bff;
 }
+
+.sortable-column {
+    cursor: pointer;
+    position: relative;
+}
+
+.sortable-column i {
+    margin-left: 5px;
+    color: #6c757d;
+    /* Color por defecto */
+}
+
+.sortable-column i.icon-arrow-up,
+.sortable-column i.icon-arrow-down {
+    color: #007bff;
+}
+
+.icon-chevron-up-down::before {
+    content: "\2195";
+}
+
+.icon-arrow-up::before {
+    content: "\25B2";
+}
+
+.icon-arrow-down::before {
+    content: "\25BC";
+}
