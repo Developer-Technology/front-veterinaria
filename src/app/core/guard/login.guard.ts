@@ -4,7 +4,7 @@ import { CanActivate, Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class LoginGuard implements CanActivate {
 
   constructor(private router: Router) { }
 
@@ -12,11 +12,11 @@ export class AuthGuard implements CanActivate {
     const isLoggedin = localStorage.getItem('isLoggedin');
 
     if (isLoggedin === 'true') {
-      return true;
+      this.router.navigate(['/']); // Redirigir al dashboard si ya está logueado
+      return false; // Bloquear el acceso al login
     } else {
-      this.router.navigate(['/auth/login']); // Redirige a la página de login si no está logueado
-      return false;
+      return true; // Permitir acceso al login
     }
   }
-  
+
 }

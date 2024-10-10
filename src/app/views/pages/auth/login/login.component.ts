@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ApiService } from '../../../../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -8,21 +9,30 @@ import { Router, ActivatedRoute } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  email: string = '';
+  password: string = '';
+  errorMessage: string = '';
+
   returnUrl: any;
 
-  constructor(private router: Router, private route: ActivatedRoute) { }
+  constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  onLoggedin(e: Event) {
-    e.preventDefault();
-    localStorage.setItem('isLoggedin', 'true');
-    if (localStorage.getItem('isLoggedin')) {
-      this.router.navigate([this.returnUrl]);
-    }
+  onSubmit() {
+    this.apiService.post('api/auth/login', { email: this.email, password: this.password }).subscribe(
+      (response) => {
+        localStorage.setItem('isLoggedin', 'true');
+        this.router.navigate([this.returnUrl]);
+        localStorage.setItem('token', response.access_token); // Guardar el token
+        this.router.navigate(['/dashboard']); // Redirigir al dashboard
+      },
+      (error) => {
+        this.errorMessage = 'Invalid email or password'; // Mostrar mensaje de error
+      }
+    );
   }
 
 }

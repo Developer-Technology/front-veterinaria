@@ -2,15 +2,19 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { BaseComponent } from './views/layout/base/base.component';
 import { AuthGuard } from './core/guard/auth.guard';
+import { LoginGuard } from './core/guard/login.guard';
 import { ErrorPageComponent } from './views/pages/error-page/error-page.component';
 
-
 const routes: Routes = [
-  { path:'auth', loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule) },
+  { 
+    path: 'auth', 
+    loadChildren: () => import('./views/pages/auth/auth.module').then(m => m.AuthModule),
+    canActivate: [LoginGuard]
+  },
   {
     path: '',
     component: BaseComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard], // Protege todas las rutas hijas
     children: [
       {
         path: 'dashboard',
@@ -52,8 +56,7 @@ const routes: Routes = [
         path: 'general',
         loadChildren: () => import('./views/pages/general/general.module').then(m => m.GeneralModule)
       },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, 
-      // { path: '**', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },
   { 
