@@ -15,19 +15,22 @@
                 <!-- Formulario para crear un nuevo usuario -->
                 <form (ngSubmit)="onSubmit()" #userForm="ngForm" class="row g-3">
 
-                    <!-- Documento (más corto) y Nombre (más largo) -->
+                    <!-- Documento -->
                     <div class="col-md-3">
                         <label for="doc" class="form-label">Documento</label>
                         <input type="text" class="form-control" id="doc" [(ngModel)]="newUser.doc" name="doc" required>
+                        <div *ngIf="errors?.doc" class="text-danger small">{{ errors.doc[0] }}</div>
                     </div>
 
+                    <!-- Nombre -->
                     <div class="col-md-5">
                         <label for="name" class="form-label">Nombre</label>
                         <input type="text" class="form-control" id="name" [(ngModel)]="newUser.name" name="name"
                             required>
+                        <div *ngIf="errors?.name" class="text-danger small">{{ errors.name[0] }}</div>
                     </div>
 
-                    <!-- Sexo (más corto) y Correo Electrónico (más largo) -->
+                    <!-- Sexo -->
                     <div class="col-md-4">
                         <label for="sex" class="form-label">Sexo</label>
                         <select class="form-select" id="sex" [(ngModel)]="newUser.sex" name="sex" required>
@@ -35,35 +38,45 @@
                             <option value="Masculino">Masculino</option>
                             <option value="Femenino">Femenino</option>
                         </select>
+                        <div *ngIf="errors?.sex" class="text-danger small">{{ errors.sex[0] }}</div>
                     </div>
 
+                    <!-- Correo Electrónico -->
                     <div class="col-md-8">
                         <label for="email" class="form-label">Correo Electrónico</label>
                         <input type="email" class="form-control" id="email" [(ngModel)]="newUser.email" name="email"
-                            required>
+                            required (input)="onEmailInput()">
+                        <div *ngIf="emailTouched && !isValidEmail(newUser.email)" class="text-danger small">El formato
+                            del correo electrónico no es válido</div>
+                        <div *ngIf="errors?.email" class="text-danger small">{{ errors.email[0] }}</div>
                     </div>
 
-                    <!-- Teléfono (mediano) y Contraseña (más largo) -->
+                    <!-- Teléfono -->
                     <div class="col-md-4">
                         <label for="phone" class="form-label">Teléfono</label>
                         <input type="tel" class="form-control" id="phone" [(ngModel)]="newUser.phone" name="phone"
                             required>
+                        <div *ngIf="errors?.phone" class="text-danger small">{{ errors.phone[0] }}</div>
                     </div>
 
+                    <!-- Contraseña -->
                     <div class="col-md-4">
                         <label for="password" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="password" [(ngModel)]="newUser.password"
-                            name="password" required minlength="6">
+                            name="password" required minlength="8">
+                        <div *ngIf="errors?.password" class="text-danger small">{{ errors.password[0] }}</div>
                     </div>
 
+                    <!-- Repetir Contraseña -->
                     <div class="col-md-4">
                         <label for="confirmPassword" class="form-label">Repetir Contraseña</label>
-                        <input type="password" class="form-control" id="confirmPassword" [(ngModel)]="confirmPassword"
-                            name="confirmPassword" required minlength="6">
+                        <input type="password" class="form-control" id="confirmPassword"
+                            [(ngModel)]="newUser.password_confirmation" name="password_confirmation" required
+                            minlength="8">
                         <div *ngIf="passwordMismatch" class="text-danger small">Las contraseñas no coinciden</div>
                     </div>
 
-                    <!-- Estado (más corto) y Privilegio (más corto) -->
+                    <!-- Estado -->
                     <div class="col-md-2">
                         <label for="status" class="form-label">Estado</label>
                         <select class="form-select" id="status" [(ngModel)]="newUser.status" name="status" required>
@@ -72,6 +85,7 @@
                         </select>
                     </div>
 
+                    <!-- Privilegio -->
                     <div class="col-md-2">
                         <label for="privilege" class="form-label">Privilegio</label>
                         <select class="form-select" id="privilege" [(ngModel)]="newUser.privilege" name="privilege"
