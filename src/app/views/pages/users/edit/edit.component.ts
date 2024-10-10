@@ -22,6 +22,7 @@ export class EditComponent implements OnInit {
 
   isLoading: boolean = true;  // Variable para el efecto de carga
   errors: any = {}; // Para manejar errores del backend
+  isSuperAdmin: boolean = false;
 
   constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
 
@@ -38,11 +39,21 @@ export class EditComponent implements OnInit {
         if (response.success) {
           this.user = response.data;
           this.isLoading = false;  // Detener el estado de carga
+
+          // Verificar si es Super Admin o tiene id = 1
+          if (this.user.id === 1 || this.user.privilege === 'Super Admin') {
+            this.isLoading = true;
+            this.isSuperAdmin = true;  // Marcar que es Super Admin o id = 1
+            this.router.navigate(['/users']);
+            this.showAlert('warning', 'No puedes editar este usuario');
+          }
+
         }
       },
       (error) => {
-        this.isLoading = false;  // Detener el estado de carga en caso de error
-        Swal.fire('Error', 'No se pudo cargar el usuario', 'error');
+        this.isLoading = true;  // Detener el estado de carga en caso de error
+        this.router.navigate(['/users']);
+        this.showAlert('error', 'No se pudo cargar el usuario');
       }
     );
   }
@@ -74,5 +85,17 @@ export class EditComponent implements OnInit {
   goBack(): void {
     this.router.navigate(['/users']);
   }
-  
+
+  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
+    Swal.fire({
+      toast: true,
+      position: 'top-end',
+      icon: type,
+      text: message,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true
+    });
+  }
+
 }
