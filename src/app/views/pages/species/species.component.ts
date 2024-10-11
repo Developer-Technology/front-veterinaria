@@ -49,7 +49,9 @@ export class SpeciesComponent implements OnInit {
     this.apiService.get('species', true).subscribe(
       (response) => {
         if (response.success) {
-          this.species = response.data.filter((specie: any) => specie.specieName);  // Filtrar especies válidas
+          this.species = response.data
+            .filter((specie: any) => specie.specieName)  // Filtrar razas válidas
+            .sort((a: any, b: any) => b.id - a.id);  // Filtrar especies válidas
           this.filteredSpecies = [...this.species];  // Clonar array de especies
           this.isLoading = false;  // Desactivar el estado de carga
         }

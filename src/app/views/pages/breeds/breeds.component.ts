@@ -51,7 +51,10 @@ export class BreedsComponent implements OnInit {
     this.apiService.get('breeds', true).subscribe(
       (response) => {
         if (response.success) {
-          this.breeds = response.data.filter((breed: any) => breed.breedName);  // Filtrar razas válidas
+          this.breeds = response.data
+            .filter((breed: any) => breed.breedName)  // Filtrar razas válidas
+            .sort((a: any, b: any) => b.id - a.id);  // Ordenar descendente por 'id'
+
           this.filteredBreeds = [...this.breeds];  // Clonar array de razas
           this.isLoading = false;  // Desactivar el estado de carga
         }

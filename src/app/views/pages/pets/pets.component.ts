@@ -33,7 +33,8 @@ export class PetsComponent implements OnInit {
     this.apiService.get('pets', true).subscribe(
       (response) => {
         if (response.success) {
-          this.pets = response.data;
+          // Ordenar las mascotas de manera descendente por el campo 'id'
+          this.pets = response.data.sort((a: any, b: any) => b.id - a.id);
           this.filteredPets = this.pets;  // Iniciar el filtrado con todas las mascotas
           this.isLoading = false;  // Desactivar el estado de carga
         }

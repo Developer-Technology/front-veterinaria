@@ -33,7 +33,9 @@ export class ClientsComponent implements OnInit {
     this.apiService.get('clients', true).subscribe(
       (response) => {
         if (response.success) {
-          this.clients = response.data;
+          // Ordenar las mascotas de manera descendente por el campo 'id'
+          this.clients = response.data.sort((a: any, b: any) => b.id - a.id);
+          //.clients = response.data;
           this.filteredClients = this.clients;  // Iniciar el filtrado con todos los clientes
           this.isLoading = false;  // Desactivar el estado de carga
         }
@@ -67,7 +69,7 @@ export class ClientsComponent implements OnInit {
             if (this.clients.length === 0) {
               this.currentPage = 1; // Reiniciar la paginación
             }
-            this.showAlert('success','El cliente ha sido eliminado.');
+            this.showAlert('success', 'El cliente ha sido eliminado.');
             //Swal.fire('Eliminado', 'El cliente ha sido eliminado.', 'success');
           },
           (error) => {

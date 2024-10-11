@@ -33,7 +33,9 @@ export class UsersComponent implements OnInit {
     this.apiService.get('users', true).subscribe(
       (response) => {
         if (response.success) {
-          this.users = response.data;
+          // Ordenar las mascotas de manera descendente por el campo 'id'
+          this.users = response.data.sort((a: any, b: any) => b.id - a.id);
+          //this.users = response.data;
           this.filteredUsers = this.users;  // Iniciar el filtrado con todos los usuarios
           this.isLoading = false;  // Desactivar el estado de carga
         }

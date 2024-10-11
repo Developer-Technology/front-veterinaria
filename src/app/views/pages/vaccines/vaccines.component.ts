@@ -51,7 +51,9 @@ export class VaccinesComponent implements OnInit {
     this.apiService.get('vaccines', true).subscribe(
       (response) => {
         if (response.success) {
-          this.vaccines = response.data.filter((vaccine: any) => vaccine.vaccineName);  // Filtrar vacunas válidas
+          this.vaccines = response.data
+            .filter((vaccine: any) => vaccine.vaccineName)  // Filtrar razas válidas
+            .sort((a: any, b: any) => b.id - a.id);  // Filtrar vacunas válidas
           this.filteredVaccines = [...this.vaccines];  // Clonar array de vacunas
           this.isLoading = false;  // Desactivar el estado de carga
         }

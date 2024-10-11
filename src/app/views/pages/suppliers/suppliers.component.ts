@@ -33,7 +33,9 @@ export class SuppliersComponent implements OnInit {
     this.apiService.get('suppliers', true).subscribe(
       (response) => {
         if (response.success) {
-          this.suppliers = response.data;
+          // Ordenar las mascotas de manera descendente por el campo 'id'
+          this.suppliers = response.data.sort((a: any, b: any) => b.id - a.id);
+          //this.suppliers = response.data;
           this.filteredSuppliers = this.suppliers;  // Iniciar el filtrado con todos los proveedores
           this.isLoading = false;  // Desactivar el estado de carga
         }
