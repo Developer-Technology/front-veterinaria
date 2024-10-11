@@ -26,6 +26,7 @@ export class EditComponent implements OnInit {
     clients_id: null
   };
 
+  isLoading: boolean = true;  // Variable para el efecto de carga
   species: any[] = [];
   breeds: any[] = [];
   clients: any[] = [];
@@ -42,33 +43,54 @@ export class EditComponent implements OnInit {
     autoCropArea: 1,
   };
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
-    const encodedPettId = this.route.snapshot.paramMap.get('id') || '';
-    const petId = atob(encodedPettId);
-    this.loadPetData(petId);  // Cargar los datos de la mascota a editar
+    const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
+    this.petId = atob(encodedPetId);
+    //const petId = atob(encodedPetId);
+    this.loadPetData(this.petId);  // Cargar los datos de la mascota a editar
     this.loadSpecies();
     this.loadClients();
   }
 
+  // Convertir la fecha desde el formato 'yyyy-mm-dd' a un objeto NgbDateStruct
+  convertStringToDateStruct(dateString: string): NgbDateStruct | null {
+    if (!dateString) return null;
+
+    const dateParts = dateString.split('-');
+    if (dateParts.length !== 3) return null;
+
+    return {
+      year: +dateParts[0],
+      month: +dateParts[1],
+      day: +dateParts[2]
+    };
+  }
+
   // Cargar los datos de la mascota desde el backend
   loadPetData(id: string): void {
+    this.isLoading = true;
     this.apiService.get(`pets/${id}`, true).subscribe(
       (response) => {
         if (response.success) {
           this.editPet = response.data;
+
+          // Convertir la fecha de nacimiento para usarla en ngbDatepicker
+          this.editPet.petBirthDate = this.convertStringToDateStruct(this.editPet.petBirthDate);
 
           // Construir la URL completa de la imagen de la mascota si existe
           this.imageUrl = this.editPet.petPhoto
             ? `${this.apiService.userlServer}${this.editPet.petPhoto}`
             : 'assets/images/default/image-placeholder.png';  // Imagen por defecto si no tiene
 
-          console.log(this.imageUrl);  
+          console.log(this.imageUrl);
           this.loadBreedsBySpecies();  // Cargar las razas correspondientes a la especie seleccionada
+          this.isLoading = false;
         }
       },
       (error) => {
+        this.isLoading = false;
         Swal.fire('Error', 'No se pudo cargar la información de la mascota', 'error');
         this.router.navigate(['/pets']);  // Redirigir si no se puede cargar la mascota
       }
@@ -100,6 +122,9 @@ export class EditComponent implements OnInit {
   cropImage(): void {
     this.croppedImage = this.cropper.cropper.getCroppedCanvas().toDataURL();
     this.editPet.petPhoto = this.croppedImage;
+
+    // Verifica si la imagen recortada es correcta
+    //console.log('Imagen recortada:', this.croppedImage);
   }
 
   base64ToFile(dataURI: string, filename: string): File {
@@ -113,32 +138,24 @@ export class EditComponent implements OnInit {
     return new File([ab], filename, { type: mimeString });
   }
 
-  // Actualizar los datos de la mascota
   onUpdate(): void {
     const formattedBirthDate = this.convertDateToString(this.editPet.petBirthDate);
 
-    const formData = new FormData();
+    this.editPet.petBirthDate = formattedBirthDate;
 
-    formData.append('petName', this.editPet.petName);
-    formData.append('petBirthDate', formattedBirthDate);
-    formData.append('petWeight', this.editPet.petWeight);
-    formData.append('petColor', this.editPet.petColor);
-    formData.append('species_id', this.editPet.species_id);
-    formData.append('breeds_id', this.editPet.breeds_id);
-    formData.append('petGender', this.editPet.petGender);
-    formData.append('petAdditional', this.editPet.petAdditional);
-    formData.append('clients_id', this.editPet.clients_id);
-
-    if (this.croppedImage) {
-      const imageFile = this.base64ToFile(this.croppedImage as string, `${this.editPet.petName}.png`);
-      formData.append('petPhoto', imageFile);
-    }
-
-    this.apiService.post(`pets/${this.petId}`, formData, true).subscribe(
+    // Realizamos la solicitud de actualización de los datos
+    this.apiService.put(`pets/${this.petId}`, this.editPet, true).subscribe(
       (response) => {
         if (response.success) {
           this.showAlert('success', response.message);
-          this.router.navigate(['/pets']);
+
+          // Si la imagen fue modificada, hacemos la segunda solicitud
+          if (this.croppedImage) {
+            const imageFile = this.base64ToFile(this.croppedImage as string, `${this.editPet.petName}.png`);
+            this.uploadPhoto(imageFile);  // Subir la imagen
+          } else {
+            this.router.navigate(['/pets']);
+          }
         }
       },
       (error) => {
@@ -147,6 +164,24 @@ export class EditComponent implements OnInit {
         } else {
           this.showAlert('error', 'No se pudo actualizar la mascota');
         }
+      }
+    );
+  }
+
+  // Función para subir la imagen
+  uploadPhoto(imageFile: File): void {
+    const imageData = new FormData();
+    imageData.append('petPhoto', imageFile);
+
+    this.apiService.post(`pets/${this.petId}/upload`, imageData, true).subscribe(
+      (response) => {
+        if (response.success) {
+          this.showAlert('success', response.message);
+          this.router.navigate(['/pets']);
+        }
+      },
+      (error) => {
+        this.showAlert('error', 'No se pudo subir la imagen');
       }
     );
   }
