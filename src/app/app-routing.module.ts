@@ -77,6 +77,10 @@ const routes: Routes = [
         path: 'breeds',
         loadChildren: () => import('./views/pages/breeds/breeds.module').then(m => m.BreedsModule)
       },
+      {
+        path: 'vaccines',
+        loadChildren: () => import('./views/pages/vaccines/vaccines.module').then(m => m.VaccinesModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },

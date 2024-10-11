@@ -82,7 +82,7 @@ export const MENU: MenuItem[] = [
       },
       {
         label: 'Vacunas',
-        link: 'users'
+        link: 'vaccines'
       },
       {
         label: 'Razas',

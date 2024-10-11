@@ -1,0 +1,213 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Dashboard</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Vacunas</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="card-title">Gestión de Vacunas</h4>
+                    <!-- Botón Agregar Vacuna alineado a la derecha -->
+                    <button class="btn btn-primary btn-sm" (click)="openAddModal(basicModal)">
+                        <i class="feather icon-plus"></i> Agregar Vacuna
+                    </button>
+                </div>
+
+                <!-- Efecto de carga -->
+                <div *ngIf="isLoading" class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+
+                <!-- Mostrar la imagen "not-found" cuando no hay vacunas registradas en la base de datos -->
+                <div *ngIf="!isLoading && vaccines.length === 0" class="text-center">
+                    <img src="assets/images/default/not-found.png" class="img-fluid" style="max-width: 120px;">
+                    <p class="text-muted mt-2">No hay vacunas registradas en el sistema.</p>
+                </div>
+
+                <!-- Mostrar el buscador, tabla y paginación cuando haya vacunas -->
+                <div *ngIf="!isLoading && vaccines.length > 0">
+                    <!-- Buscador -->
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control form-control-sm"
+                                placeholder="Buscar por vacuna o especie..." [(ngModel)]="searchQuery"
+                                (input)="onSearch()">
+                        </div>
+                        <!-- Aquí agregarás los futuros filtros o botones de exportación -->
+                        <div class="col-md-6 text-end">
+                            <button class="btn btn-dark btn-xs"><i class="feather icon-printer"></i></button>
+                            <button class="btn btn-danger btn-xs"><i class="feather icon-file"></i></button>
+                            <button class="btn btn-success btn-xs"><i class="feather icon-grid"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Mostrar el total de registros y resultados -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <p class="mb-0 text-muted small"><strong>{{ totalRecords }}</strong></p>
+                        <p class="mb-0 text-muted small"><strong>{{ showingRecords }}</strong></p>
+                    </div>
+
+                    <!-- Tabla de vacunas -->
+                    <div class="table-responsive" *ngIf="!isLoading && vaccines.length > 0">
+                        <table class="table table-sm table-bordered align-middle compact-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th (click)="sortData('vaccineName')" class="sortable-column">Nombre de Vacuna <i
+                                            class="feather icon-chevron-up-down"
+                                            [ngClass]="getSortIcon('vaccineName')"></i>
+                                    </th>
+                                    <th (click)="sortData('specieName')" class="sortable-column">Especie <i
+                                            class="feather icon-chevron-up-down"
+                                            [ngClass]="getSortIcon('specieName')"></i></th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let vaccine of paginatedVaccines; let i = index">
+                                    <td>{{ getRecordNumber(i) }}</td>
+                                    <td>{{ vaccine.vaccineName }}</td>
+                                    <td>{{ vaccine.specieName }}</td>
+                                    <td class="text-center btn-table">
+                                        <button class="btn btn-warning btn-xs"
+                                            (click)="openEditModal(editModal, vaccine)"><i
+                                                class="feather icon-edit-2"></i></button>
+                                        <button class="btn btn-danger btn-xs" (click)="deleteVaccine(vaccine.id)"><i
+                                                class="feather icon-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="!paginatedVaccines.length && !isLoading">
+                                    <td colspan="4" class="text-center">No se encontraron vacunas</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Paginación -->
+                    <div class="row align-items-center" *ngIf="paginatedVaccines.length > 0">
+                        <div class="col-md-6 d-flex align-items-center pagin">
+                            <span class="me-2">Ir a página:</span>
+                            <select class="form-select form-select-sm w-auto" [(ngModel)]="currentPage"
+                                (change)="changePage(currentPage)">
+                                <option *ngFor="let page of totalPages" [value]="page">{{ page }}</option>
+                            </select>
+                            <span class="ms-3 me-2">Mostrar:</span>
+                            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
+                                (change)="onChangeItemsPerPage()">
+                                <option [value]="5">5</option>
+                                <option [value]="10">10</option>
+                                <option [value]="20">20</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 text-end mt-3">
+                            <nav>
+                                <ul class="pagination pagination-sm justify-content-end">
+                                    <!-- Enlace para "Primero" -->
+                                    <li class="page-item" [class.disabled]="currentPage === 1">
+                                        <a class="page-link" (click)="changePage(1)" href="javascript:void(0)">
+                                            << </a>
+                                    </li>
+                                    <!-- Enlace para "Anterior" -->
+                                    <li class="page-item" [class.disabled]="currentPage === 1">
+                                        <a class="page-link" (click)="changePage(currentPage - 1)"
+                                            href="javascript:void(0)">
+                                            < </a>
+                                    </li>
+                                    <!-- Enlaces de paginación numerados -->
+                                    <li *ngFor="let page of totalPages" class="page-item"
+                                        [class.active]="currentPage === page">
+                                        <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{
+                                            page
+                                            }}</a>
+                                    </li>
+                                    <!-- Enlace para "Siguiente" -->
+                                    <li class="page-item" [class.disabled]="currentPage === totalPages.length">
+                                        <a class="page-link" (click)="changePage(currentPage + 1)"
+                                            href="javascript:void(0)">
+                                            >
+                                        </a>
+                                    </li>
+                                    <!-- Enlace para "Último" -->
+                                    <li class="page-item" [class.disabled]="currentPage === totalPages.length">
+                                        <a class="page-link" (click)="changePage(totalPages.length)"
+                                            href="javascript:void(0)">
+                                            >>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para agregar nueva vacuna -->
+<ng-template #basicModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Agregar Vacuna</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onSubmit(modal)" #vaccineForm="ngForm">
+            <div class="mb-3">
+                <label for="vaccineName" class="form-label">Nombre de la Vacuna</label>
+                <input type="text" class="form-control" id="vaccineName" [(ngModel)]="newVaccine.vaccineName"
+                    name="vaccineName" required maxlength="150">
+                <div *ngIf="errors?.vaccineName" class="text-danger small">{{ errors.vaccineName[0] }}</div>
+            </div>
+            <div class="mb-3">
+                <label for="species_id" class="form-label">Especie</label>
+                <select class="form-select" [(ngModel)]="newVaccine.species_id" name="species_id" required>
+                    <option *ngFor="let specie of species" [value]="specie.id">{{ specie.specieName }}</option>
+                </select>
+                <div *ngIf="errors?.species_id" class="text-danger small">{{ errors.species_id[0] }}</div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary" [disabled]="vaccineForm.invalid">Agregar</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- Modal para editar vacuna -->
+<ng-template #editModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Vacuna</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onEditSubmit(modal)">
+            <div class="mb-3">
+                <label for="vaccineName" class="form-label">Nombre de la Vacuna</label>
+                <input type="text" id="vaccineName" class="form-control" [(ngModel)]="selectedVaccine.vaccineName"
+                    name="vaccineName" required maxlength="150">
+                <div *ngIf="errors.vaccineName" class="text-danger">
+                    {{ errors.vaccineName }}
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="species_id" class="form-label">Especie</label>
+                <select id="species_id" class="form-select" [(ngModel)]="selectedVaccine.species_id" name="species_id"
+                    required>
+                    <option *ngFor="let specie of species" [value]="specie.id">{{ specie.specieName }}</option>
+                </select>
+                <div *ngIf="errors.species_id" class="text-danger">
+                    {{ errors.species_id }}
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
