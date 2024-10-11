@@ -36,7 +36,7 @@
                     <div class="row mb-2 align-items-center">
                         <div class="col-md-6">
                             <input type="text" class="form-control form-control-sm"
-                                placeholder="Buscar por código, nombre de mascota, raza, especie o dueño..."
+                                placeholder="Buscar por código, nombre, raza, especie o dueño..."
                                 [(ngModel)]="searchQuery" (input)="onSearch()">
                         </div>
                         <!-- Aquí agregarás los futuros filtros o botones de exportación -->
@@ -69,7 +69,7 @@
                                     <th (click)="sortData('petCode')" class="sortable-column">Cód. <i
                                             class="feather icon-chevron-up-down" [ngClass]="getSortIcon('petCode')"></i>
                                     </th>
-                                    <th (click)="sortData('petName')" class="sortable-column">Mascota <i
+                                    <th (click)="sortData('petName')" class="sortable-column">Nombre <i
                                             class="feather icon-chevron-up-down" [ngClass]="getSortIcon('petName')"></i>
                                     </th>
                                     <th (click)="sortData('clientName')" class="sortable-column">Dueño <i
