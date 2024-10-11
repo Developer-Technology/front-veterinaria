@@ -17,7 +17,7 @@
                 <form (ngSubmit)="onSubmit()" #petForm="ngForm" class="row g-3">
 
                     <!-- Sección Izquierda: Información de la Mascota -->
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="row">
                             <!-- Nombre de la Mascota -->
                             <div class="col-md-6">
@@ -42,7 +42,7 @@
                             </div>
 
                             <!-- Especie -->
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-3">
                                 <label for="species" class="form-label">Especie</label>
                                 <ng-select [items]="species" bindLabel="specieName" bindValue="id"
                                     placeholder="Seleccione la especie" [(ngModel)]="newPet.species_id"
@@ -53,7 +53,7 @@
                             </div>
 
                             <!-- Raza -->
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-3">
                                 <label for="breeds" class="form-label">Raza</label>
                                 <ng-select [items]="breeds" bindLabel="breedName" bindValue="id"
                                     placeholder="Seleccione la raza" [(ngModel)]="newPet.breeds_id" name="breeds_id"
@@ -63,7 +63,7 @@
                             </div>
 
                             <!-- Peso de la Mascota -->
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-3">
                                 <label for="petWeight" class="form-label">Peso (kg)</label>
                                 <input type="text" class="form-control" id="petWeight" [(ngModel)]="newPet.petWeight"
                                     name="petWeight" required>
@@ -71,7 +71,7 @@
                             </div>
 
                             <!-- Color de la Mascota -->
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-3">
                                 <label for="petColor" class="form-label">Color</label>
                                 <input type="text" class="form-control" id="petColor" [(ngModel)]="newPet.petColor"
                                     name="petColor" required>
@@ -79,7 +79,7 @@
                             </div>
 
                             <!-- Género de la Mascota -->
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-3">
                                 <label for="petGender" class="form-label">Género</label>
                                 <select class="form-select" id="petGender" [(ngModel)]="newPet.petGender"
                                     name="petGender" required>
@@ -91,7 +91,7 @@
                             </div>
 
                             <!-- Cliente (Dueño) -->
-                            <div class="col-md-6">
+                            <div class="col-md-6 mt-3">
                                 <label for="clients" class="form-label">Dueño</label>
                                 <ng-select [items]="clients" bindLabel="clientName" bindValue="id"
                                     placeholder="Seleccione el dueño" [(ngModel)]="newPet.clients_id" name="clients_id"
@@ -102,7 +102,7 @@
                             </div>
 
                             <!-- Información Adicional -->
-                            <div class="col-md-12">
+                            <div class="col-md-12 mt-3">
                                 <label for="petAdditional" class="form-label">Información Adicional</label>
                                 <textarea class="form-control" id="petAdditional" rows="3"
                                     [(ngModel)]="newPet.petAdditional" name="petAdditional"></textarea>
@@ -111,7 +111,7 @@
                     </div>
 
                     <!-- Sección Derecha: Imagen de la Mascota -->
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <!-- CropperJS para la imagen de la mascota -->
                         <div class="col-md-12 text-center">
                             <label class="form-label">Fotografía de la Mascota</label>
