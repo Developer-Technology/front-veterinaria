@@ -69,6 +69,28 @@ export const MENU: MenuItem[] = [
     ]
   },
   {
+    label: 'Mascotas',
+    icon: 'twitter',
+    subItems: [
+      {
+        label: 'Mascotas',
+        link: 'clients',
+      },
+      {
+        label: 'Especies',
+        link: 'species'
+      },
+      {
+        label: 'Vacunas',
+        link: 'users'
+      },
+      {
+        label: 'Razas',
+        link: 'users'
+      },
+    ]
+  },
+  {
     label: 'Components',
     isTitle: true
   },

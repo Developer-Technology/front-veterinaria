@@ -68,6 +68,11 @@ const routes: Routes = [
         path: 'suppliers',
         loadChildren: () => import('./views/pages/suppliers/suppliers.module').then(m => m.SuppliersModule)
       },
+      {
+        path: 'species',
+        loadChildren: () => import('./views/pages/species/species.module').then(m => m.SpeciesModule)
+
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },
