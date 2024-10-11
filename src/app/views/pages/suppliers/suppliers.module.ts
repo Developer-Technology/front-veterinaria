@@ -5,6 +5,7 @@ import { SuppliersComponent } from './suppliers.component';
 import { FormsModule } from '@angular/forms';
 import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { EditComponent } from './edit/edit.component';
   imports: [
     CommonModule,
     SuppliersRoutingModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ]
 })
 export class SuppliersModule { }

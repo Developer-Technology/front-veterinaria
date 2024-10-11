@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SpeciesRoutingModule } from './species-routing.module';
 import { SpeciesComponent } from './species.component';
 import { FormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     SpeciesRoutingModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ]
 })
 export class SpeciesModule { }

@@ -9,8 +9,8 @@
     <div class="col-md-12 stretch-card">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="card-title">Gestión de Usuarios</h4>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h4 class="card-title mb-0">Gestión de Usuarios</h4>
                     <!-- Botón Agregar Usuario alineado a la derecha -->
                     <button class="btn btn-primary btn-sm" routerLink="/users/add">
                         <i class="feather icon-plus"></i> Agregar Usuario
@@ -18,13 +18,25 @@
                 </div>
 
                 <!-- Buscador -->
-                <div class="row mb-3 align-items-center">
+                <div class="row mb-2 align-items-center">
                     <div class="col-md-6">
                         <input type="text" class="form-control form-control-sm"
                             placeholder="Buscar por documento, nombre, apellido, correo o teléfono..."
                             [(ngModel)]="searchQuery" (input)="onSearch()">
                     </div>
-                    <div class="col-md-6 text-end"></div>
+                    <!-- Aquí agregarás los futuros filtros o botones de exportación -->
+                    <div class="col-md-6 text-end">
+                        <div ngbDropdown>
+                            <button class="btn btn-outline-primary btn-xs" id="dropdownBasic1" ngbDropdownToggle><i
+                                    class="icon feather icon-download-cloud"></i> Exportar</button>
+                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+                                <button ngbDropdownItem>PDF</button>
+                                <button ngbDropdownItem>Excel</button>
+                                <div class="dropdown-divider"></div>
+                                <button ngbDropdownItem>Imprimir</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Mostrar el total de registros y resultados -->
@@ -74,10 +86,16 @@
                                 </td>
                                 <td class="text-center btn-table">
                                     <div *ngIf="user.id !== 1 && user.privilege !== 'Super Admin'">
-                                        <button class="btn btn-warning btn-xs" (click)="editUser(user.id)"><i
-                                                class="feather icon-edit-2"></i></button>
-                                        <button class="btn btn-danger btn-xs"><i
-                                                class="feather icon-trash"></i></button>
+                                        <div ngbDropdown>
+                                            <button class="btn btn-outline-primary btn-xs" id="dropdownBasic1"
+                                                ngbDropdownToggle><i class="icon feather icon-settings"></i></button>
+                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+                                                class="dropdown-menu-end">
+                                                <button ngbDropdownItem (click)="editUser(user.id)">Editar</button>
+                                                <button ngbDropdownItem>Eliminar</button>
+                                                <button ngbDropdownItem>Perfil</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -89,7 +107,7 @@
                 </div>
 
                 <!-- Paginación -->
-                <div class="row align-items-center">
+                <div class="row align-items-center" style="margin-top: -4px;">
                     <div class="col-md-6 d-flex align-items-center pagin">
                         <span class="me-2">Ir a página:</span>
                         <select class="form-select form-select-sm w-auto" [(ngModel)]="currentPage"
@@ -110,32 +128,33 @@
                                 <!-- Enlace para "Primero" -->
                                 <li class="page-item" [class.disabled]="currentPage === 1">
                                     <a class="page-link" (click)="changePage(1)" href="javascript:void(0)">
-                                        << </a>
+                                        «« </a>
                                 </li>
                                 <!-- Enlace para "Anterior" -->
                                 <li class="page-item" [class.disabled]="currentPage === 1">
                                     <a class="page-link" (click)="changePage(currentPage - 1)"
                                         href="javascript:void(0)">
-                                        < </a>
+                                        « </a>
                                 </li>
                                 <!-- Enlaces de paginación numerados -->
                                 <li *ngFor="let page of totalPages" class="page-item"
                                     [class.active]="currentPage === page">
-                                    <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{ page
+                                    <a class="page-link" (click)="changePage(page)" href="javascript:void(0)">{{
+                                        page
                                         }}</a>
                                 </li>
                                 <!-- Enlace para "Siguiente" -->
                                 <li class="page-item" [class.disabled]="currentPage === totalPages.length">
                                     <a class="page-link" (click)="changePage(currentPage + 1)"
                                         href="javascript:void(0)">
-                                        >
+                                        »
                                     </a>
                                 </li>
                                 <!-- Enlace para "Último" -->
                                 <li class="page-item" [class.disabled]="currentPage === totalPages.length">
                                     <a class="page-link" (click)="changePage(totalPages.length)"
                                         href="javascript:void(0)">
-                                        >>
+                                        »»
                                     </a>
                                 </li>
                             </ul>

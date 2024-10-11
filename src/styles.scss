@@ -50,6 +50,10 @@
     font-size: 13px;
 }
 
+.table-responsive {
+    overflow: visible !important;
+}
+
 .compact-table {
     font-size: 13px;
     white-space: nowrap;
@@ -61,8 +65,8 @@
 }
 
 .btn-table .btn-xs {
-    padding: 0.2rem 0.5rem;
-    font-size: 10px;
+    padding: 0.3rem 0.55rem;
+    /*font-size: 10px;*/
 }
 
 .pagin span,
@@ -109,4 +113,9 @@
 
 .icon-arrow-down::before {
     content: "\25BC";
+}
+
+.dropdown-menu {
+    z-index: 1050;
+    position: absolute;
 }

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { BreedsRoutingModule } from './breeds-routing.module';
 import { BreedsComponent } from './breeds.component';
 import { FormsModule } from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -11,7 +12,8 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     BreedsRoutingModule,
-    FormsModule
+    FormsModule,
+    NgbModule
   ]
 })
 export class BreedsModule { }
