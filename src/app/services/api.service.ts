@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment'; // Asegúrate de a
 })
 export class ApiService {
   private baseUrl: string = environment.URL_SERVICIOS; // Base URL desde el archivo de entorno
+  public userlServer: string = environment.URL_BACKEND;
 
   constructor(private http: HttpClient) { }
 
