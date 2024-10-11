@@ -126,7 +126,9 @@ export class BreedsComponent implements OnInit {
             this.showAlert('success', 'La raza ha sido eliminada.');
           },
           (error) => {
-            this.showAlert('error', 'No se pudo eliminar la raza.');
+            // Mostrar el mensaje de error retornado por la API
+            const errorMessage = error?.error?.message || 'No se pudo eliminar la raza.';
+            this.showAlert('error', errorMessage);
           }
         );
       }

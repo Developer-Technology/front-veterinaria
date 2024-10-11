@@ -70,7 +70,9 @@ export class SuppliersComponent implements OnInit {
             this.showAlert('success', 'El proveedor ha sido eliminado.');
           },
           (error) => {
-            this.showAlert('error', 'No se pudo eliminar el proveedor.');
+            // Mostrar el mensaje de error retornado por la API
+            const errorMessage = error?.error?.message || 'No se pudo eliminar el proveedor.';
+            this.showAlert('error', errorMessage);
           }
         );
       }

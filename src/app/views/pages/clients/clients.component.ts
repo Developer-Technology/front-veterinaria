@@ -71,8 +71,9 @@ export class ClientsComponent implements OnInit {
             //Swal.fire('Eliminado', 'El cliente ha sido eliminado.', 'success');
           },
           (error) => {
-            this.showAlert('error','No se pudo eliminar el cliente.');
-            //Swal.fire('Error', 'No se pudo eliminar el cliente.', 'error');
+            // Mostrar el mensaje de error retornado por la API
+            const errorMessage = error?.error?.message || 'No se pudo eliminar el cliente.';
+            this.showAlert('error', errorMessage);
           }
         );
       }

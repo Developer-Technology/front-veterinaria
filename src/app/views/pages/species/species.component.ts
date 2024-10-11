@@ -110,7 +110,9 @@ export class SpeciesComponent implements OnInit {
             this.showAlert('success', 'La especie ha sido eliminada.');
           },
           (error) => {
-            this.showAlert('error', 'No se pudo eliminar la especie.');
+            // Mostrar el mensaje de error retornado por la API
+            const errorMessage = error?.error?.message || 'No se pudo eliminar la especie.';
+            this.showAlert('error', errorMessage);
           }
         );
       }
