@@ -88,8 +88,8 @@ export class AddComponent implements OnInit {
     const clientCode = ('0' + clientId).slice(-2);
 
     // Incluir minutos y segundos para mayor unicidad
-    const minuteCode = ('0' + registrationDate.getMinutes()).slice(-2);
-    const secondCode = ('0' + registrationDate.getSeconds()).slice(-2);
+    const minuteCode = ('0' + registrationDate.getMinutes()).slice(-1);
+    const secondCode = ('0' + registrationDate.getSeconds()).slice(-1);
 
     // Generar el código único con hora y minutos
     const uniqueCode = `${petNameCode}${speciesCode}${breedCode}-${clientCode}${minuteCode}${secondCode}`;
