@@ -5,6 +5,7 @@ import { PetsComponent } from './pets.component';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AngularCropperjsModule } from 'angular-cropperjs';
 import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
 import { ViewComponent } from './view/view.component';
@@ -21,7 +22,8 @@ import { ViewComponent } from './view/view.component';
     PetsRoutingModule,
     FormsModule,
     NgSelectModule,
-    NgbModule
+    NgbModule,
+    AngularCropperjsModule
   ]
 })
 export class PetsModule { }

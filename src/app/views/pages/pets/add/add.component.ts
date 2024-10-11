@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
+import { CropperComponent } from 'angular-cropperjs';
 
 @Component({
   selector: 'app-add',
@@ -11,10 +12,10 @@ import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AddComponent implements OnInit {
 
+  @ViewChild('cropper', { static: false }) cropper: CropperComponent;
+
   newPet: any = {
     petName: '',
-    //petBirthDate: '',
-    //petBirthDate: <NgbDateStruct | null> null,
     petWeight: '',
     petColor: '',
     species_id: null, // Se seleccionará una especie
@@ -29,12 +30,49 @@ export class AddComponent implements OnInit {
   breeds: any[] = []; // Lista de razas filtrada según la especie seleccionada
   clients: any[] = []; // Lista de clientes (dueños)
   errors: any = {}; // Para manejar errores del backend
+  imageUrl: string = 'assets/images/default/image-placeholder.png';  // Vista previa de la imagen antes del recorte
+  croppedImage: string | ArrayBuffer | null = '';  // Imagen recortada
+
+  config = {
+    aspectRatio: 1, // Recorte cuadrado
+    movable: true,
+    zoomable: true,
+    scalable: true,
+    autoCropArea: 1,
+  };
 
   constructor(private apiService: ApiService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadSpecies();
     this.loadClients(); // Cargar la lista de clientes al iniciar
+  }
+
+  handleFileInput(event: any) {
+    if (event.target.files.length) {
+      var fileTypes = ['jpg', 'jpeg', 'png'];  //acceptable file types
+      var extension = event.target.files[0].name.split('.').pop().toLowerCase(),  //file extension from input file
+      isSuccess = fileTypes.indexOf(extension) > -1;  //is extension in acceptable types
+      if (isSuccess) { //yes
+        // start file reader
+        const reader = new FileReader();
+        const angularCropper = this.cropper;
+        reader.onload = (event) => {
+          if(event.target?.result) {
+            angularCropper.imageUrl = event.target.result;
+          }
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      } else { //no
+        alert('Selected file is not an image. Please select an image file.')
+      }
+    }
+  }
+
+  // Función para recortar la imagen
+  cropImage(): void {
+    this.croppedImage = this.cropper.cropper.getCroppedCanvas().toDataURL();  // Obtener la imagen recortada en base64
+    this.newPet.petPhoto = this.croppedImage;  // Almacenar la imagen recortada
   }
 
   // Cargar especies desde el API

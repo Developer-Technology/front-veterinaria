@@ -16,82 +16,113 @@
                 <!-- Formulario para crear una nueva mascota -->
                 <form (ngSubmit)="onSubmit()" #petForm="ngForm" class="row g-3">
 
-                    <!-- Nombre de la Mascota -->
-                    <div class="col-md-3">
-                        <label for="petName" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="petName" [(ngModel)]="newPet.petName" name="petName"
-                            required>
-                        <div *ngIf="errors?.petName" class="text-danger small">{{ errors.petName[0] }}</div>
-                    </div>
+                    <!-- Sección Izquierda: Información de la Mascota -->
+                    <div class="col-md-8">
+                        <div class="row">
+                            <!-- Nombre de la Mascota -->
+                            <div class="col-md-6">
+                                <label for="petName" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="petName" [(ngModel)]="newPet.petName"
+                                    name="petName" required>
+                                <div *ngIf="errors?.petName" class="text-danger small">{{ errors.petName[0] }}</div>
+                            </div>
 
-                    <!-- Fecha de Nacimiento con DatePicker -->
-                    <div class="col-md-3">
-                        <label for="petBirthDate" class="form-label">Fecha de Nacimiento</label>
-                        <div class="input-group">
-                            <input class="form-control" placeholder="yyyy-mm-dd" name="dp"
-                                [(ngModel)]="newPet.petBirthDate" ngbDatepicker #d="ngbDatepicker">
-                            <button class="input-group-text" type="button" (click)="d.toggle()">
-                                <i class="feather icon-calendar icon-md text-muted"></i>
-                            </button>
+                            <!-- Fecha de Nacimiento con DatePicker -->
+                            <div class="col-md-6">
+                                <label for="petBirthDate" class="form-label">Fecha de Nacimiento</label>
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="yyyy-mm-dd" name="dp"
+                                        [(ngModel)]="newPet.petBirthDate" ngbDatepicker #d="ngbDatepicker">
+                                    <button class="input-group-text" type="button" (click)="d.toggle()">
+                                        <i class="feather icon-calendar icon-md text-muted"></i>
+                                    </button>
+                                </div>
+                                <div *ngIf="errors?.petBirthDate" class="text-danger small">{{ errors.petBirthDate[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Especie -->
+                            <div class="col-md-6">
+                                <label for="species" class="form-label">Especie</label>
+                                <ng-select [items]="species" bindLabel="specieName" bindValue="id"
+                                    placeholder="Seleccione la especie" [(ngModel)]="newPet.species_id"
+                                    name="species_id" (change)="loadBreedsBySpecies()" required>
+                                </ng-select>
+                                <div *ngIf="errors?.species_id" class="text-danger small">{{ errors.species_id[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Raza -->
+                            <div class="col-md-6">
+                                <label for="breeds" class="form-label">Raza</label>
+                                <ng-select [items]="breeds" bindLabel="breedName" bindValue="id"
+                                    placeholder="Seleccione la raza" [(ngModel)]="newPet.breeds_id" name="breeds_id"
+                                    required>
+                                </ng-select>
+                                <div *ngIf="errors?.breeds_id" class="text-danger small">{{ errors.breeds_id[0] }}</div>
+                            </div>
+
+                            <!-- Peso de la Mascota -->
+                            <div class="col-md-6">
+                                <label for="petWeight" class="form-label">Peso (kg)</label>
+                                <input type="text" class="form-control" id="petWeight" [(ngModel)]="newPet.petWeight"
+                                    name="petWeight" required>
+                                <div *ngIf="errors?.petWeight" class="text-danger small">{{ errors.petWeight[0] }}</div>
+                            </div>
+
+                            <!-- Color de la Mascota -->
+                            <div class="col-md-6">
+                                <label for="petColor" class="form-label">Color</label>
+                                <input type="text" class="form-control" id="petColor" [(ngModel)]="newPet.petColor"
+                                    name="petColor" required>
+                                <div *ngIf="errors?.petColor" class="text-danger small">{{ errors.petColor[0] }}</div>
+                            </div>
+
+                            <!-- Género de la Mascota -->
+                            <div class="col-md-6">
+                                <label for="petGender" class="form-label">Género</label>
+                                <select class="form-select" id="petGender" [(ngModel)]="newPet.petGender"
+                                    name="petGender" required>
+                                    <option value="" disabled selected>Seleccione el Género</option>
+                                    <option value="Macho">Macho</option>
+                                    <option value="Hembra">Hembra</option>
+                                </select>
+                                <div *ngIf="errors?.petGender" class="text-danger small">{{ errors.petGender[0] }}</div>
+                            </div>
+
+                            <!-- Cliente (Dueño) -->
+                            <div class="col-md-6">
+                                <label for="clients" class="form-label">Dueño</label>
+                                <ng-select [items]="clients" bindLabel="clientName" bindValue="id"
+                                    placeholder="Seleccione el dueño" [(ngModel)]="newPet.clients_id" name="clients_id"
+                                    required>
+                                </ng-select>
+                                <div *ngIf="errors?.clients_id" class="text-danger small">{{ errors.clients_id[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Información Adicional -->
+                            <div class="col-md-12">
+                                <label for="petAdditional" class="form-label">Información Adicional</label>
+                                <textarea class="form-control" id="petAdditional" rows="3"
+                                    [(ngModel)]="newPet.petAdditional" name="petAdditional"></textarea>
+                            </div>
                         </div>
-                        <div *ngIf="errors?.petBirthDate" class="text-danger small">{{ errors.petBirthDate[0] }}</div>
                     </div>
 
-                    <!-- Peso de la Mascota -->
-                    <div class="col-md-2">
-                        <label for="petWeight" class="form-label">Peso (kg)</label>
-                        <input type="text" class="form-control" id="petWeight" [(ngModel)]="newPet.petWeight"
-                            name="petWeight" required>
-                        <div *ngIf="errors?.petWeight" class="text-danger small">{{ errors.petWeight[0] }}</div>
-                    </div>
-
-                    <!-- Color de la Mascota -->
-                    <div class="col-md-2">
-                        <label for="petColor" class="form-label">Color</label>
-                        <input type="text" class="form-control" id="petColor" [(ngModel)]="newPet.petColor"
-                            name="petColor" required>
-                        <div *ngIf="errors?.petColor" class="text-danger small">{{ errors.petColor[0] }}</div>
-                    </div>
-
-                    <!-- Género de la Mascota -->
-                    <div class="col-md-3">
-                        <label for="petGender" class="form-label">Género</label>
-                        <select class="form-select" id="petGender" [(ngModel)]="newPet.petGender" name="petGender"
-                            required>
-                            <option value="" disabled selected>Seleccione el Género</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                        </select>
-                        <div *ngIf="errors?.petGender" class="text-danger small">{{ errors.petGender[0] }}</div>
-                    </div>
-
-                    <!-- Especie -->
+                    <!-- Sección Derecha: Imagen de la Mascota -->
                     <div class="col-md-4">
-                        <label for="species" class="form-label">Especie</label>
-                        <ng-select [items]="species" bindLabel="specieName" bindValue="id"
-                            placeholder="Seleccione la especie" [(ngModel)]="newPet.species_id" name="species_id"
-                            (change)="loadBreedsBySpecies()" required>
-                        </ng-select>
-                        <div *ngIf="errors?.species_id" class="text-danger small">{{ errors.species_id[0] }}</div>
-                    </div>
-
-                    <!-- Raza -->
-                    <div class="col-md-4">
-                        <label for="breeds" class="form-label">Raza</label>
-                        <ng-select [items]="breeds" bindLabel="breedName" bindValue="id"
-                            placeholder="Seleccione la raza" [(ngModel)]="newPet.breeds_id" name="breeds_id" required>
-                        </ng-select>
-                        <div *ngIf="errors?.breeds_id" class="text-danger small">{{ errors.breeds_id[0] }}</div>
-                    </div>
-
-                    <!-- Cliente (Dueño) -->
-                    <div class="col-md-4">
-                        <label for="clients" class="form-label">Dueño</label>
-                        <ng-select [items]="clients" bindLabel="clientName" bindValue="id"
-                            placeholder="Seleccione el dueño" [(ngModel)]="newPet.clients_id" name="clients_id"
-                            required>
-                        </ng-select>
-                        <div *ngIf="errors?.clients_id" class="text-danger small">{{ errors.clients_id[0] }}</div>
+                        <!-- CropperJS para la imagen de la mascota -->
+                        <div class="col-md-12 text-center">
+                            <label class="form-label">Fotografía de la Mascota</label>
+                            <angular-cropper #cropper [cropperOptions]="config" [imageUrl]="imageUrl"></angular-cropper>
+                            <button *ngIf="imageUrl" class="btn btn-success mt-3" (click)="cropImage()">Recortar
+                                Imagen</button>
+                            <img *ngIf="croppedImage" [src]="croppedImage" alt="Imagen Recortada" class="img-fluid mt-3"
+                                style="max-width: 200px;">
+                            <input type="file" (change)="handleFileInput($event)" accept="image/*"
+                                class="form-control mt-3">
+                        </div>
                     </div>
 
                     <!-- Botones -->
