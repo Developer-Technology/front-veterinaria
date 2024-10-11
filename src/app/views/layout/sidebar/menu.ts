@@ -60,7 +60,7 @@ export const MENU: MenuItem[] = [
       },
       {
         label: 'Proveedores',
-        link: '/apps/email/read'
+        link: 'suppliers'
       },
       {
         label: 'Usuarios',

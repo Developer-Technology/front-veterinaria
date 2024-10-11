@@ -1,0 +1,92 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/suppliers">Proveedores</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar Proveedor</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Editar Proveedor</h4>
+                <p class="text-muted mb-3">Modifique los siguientes campos para actualizar la información del proveedor.
+                </p>
+
+                <!-- Spinner de carga -->
+                <div *ngIf="isLoading" class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+
+                <!-- Formulario para editar un proveedor -->
+                <form *ngIf="!isLoading" (ngSubmit)="onSubmit()" #supplierForm="ngForm" class="row g-3">
+
+                    <!-- Documento -->
+                    <div class="col-md-3">
+                        <label for="supplierDoc" class="form-label">Documento</label>
+                        <input type="text" class="form-control" id="supplierDoc" [(ngModel)]="supplier.supplierDoc"
+                            name="supplierDoc" required>
+                        <div *ngIf="errors?.supplierDoc" class="text-danger small">{{ errors.supplierDoc[0] }}</div>
+                    </div>
+
+                    <!-- Nombre -->
+                    <div class="col-md-5">
+                        <label for="supplierName" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="supplierName" [(ngModel)]="supplier.supplierName"
+                            name="supplierName" required>
+                        <div *ngIf="errors?.supplierName" class="text-danger small">{{ errors.supplierName[0] }}</div>
+                    </div>
+
+                    <!-- Teléfono -->
+                    <div class="col-md-4">
+                        <label for="supplierPhone" class="form-label">Teléfono</label>
+                        <input type="tel" class="form-control" id="supplierPhone" [(ngModel)]="supplier.supplierPhone"
+                            name="supplierPhone" required>
+                        <div *ngIf="errors?.supplierPhone" class="text-danger small">{{ errors.supplierPhone[0] }}</div>
+                    </div>
+
+                    <!-- Correo Electrónico -->
+                    <div class="col-md-6">
+                        <label for="supplierEmail" class="form-label">Correo Electrónico</label>
+                        <input type="email" class="form-control" id="supplierEmail" [(ngModel)]="supplier.supplierEmail"
+                            name="supplierEmail" required (input)="onEmailInput()">
+                        <div *ngIf="emailTouched && !isValidEmail(supplier.supplierEmail)" class="text-danger small">El
+                            formato del correo electrónico no es válido</div>
+                        <div *ngIf="errors?.supplierEmail" class="text-danger small">{{ errors.supplierEmail[0] }}</div>
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="col-md-6">
+                        <label for="supplierAddress" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" id="supplierAddress"
+                            [(ngModel)]="supplier.supplierAddress" name="supplierAddress">
+                        <div *ngIf="errors?.supplierAddress" class="text-danger small">{{ errors.supplierAddress[0] }}
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 text-end">
+
+                        <!-- Botón para regresar a "/suppliers" -->
+                        <button type="button" class="btn btn-dark me-2" (click)="goBack()">
+                            <i class="feather icon-arrow-left-circle"></i> Regresar
+                        </button>
+
+                        <!-- Botón para resetear el formulario -->
+                        <button type="button" class="btn btn-danger me-2" (click)="resetForm(supplierForm)">
+                            <i class="feather icon-refresh-cw"></i> Resetear
+                        </button>
+
+                        <!-- Botón para enviar el formulario -->
+                        <button type="submit" class="btn btn-primary" [disabled]="supplierForm.invalid">
+                            <i class="feather icon-check-circle"></i> Actualizar Proveedor
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
