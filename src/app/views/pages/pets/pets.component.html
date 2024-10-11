@@ -59,7 +59,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th (click)="sortData('petCode')" class="sortable-column">Código <i
+                                    <th (click)="sortData('petCode')" class="sortable-column">Cód. <i
                                             class="feather icon-chevron-up-down" [ngClass]="getSortIcon('petCode')"></i>
                                     </th>
                                     <th (click)="sortData('petName')" class="sortable-column">Mascota <i
@@ -71,13 +71,13 @@
                                     <th (click)="sortData('petGender')" class="sortable-column">Género <i
                                             class="feather icon-chevron-up-down"
                                             [ngClass]="getSortIcon('petGender')"></i></th>
-                                    <th (click)="sortData('petWeight')" class="sortable-column">Peso (kg) <i
+                                    <th (click)="sortData('petWeight')" class="sortable-column">Peso <i
                                             class="feather icon-chevron-up-down"
                                             [ngClass]="getSortIcon('petWeight')"></i></th>
                                     <th (click)="sortData('petColor')" class="sortable-column">Color <i
                                             class="feather icon-chevron-up-down"
                                             [ngClass]="getSortIcon('petColor')"></i></th>
-                                    <th (click)="sortData('petBirthDate')" class="sortable-column">Fecha Nac. <i
+                                    <th (click)="sortData('petBirthDate')" class="sortable-column">Fecha N. <i
                                             class="feather icon-chevron-up-down"
                                             [ngClass]="getSortIcon('petBirthDate')"></i></th>
                                     <th>Acciones</th>
@@ -86,12 +86,12 @@
                             <tbody>
                                 <tr *ngFor="let pet of paginatedPets; let i = index">
                                     <td>{{ getRecordNumber(i) }}</td>
-                                    <td>{{ pet.petCode }}</td>
+                                    <td><small>{{ pet.petCode }}</small></td>
                                     <td>{{ pet.petName }} <br> <small>{{ pet.specieName }} - {{ pet.breedName }}</small>
                                     </td>
-                                    <td>{{ pet.clientName }}</td>
+                                    <td>{{ truncateText(pet.clientName, 15) }}</td>
                                     <td>{{ pet.petGender }}</td>
-                                    <td>{{ pet.petWeight }}</td>
+                                    <td>{{ pet.petWeight }} kg</td>
                                     <td>{{ pet.petColor }}</td>
                                     <td>{{ pet.petBirthDate | date: 'dd/MM/yyyy' }}</td>
                                     <td class="text-center btn-table">
