@@ -116,12 +116,18 @@
                         <div class="col-md-12 text-center">
                             <label class="form-label">Fotografía de la Mascota</label>
                             <angular-cropper #cropper [cropperOptions]="config" [imageUrl]="imageUrl"></angular-cropper>
-                            <button *ngIf="imageUrl" class="btn btn-success mt-3" (click)="cropImage()">Recortar
-                                Imagen</button>
                             <img *ngIf="croppedImage" [src]="croppedImage" alt="Imagen Recortada" class="img-fluid mt-3"
-                                style="max-width: 200px;">
-                            <input type="file" (change)="handleFileInput($event)" accept="image/*"
-                                class="form-control mt-3">
+                                style="max-width: 150px;">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <button *ngIf="imageUrl" class="btn btn-primary mt-3"
+                                        (click)="cropImage()">Recortar</button>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="file" (change)="handleFileInput($event)" accept="image/*"
+                                        class="form-control mt-3">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
