@@ -73,6 +73,10 @@ const routes: Routes = [
         loadChildren: () => import('./views/pages/species/species.module').then(m => m.SpeciesModule)
 
       },
+      {
+        path: 'breeds',
+        loadChildren: () => import('./views/pages/breeds/breeds.module').then(m => m.BreedsModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },

@@ -74,7 +74,7 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         label: 'Mascotas',
-        link: 'clients',
+        link: 'pets',
       },
       {
         label: 'Especies',
@@ -86,7 +86,7 @@ export const MENU: MenuItem[] = [
       },
       {
         label: 'Razas',
-        link: 'users'
+        link: 'breeds'
       },
     ]
   },
