@@ -63,5 +63,21 @@ export class ApiService {
     }
     return this.http.delete(`${this.baseUrl}/${endpoint}`, { headers });
   }
-  
+
+  // Método POST para cargar archivos
+  uploadFile(endpoint: string, file: File, authenticated: boolean = true): Observable<any> {
+    let headers = new HttpHeaders();
+    const formData: FormData = new FormData();
+    formData.append('file', file);  // Agregar el archivo al FormData
+
+    if (authenticated) {
+      const token = this.getToken();
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+
+    return this.http.post(`${this.baseUrl}/${endpoint}`, formData, { headers });
+  }
+
 }
