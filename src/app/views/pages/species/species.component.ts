@@ -14,7 +14,7 @@ export class SpeciesComponent implements OnInit {
   species: any[] = [];  // Lista completa de especies
   filteredSpecies: any[] = [];  // Lista filtrada de especies
   currentPage: number = 1;  // Página actual
-  itemsPerPage: number = 10;  // Cantidad de registros por página
+  itemsPerPage: number = 5;  // Cantidad de registros por página
   searchQuery: string = '';  // Query de búsqueda
   isDropdownOpen: boolean = false;
   isLoading: boolean = true;  // Variable de carga
@@ -101,14 +101,18 @@ export class SpeciesComponent implements OnInit {
       if (result.isConfirmed) {
         this.apiService.delete(`species/${id}`, true).subscribe(
           (response) => {
-            // Eliminar la especie de la lista local sin recargar
+            // Eliminar la mascota de la lista local sin recargar
             this.species = this.species.filter(specie => specie.id !== id);
             this.filteredSpecies = this.filteredSpecies.filter(specie => specie.id !== id);
 
-            // Verificar si no quedan especies
-            if (this.species.length === 0) {
-              this.currentPage = 1; // Reiniciar la paginación
+            // Verificar cuántos registros quedan en la página actual
+            const totalPages = Math.ceil(this.filteredSpecies.length / this.itemsPerPage);
+
+            // Si ya no quedan registros en la página actual y no estamos en la primera página
+            if (this.currentPage > totalPages && this.currentPage > 1) {
+              this.currentPage--; // Retroceder una página
             }
+
             this.showAlert('success', 'La especie ha sido eliminada.');
           },
           (error) => {
@@ -157,19 +161,25 @@ export class SpeciesComponent implements OnInit {
     return (this.currentPage - 1) * this.itemsPerPage + (index + 1);
   }
 
-  // Paginación: Obtener especies de la página actual
+  // Paginación: Obtener mascotas de la página actual
   get paginatedSpecies(): any[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    return this.filteredSpecies.slice(start, end);
+    return this.filteredSpecies.slice(start, end);  // Obtener el subconjunto de mascotas para la página actual
   }
 
   // Cambiar página
   changePage(page: number): void {
-    if (page < 1 || page > this.totalPages.length) {
-      return; // Evitar que se salga de los límites
+    const totalPages = Math.ceil(this.filteredSpecies.length / this.itemsPerPage);
+
+    // Validar que la página esté dentro del rango permitido
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > totalPages) {
+      this.currentPage = totalPages;
+    } else {
+      this.currentPage = page;
     }
-    this.currentPage = page;
   }
 
   // Filtro de búsqueda: buscar en nombre de la especie
@@ -181,7 +191,7 @@ export class SpeciesComponent implements OnInit {
         specie.specieName.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
-    this.currentPage = 1;  // Reiniciar a la primera página después de filtrar
+    this.changePage(1);  // Reiniciar a la primera página después de filtrar
   }
 
   // Obtener el total de páginas
@@ -202,8 +212,11 @@ export class SpeciesComponent implements OnInit {
   }
 
   // Método para cambiar la cantidad de ítems por página
-  onChangeItemsPerPage(): void {
+  onChangeItemsPerPage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.itemsPerPage = parseInt(target.value, 10);  // Obtener el valor seleccionado y convertirlo a número
     this.currentPage = 1;  // Reinicia la página a la primera
+    this.changePage(1); // Actualiza la vista para respetar la cantidad seleccionada
   }
 
   // Método para abrir el modal de edición con los datos de la especie seleccionada

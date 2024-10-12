@@ -86,7 +86,8 @@
                                         <div ngbDropdown>
                                             <button class="btn btn-outline-primary btn-xs" id="dropdownBasic1"
                                                 ngbDropdownToggle><i class="icon feather icon-settings"></i></button>
-                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1" class="dropdown-menu-end">
+                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
+                                                class="dropdown-menu-end">
                                                 <button ngbDropdownItem
                                                     (click)="openEditModal(editModal, breed)">Editar</button>
                                                 <button ngbDropdownItem
@@ -112,7 +113,7 @@
                             </select>
                             <span class="ms-3 me-2">Mostrar:</span>
                             <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
-                                (change)="onChangeItemsPerPage()">
+                                (change)="onChangeItemsPerPage($event)">
                                 <option [value]="5">5</option>
                                 <option [value]="10">10</option>
                                 <option [value]="20">20</option>

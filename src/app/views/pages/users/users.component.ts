@@ -13,7 +13,7 @@ export class UsersComponent implements OnInit {
   users: any[] = [];  // Lista completa de usuarios
   filteredUsers: any[] = [];  // Lista filtrada de usuarios
   currentPage: number = 1;  // Página actual
-  itemsPerPage: number = 10;  // Cantidad de registros por página
+  itemsPerPage: number = 5;  // Cantidad de registros por página
   searchQuery: string = '';  // Query de búsqueda
   isDropdownOpen: boolean = false;
   isLoading: boolean = true;  // Variable de carga
@@ -87,15 +87,21 @@ export class UsersComponent implements OnInit {
   get paginatedUsers(): any[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    return this.filteredUsers.slice(start, end);
+    return this.filteredUsers.slice(start, end);  // Obtener el subconjunto de mascotas para la página actual
   }
 
   // Cambiar página
   changePage(page: number): void {
-    if (page < 1 || page > this.totalPages.length) {
-      return; // Evitar que se salga de los límites
+    const totalPages = Math.ceil(this.filteredUsers.length / this.itemsPerPage);
+
+    // Validar que la página esté dentro del rango permitido
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > totalPages) {
+      this.currentPage = totalPages;
+    } else {
+      this.currentPage = page;
     }
-    this.currentPage = page;
   }
 
   // Filtro de búsqueda: buscar en documento, nombre, apellido, email y teléfono
@@ -107,7 +113,7 @@ export class UsersComponent implements OnInit {
       user.email.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       user.phone.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
-    this.currentPage = 1;  // Reiniciar a la primera página después de filtrar
+    this.changePage(1);  // Reiniciar a la primera página después de filtrar
   }
 
   // Obtener el total de páginas
@@ -128,8 +134,11 @@ export class UsersComponent implements OnInit {
   }
 
   // Método para cambiar la cantidad de ítems por página
-  onChangeItemsPerPage(): void {
+  onChangeItemsPerPage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.itemsPerPage = parseInt(target.value, 10);  // Obtener el valor seleccionado y convertirlo a número
     this.currentPage = 1;  // Reinicia la página a la primera
+    this.changePage(1); // Actualiza la vista para respetar la cantidad seleccionada
   }
 
   // Función para redirigir al formulario de edición

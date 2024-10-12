@@ -13,7 +13,7 @@ export class SuppliersComponent implements OnInit {
   suppliers: any[] = [];  // Lista completa de proveedores
   filteredSuppliers: any[] = [];  // Lista filtrada de proveedores
   currentPage: number = 1;  // Página actual
-  itemsPerPage: number = 10;  // Cantidad de registros por página
+  itemsPerPage: number = 5;  // Cantidad de registros por página
   searchQuery: string = '';  // Query de búsqueda
   isDropdownOpen: boolean = false;
   isLoading: boolean = true;  // Variable de carga
@@ -61,14 +61,18 @@ export class SuppliersComponent implements OnInit {
       if (result.isConfirmed) {
         this.apiService.delete(`suppliers/${id}`, true).subscribe(
           (response) => {
-            // Eliminar el proveedor de la lista local sin recargar
+            // Eliminar la mascota de la lista local sin recargar
             this.suppliers = this.suppliers.filter(supplier => supplier.id !== id);
             this.filteredSuppliers = this.filteredSuppliers.filter(supplier => supplier.id !== id);
 
-            // Verificar si no quedan proveedores
-            if (this.suppliers.length === 0) {
-              this.currentPage = 1; // Reiniciar la paginación
+            // Verificar cuántos registros quedan en la página actual
+            const totalPages = Math.ceil(this.filteredSuppliers.length / this.itemsPerPage);
+
+            // Si ya no quedan registros en la página actual y no estamos en la primera página
+            if (this.currentPage > totalPages && this.currentPage > 1) {
+              this.currentPage--; // Retroceder una página
             }
+
             this.showAlert('success', 'El proveedor ha sido eliminado.');
           },
           (error) => {
@@ -121,15 +125,21 @@ export class SuppliersComponent implements OnInit {
   get paginatedSuppliers(): any[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    return this.filteredSuppliers.slice(start, end);
+    return this.filteredSuppliers.slice(start, end);  // Obtener el subconjunto de mascotas para la página actual
   }
 
   // Cambiar página
   changePage(page: number): void {
-    if (page < 1 || page > this.totalPages.length) {
-      return; // Evitar que se salga de los límites
+    const totalPages = Math.ceil(this.filteredSuppliers.length / this.itemsPerPage);
+
+    // Validar que la página esté dentro del rango permitido
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > totalPages) {
+      this.currentPage = totalPages;
+    } else {
+      this.currentPage = page;
     }
-    this.currentPage = page;
   }
 
   // Filtro de búsqueda: buscar en documento, nombre, teléfono y correo
@@ -140,7 +150,7 @@ export class SuppliersComponent implements OnInit {
       supplier.supplierPhone.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
       supplier.supplierEmail.toLowerCase().includes(this.searchQuery.toLowerCase())
     );
-    this.currentPage = 1;  // Reiniciar a la primera página después de filtrar
+    this.changePage(1);  // Reiniciar a la primera página después de filtrar
   }
 
   // Obtener el total de páginas
@@ -161,8 +171,11 @@ export class SuppliersComponent implements OnInit {
   }
 
   // Método para cambiar la cantidad de ítems por página
-  onChangeItemsPerPage(): void {
+  onChangeItemsPerPage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.itemsPerPage = parseInt(target.value, 10);  // Obtener el valor seleccionado y convertirlo a número
     this.currentPage = 1;  // Reinicia la página a la primera
+    this.changePage(1); // Actualiza la vista para respetar la cantidad seleccionada
   }
 
   // Función para redirigir al formulario de edición

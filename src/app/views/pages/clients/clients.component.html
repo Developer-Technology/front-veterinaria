@@ -121,7 +121,7 @@
                             </select>
                             <span class="ms-3 me-2">Mostrar:</span>
                             <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
-                                (change)="onChangeItemsPerPage()">
+                                (change)="onChangeItemsPerPage($event)">
                                 <option [value]="5">5</option>
                                 <option [value]="10">10</option>
                                 <option [value]="20">20</option>

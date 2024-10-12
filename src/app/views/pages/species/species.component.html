@@ -35,9 +35,8 @@
                     <!-- Buscador -->
                     <div class="row mb-2 align-items-center">
                         <div class="col-md-6">
-                            <input type="text" class="form-control form-control-sm"
-                                placeholder="Buscar por nombre..." [(ngModel)]="searchQuery"
-                                (input)="onSearch()">
+                            <input type="text" class="form-control form-control-sm" placeholder="Buscar por nombre..."
+                                [(ngModel)]="searchQuery" (input)="onSearch()">
                         </div>
                         <!-- Aquí agregarás los futuros filtros o botones de exportación -->
                         <div class="col-md-6 text-end">
@@ -83,8 +82,10 @@
                                                 ngbDropdownToggle><i class="icon feather icon-settings"></i></button>
                                             <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
                                                 class="dropdown-menu-end">
-                                                <button ngbDropdownItem (click)="openEditModal(editModal, specie)">Editar</button>
-                                                <button ngbDropdownItem (click)="deleteSpecie(specie.id)">Eliminar</button>
+                                                <button ngbDropdownItem
+                                                    (click)="openEditModal(editModal, specie)">Editar</button>
+                                                <button ngbDropdownItem
+                                                    (click)="deleteSpecie(specie.id)">Eliminar</button>
                                             </div>
                                         </div>
                                     </td>
@@ -106,7 +107,7 @@
                             </select>
                             <span class="ms-3 me-2">Mostrar:</span>
                             <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
-                                (change)="onChangeItemsPerPage()">
+                                (change)="onChangeItemsPerPage($event)">
                                 <option [value]="5">5</option>
                                 <option [value]="10">10</option>
                                 <option [value]="20">20</option>

@@ -15,7 +15,7 @@ export class BreedsComponent implements OnInit {
   filteredBreeds: any[] = [];  // Lista filtrada de razas
   species: any[] = [];  // Lista de especies para el select
   currentPage: number = 1;  // Página actual
-  itemsPerPage: number = 10;  // Cantidad de registros por página
+  itemsPerPage: number = 5;  // Cantidad de registros por página
   searchQuery: string = '';  // Query de búsqueda
   isDropdownOpen: boolean = false;
   isLoading: boolean = true;  // Variable de carga
@@ -122,10 +122,14 @@ export class BreedsComponent implements OnInit {
             this.breeds = this.breeds.filter(breed => breed.id !== id);
             this.filteredBreeds = this.filteredBreeds.filter(breed => breed.id !== id);
 
-            // Verificar si no quedan razas
-            if (this.breeds.length === 0) {
-              this.currentPage = 1; // Reiniciar la paginación
+            // Verificar cuántos registros quedan en la página actual
+            const totalPages = Math.ceil(this.filteredBreeds.length / this.itemsPerPage);
+
+            // Si ya no quedan registros en la página actual y no estamos en la primera página
+            if (this.currentPage > totalPages && this.currentPage > 1) {
+              this.currentPage--; // Retroceder una página
             }
+
             this.showAlert('success', 'La raza ha sido eliminada.');
           },
           (error) => {
@@ -183,10 +187,16 @@ export class BreedsComponent implements OnInit {
 
   // Cambiar página
   changePage(page: number): void {
-    if (page < 1 || page > this.totalPages.length) {
-      return; // Evitar que se salga de los límites
+    const totalPages = Math.ceil(this.filteredBreeds.length / this.itemsPerPage);
+
+    // Validar que la página esté dentro del rango permitido
+    if (page < 1) {
+      this.currentPage = 1;
+    } else if (page > totalPages) {
+      this.currentPage = totalPages;
+    } else {
+      this.currentPage = page;
     }
-    this.currentPage = page;
   }
 
   // Filtro de búsqueda: buscar en nombre de la raza
@@ -198,7 +208,7 @@ export class BreedsComponent implements OnInit {
         breed.breedName.toLowerCase().includes(this.searchQuery.toLowerCase()) || breed.specieName.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     }
-    this.currentPage = 1;  // Reiniciar a la primera página después de filtrar
+    this.changePage(1);  // Reiniciar a la primera página después de filtrar
   }
 
   // Obtener el total de páginas
@@ -219,8 +229,11 @@ export class BreedsComponent implements OnInit {
   }
 
   // Método para cambiar la cantidad de ítems por página
-  onChangeItemsPerPage(): void {
+  onChangeItemsPerPage(event: Event): void {
+    const target = event.target as HTMLSelectElement;
+    this.itemsPerPage = parseInt(target.value, 10);  // Obtener el valor seleccionado y convertirlo a número
     this.currentPage = 1;  // Reinicia la página a la primera
+    this.changePage(1); // Actualiza la vista para respetar la cantidad seleccionada
   }
 
   // Método para abrir el modal de edición con los datos de la raza seleccionada
