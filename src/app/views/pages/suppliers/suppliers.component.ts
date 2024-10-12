@@ -128,23 +128,13 @@ export class SuppliersComponent implements OnInit {
 
   // Paginación: Obtener proveedores de la página actual
   get paginatedSuppliers(): any[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredSuppliers.slice(start, end);  // Obtener el subconjunto de mascotas para la página actual
+    return this.utilitiesService.getPaginatedData(this.filteredSuppliers, this.currentPage, this.itemsPerPage);
   }
 
   // Cambiar página
   changePage(page: number): void {
-    const totalPages = Math.ceil(this.filteredSuppliers.length / this.itemsPerPage);
-
-    // Validar que la página esté dentro del rango permitido
-    if (page < 1) {
-      this.currentPage = 1;
-    } else if (page > totalPages) {
-      this.currentPage = totalPages;
-    } else {
-      this.currentPage = page;
-    }
+    const totalPages = this.totalPages.length;
+    this.currentPage = this.utilitiesService.validatePageNumber(page, totalPages);
   }
 
   // Filtro de búsqueda: buscar en documento, nombre, teléfono y correo
@@ -160,7 +150,7 @@ export class SuppliersComponent implements OnInit {
 
   // Obtener el total de páginas
   get totalPages(): number[] {
-    return Array(Math.ceil(this.filteredSuppliers.length / this.itemsPerPage)).fill(0).map((x, i) => i + 1);
+    return this.utilitiesService.getTotalPages(this.filteredSuppliers, this.itemsPerPage);
   }
 
   // Mostrar el número de resultados actuales

@@ -180,23 +180,13 @@ export class BreedsComponent implements OnInit {
 
   // Paginación: Obtener razas de la página actual
   get paginatedBreeds(): any[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredBreeds.slice(start, end);
+    return this.utilitiesService.getPaginatedData(this.filteredBreeds, this.currentPage, this.itemsPerPage);
   }
 
   // Cambiar página
   changePage(page: number): void {
-    const totalPages = Math.ceil(this.filteredBreeds.length / this.itemsPerPage);
-
-    // Validar que la página esté dentro del rango permitido
-    if (page < 1) {
-      this.currentPage = 1;
-    } else if (page > totalPages) {
-      this.currentPage = totalPages;
-    } else {
-      this.currentPage = page;
-    }
+    const totalPages = this.totalPages.length;
+    this.currentPage = this.utilitiesService.validatePageNumber(page, totalPages);
   }
 
   // Filtro de búsqueda: buscar en nombre de la raza
@@ -213,7 +203,7 @@ export class BreedsComponent implements OnInit {
 
   // Obtener el total de páginas
   get totalPages(): number[] {
-    return Array(Math.ceil(this.filteredBreeds.length / this.itemsPerPage)).fill(0).map((x, i) => i + 1);
+    return this.utilitiesService.getTotalPages(this.filteredBreeds, this.itemsPerPage);
   }
 
   // Mostrar el número de resultados actuales

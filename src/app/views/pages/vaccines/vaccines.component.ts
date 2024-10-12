@@ -179,23 +179,13 @@ export class VaccinesComponent implements OnInit {
 
   // Paginación: Obtener vacunas de la página actual
   get paginatedVaccines(): any[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredVaccines.slice(start, end);  // Obtener el subconjunto de mascotas para la página actual
+    return this.utilitiesService.getPaginatedData(this.filteredVaccines, this.currentPage, this.itemsPerPage);
   }
 
   // Cambiar página
   changePage(page: number): void {
-    const totalPages = Math.ceil(this.filteredVaccines.length / this.itemsPerPage);
-
-    // Validar que la página esté dentro del rango permitido
-    if (page < 1) {
-      this.currentPage = 1;
-    } else if (page > totalPages) {
-      this.currentPage = totalPages;
-    } else {
-      this.currentPage = page;
-    }
+    const totalPages = this.totalPages.length;
+    this.currentPage = this.utilitiesService.validatePageNumber(page, totalPages);
   }
 
   // Filtro de búsqueda: buscar en nombre de la vacuna o la especie
@@ -212,7 +202,7 @@ export class VaccinesComponent implements OnInit {
 
   // Obtener el total de páginas
   get totalPages(): number[] {
-    return Array(Math.ceil(this.filteredVaccines.length / this.itemsPerPage)).fill(0).map((x, i) => i + 1);
+    return this.utilitiesService.getTotalPages(this.filteredVaccines, this.itemsPerPage);
   }
 
   // Mostrar el número de resultados actuales
