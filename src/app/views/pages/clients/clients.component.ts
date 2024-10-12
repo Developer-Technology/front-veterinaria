@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { UtilitiesService } from '../../../services/utilities.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -21,7 +22,11 @@ export class ClientsComponent implements OnInit {
   sortColumn: string = '';  // Columna que se está ordenando
   sortDirection: 'asc' | 'desc' = 'asc';  // Dirección de ordenación
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void {
     this.loadClients();
@@ -42,7 +47,7 @@ export class ClientsComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;  // Desactivar el estado de carga en caso de error
-        Swal.fire('Error', 'No se pudieron cargar los clientes', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar los clientes');
       }
     );
   }
@@ -73,13 +78,13 @@ export class ClientsComponent implements OnInit {
               this.currentPage--; // Retroceder una página
             }
 
-            this.showAlert('success', 'El cliente ha sido eliminado.');
-            //Swal.fire('Eliminado', 'El cliente ha sido eliminado.', 'success');
+            this.utilitiesService.showAlert('success', 'El cliente ha sido eliminado.');
+            //this.utilitiesService.showAlert('Eliminado', 'El cliente ha sido eliminado.', 'success');
           },
           (error) => {
             // Mostrar el mensaje de error retornado por la API
             const errorMessage = error?.error?.message || 'No se pudo eliminar el cliente.';
-            this.showAlert('error', errorMessage);
+            this.utilitiesService.showAlert('error', errorMessage);
           }
         );
       }
@@ -183,19 +188,6 @@ export class ClientsComponent implements OnInit {
   editClient(id: string): void {
     const encodedId = btoa(id);
     this.router.navigate(['/clients/edit', encodedId]);  // Redirige a la ruta de edición
-  }
-
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import Swal from 'sweetalert2';
+import { UtilitiesService } from '../../../../services/utilities.service';
 
 @Component({
   selector: 'app-edit',
@@ -25,7 +25,12 @@ export class EditComponent implements OnInit {
   isSuperAdmin: boolean = false;
   emailTouched: boolean = false;
 
-  constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void {
     const encodedUserId = this.route.snapshot.paramMap.get('id') || '';
@@ -56,7 +61,7 @@ export class EditComponent implements OnInit {
           // Verificar si es Super Admin o tiene id = 1
           if (this.user.id === 1 || this.user.privilege === 'Super Admin') {
             this.router.navigate(['/users']);
-            this.showAlert('warning', 'No puedes editar este usuario');
+            this.utilitiesService.showAlert('warning', 'No puedes editar este usuario');
           }
         }
       },
@@ -64,10 +69,10 @@ export class EditComponent implements OnInit {
         this.isLoading = false;  // Detener el estado de carga en caso de error
         if (error.status === 404) {
           // Usuario no encontrado
-          this.showAlert('error', 'Usuario no encontrado');
+          this.utilitiesService.showAlert('error', 'Usuario no encontrado');
         } else {
           // Otro tipo de error
-          this.showAlert('error', 'No se pudo cargar el usuario');
+          this.utilitiesService.showAlert('error', 'No se pudo cargar el usuario');
         }
         this.router.navigate(['/users']);
       }
@@ -78,14 +83,14 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     this.apiService.put(`users/${this.user.id}`, this.user, true).subscribe(
       (response) => {
-        Swal.fire('Éxito', 'Usuario actualizado correctamente', 'success');
+        this.utilitiesService.showAlert('success', 'Usuario actualizado correctamente');
         this.router.navigate(['/users']);
       },
       (error) => {
         if (error.status === 422) {
           this.errors = error.error.errors;
         } else {
-          Swal.fire('Error', 'No se pudo actualizar el usuario', 'error');
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar el usuario');
         }
       }
     );
@@ -100,18 +105,6 @@ export class EditComponent implements OnInit {
   // Función para regresar a la lista de usuarios
   goBack(): void {
     this.router.navigate(['/users']);
-  }
-
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { UtilitiesService } from '../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vaccines',
@@ -27,8 +27,8 @@ export class VaccinesComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private utilitiesService: UtilitiesService
   ) { }
 
   ngOnInit(): void {
@@ -60,7 +60,7 @@ export class VaccinesComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;  // Desactivar el estado de carga en caso de error
-        Swal.fire('Error', 'No se pudieron cargar las vacunas', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las vacunas');
       }
     );
   }
@@ -74,7 +74,7 @@ export class VaccinesComponent implements OnInit {
         }
       },
       (error) => {
-        Swal.fire('Error', 'No se pudieron cargar las especies', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las especies');
       }
     );
   }
@@ -89,7 +89,7 @@ export class VaccinesComponent implements OnInit {
           this.newVaccine = { vaccineName: '', species_id: null };  // Reiniciar el formulario
           this.errors = {};  // Limpiar errores
           modal.close();  // Cerrar el modal
-          this.showAlert('success', 'Vacuna agregada correctamente.');
+          this.utilitiesService.showAlert('success', 'Vacuna agregada correctamente.');
           this.loadVaccines();
         }
       },
@@ -97,7 +97,7 @@ export class VaccinesComponent implements OnInit {
         if (error.status === 422) {
           this.errors = error.error.errors;  // Mostrar errores de validación
         } else {
-          this.showAlert('error', 'No se pudo agregar la vacuna.');
+          this.utilitiesService.showAlert('error', 'No se pudo agregar la vacuna.');
         }
       }
     );
@@ -129,12 +129,12 @@ export class VaccinesComponent implements OnInit {
               this.currentPage--; // Retroceder una página
             }
 
-            this.showAlert('success', 'La vacuna ha sido eliminada.');
+            this.utilitiesService.showAlert('success', 'La vacuna ha sido eliminada.');
           },
           (error) => {
             // Mostrar el mensaje de error retornado por la API
             const errorMessage = error?.error?.message || 'No se pudo eliminar la vacuna.';
-            this.showAlert('error', errorMessage);
+            this.utilitiesService.showAlert('error', errorMessage);
           }
         );
       }
@@ -256,7 +256,7 @@ export class VaccinesComponent implements OnInit {
           }
           modal.close();  // Cerrar el modal
           this.selectedVaccine = null;  // Limpiar el objeto seleccionado
-          this.showAlert('success', 'Vacuna actualizada correctamente.');
+          this.utilitiesService.showAlert('success', 'Vacuna actualizada correctamente.');
           this.loadVaccines();  // Recargar las vacunas
         }
       },
@@ -264,23 +264,10 @@ export class VaccinesComponent implements OnInit {
         if (error.status === 422) {
           this.errors = error.error.errors;  // Mostrar errores de validación
         } else {
-          this.showAlert('error', 'No se pudo actualizar la vacuna.');
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar la vacuna.');
         }
       }
     );
-  }
-
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

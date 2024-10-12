@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import { UtilitiesService } from '../../../../services/utilities.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-add',
@@ -27,7 +27,11 @@ export class AddComponent implements OnInit {
   errors: any = {}; // Para manejar errores del backend
   emailTouched: boolean = false;  // Verificar si el usuario interactuó con el campo de email
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void { }
 
@@ -66,7 +70,7 @@ export class AddComponent implements OnInit {
     this.apiService.post('auth/register', this.newUser, true).subscribe(
       (response) => {
         if (response.success) {
-          this.showAlert('success', response.message);
+          this.utilitiesService.showAlert('success', response.message);
           this.router.navigate(['/users']);
         }
       },
@@ -74,7 +78,7 @@ export class AddComponent implements OnInit {
         if (error.status === 422) { // Errores de validación desde el backend
           this.errors = error.error.errors;
         } else {
-          this.showAlert('error', 'No se pudo agregar el usuario');
+          this.utilitiesService.showAlert('error', 'No se pudo agregar el usuario');
         }
       }
     );
@@ -103,19 +107,6 @@ export class AddComponent implements OnInit {
   // Método para regresar a "/users"
   goBack(): void {
     this.router.navigate(['/users']);
-  }
-
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { UtilitiesService } from '../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-species',
@@ -26,8 +26,8 @@ export class SpeciesComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private utilitiesService: UtilitiesService
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +58,7 @@ export class SpeciesComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;  // Desactivar el estado de carga en caso de error
-        Swal.fire('Error', 'No se pudieron cargar las especies', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las especies');
       }
     );
   }
@@ -73,7 +73,7 @@ export class SpeciesComponent implements OnInit {
           this.newSpecie = { specieName: '' };  // Reiniciar el formulario
           this.errors = {};  // Limpiar errores
           modal.close();  // Cerrar el modal
-          this.showAlert('success', 'Especie agregada correctamente.');
+          this.utilitiesService.showAlert('success', 'Especie agregada correctamente.');
           this.loadSpecies();
         }
       },
@@ -81,7 +81,7 @@ export class SpeciesComponent implements OnInit {
         if (error.status === 422) {
           this.errors = error.error.errors;  // Mostrar errores de validación
         } else {
-          this.showAlert('error', 'No se pudo agregar la especie.');
+          this.utilitiesService.showAlert('error', 'No se pudo agregar la especie.');
         }
       }
     );
@@ -113,12 +113,12 @@ export class SpeciesComponent implements OnInit {
               this.currentPage--; // Retroceder una página
             }
 
-            this.showAlert('success', 'La especie ha sido eliminada.');
+            this.utilitiesService.showAlert('success', 'La especie ha sido eliminada.');
           },
           (error) => {
             // Mostrar el mensaje de error retornado por la API
             const errorMessage = error?.error?.message || 'No se pudo eliminar la especie.';
-            this.showAlert('error', errorMessage);
+            this.utilitiesService.showAlert('error', errorMessage);
           }
         );
       }
@@ -240,7 +240,7 @@ export class SpeciesComponent implements OnInit {
           }
           modal.close();  // Cerrar el modal
           this.selectedSpecie = null;  // Limpiar el objeto seleccionado
-          this.showAlert('success', 'Especie actualizada correctamente.');
+          this.utilitiesService.showAlert('success', 'Especie actualizada correctamente.');
           this.loadSpecies();  // Recargar las especies
         }
       },
@@ -248,23 +248,10 @@ export class SpeciesComponent implements OnInit {
         if (error.status === 422) {
           this.errors = error.error.errors;  // Mostrar errores de validación
         } else {
-          this.showAlert('error', 'No se pudo actualizar la especie.');
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar la especie.');
         }
       }
     );
-  }
-
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

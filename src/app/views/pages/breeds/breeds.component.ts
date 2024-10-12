@@ -1,8 +1,8 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
-import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
+import { UtilitiesService } from '../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-breeds',
@@ -27,8 +27,8 @@ export class BreedsComponent implements OnInit {
 
   constructor(
     private apiService: ApiService,
-    private router: Router,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private utilitiesService: UtilitiesService
   ) { }
 
   ngOnInit(): void {
@@ -61,7 +61,7 @@ export class BreedsComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;  // Desactivar el estado de carga en caso de error
-        Swal.fire('Error', 'No se pudieron cargar las razas', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las razas');
       }
     );
   }
@@ -75,7 +75,7 @@ export class BreedsComponent implements OnInit {
         }
       },
       (error) => {
-        Swal.fire('Error', 'No se pudieron cargar las especies', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las especies');
       }
     );
   }
@@ -90,7 +90,7 @@ export class BreedsComponent implements OnInit {
           this.newBreed = { breedName: '', species_id: null };  // Reiniciar el formulario
           this.errors = {};  // Limpiar errores
           modal.close();  // Cerrar el modal
-          this.showAlert('success', 'Raza agregada correctamente.');
+          this.utilitiesService.showAlert('success', 'Raza agregada correctamente.');
           this.loadBreeds();
         }
       },
@@ -98,7 +98,7 @@ export class BreedsComponent implements OnInit {
         if (error.status === 422) {
           this.errors = error.error.errors;  // Mostrar errores de validación
         } else {
-          this.showAlert('error', 'No se pudo agregar la raza.');
+          this.utilitiesService.showAlert('error', 'No se pudo agregar la raza.');
         }
       }
     );
@@ -130,12 +130,12 @@ export class BreedsComponent implements OnInit {
               this.currentPage--; // Retroceder una página
             }
 
-            this.showAlert('success', 'La raza ha sido eliminada.');
+            this.utilitiesService.showAlert('success', 'La raza ha sido eliminada.');
           },
           (error) => {
             // Mostrar el mensaje de error retornado por la API
             const errorMessage = error?.error?.message || 'No se pudo eliminar la raza.';
-            this.showAlert('error', errorMessage);
+            this.utilitiesService.showAlert('error', errorMessage);
           }
         );
       }
@@ -257,7 +257,7 @@ export class BreedsComponent implements OnInit {
           }
           modal.close();  // Cerrar el modal
           this.selectedBreed = null;  // Limpiar el objeto seleccionado
-          this.showAlert('success', 'Raza actualizada correctamente.');
+          this.utilitiesService.showAlert('success', 'Raza actualizada correctamente.');
           this.loadBreeds();  // Recargar las razas
         }
       },
@@ -265,23 +265,10 @@ export class BreedsComponent implements OnInit {
         if (error.status === 422) {
           this.errors = error.error.errors;  // Mostrar errores de validación
         } else {
-          this.showAlert('error', 'No se pudo actualizar la raza.');
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar la raza.');
         }
       }
     );
-  }
-
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

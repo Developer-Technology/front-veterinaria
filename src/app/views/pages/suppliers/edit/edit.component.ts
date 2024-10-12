@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
-import Swal from 'sweetalert2';
+import { UtilitiesService } from '../../../../services/utilities.service';
 
 @Component({
   selector: 'app-edit',
@@ -22,7 +22,12 @@ export class EditComponent implements OnInit {
   errors: any = {}; // Para manejar errores del backend
   emailTouched: boolean = false;
 
-  constructor(private apiService: ApiService, private router: Router, private route: ActivatedRoute) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void {
     const encodedSupplierId = this.route.snapshot.paramMap.get('id') || '';
@@ -55,10 +60,10 @@ export class EditComponent implements OnInit {
         this.isLoading = false;  // Detener el estado de carga en caso de error
         if (error.status === 404) {
           // Proveedor no encontrado
-          this.showAlert('error', 'Proveedor no encontrado');
+          this.utilitiesService.showAlert('error', 'Proveedor no encontrado');
         } else {
           // Otro tipo de error
-          this.showAlert('error', 'No se pudo cargar el proveedor');
+          this.utilitiesService.showAlert('error', 'No se pudo cargar el proveedor');
         }
         this.router.navigate(['/suppliers']);
       }
@@ -69,14 +74,14 @@ export class EditComponent implements OnInit {
   onSubmit(): void {
     this.apiService.put(`suppliers/${this.supplier.id}`, this.supplier, true).subscribe(
       (response) => {
-        this.showAlert('success', 'Proveedor actualizado correctamente.');
+        this.utilitiesService.showAlert('success', 'Proveedor actualizado correctamente.');
         this.router.navigate(['/suppliers']);
       },
       (error) => {
         if (error.status === 422) {
           this.errors = error.error.errors;
         } else {
-          this.showAlert('error', 'No se pudo actualizar el proveedor.');
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar el proveedor.');
         }
       }
     );
@@ -91,18 +96,6 @@ export class EditComponent implements OnInit {
   // Función para regresar a la lista de proveedores
   goBack(): void {
     this.router.navigate(['/suppliers']);
-  }
-
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
 }

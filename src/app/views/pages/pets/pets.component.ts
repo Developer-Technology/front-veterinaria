@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
+import { UtilitiesService } from '../../../services/utilities.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
@@ -19,7 +20,11 @@ export class PetsComponent implements OnInit {
   sortColumn: string = '';  // Columna que se está ordenando
   sortDirection: 'asc' | 'desc' = 'asc';  // Dirección de ordenación
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void {
     this.loadPets();
@@ -40,7 +45,7 @@ export class PetsComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;  // Desactivar el estado de carga en caso de error
-        Swal.fire('Error', 'No se pudieron cargar las mascotas', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las mascotas');
       }
     );
   }
@@ -71,12 +76,12 @@ export class PetsComponent implements OnInit {
               this.currentPage--; // Retroceder una página
             }
 
-            this.showAlert('success', 'La mascota ha sido eliminada.');
+            this.utilitiesService.showAlert('success', 'La mascota ha sido eliminada.');
           },
           (error) => {
             // Mostrar el mensaje de error retornado por la API
             const errorMessage = error?.error?.message || 'No se pudo eliminar la mascota.';
-            this.showAlert('error', errorMessage);
+            this.utilitiesService.showAlert('error', errorMessage);
           }
         );
       }
@@ -183,25 +188,9 @@ export class PetsComponent implements OnInit {
     this.router.navigate(['/pets/edit', encodedId]);  // Redirige a la ruta de edición
   }
 
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
-  }
-
   // Función para truncar texto
-  truncateText(text: string, limit: number): string {
-    if (text.length > limit) {
-      return text.substring(0, limit) + '...';
-    }
-    return text;
+  formatText(text: string, number: number) {
+    return this.utilitiesService.truncateText(text, number);
   }
 
 }
