@@ -56,15 +56,15 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         label: 'Clientes',
-        link: 'clients',
+        link: '/clients',
       },
       {
         label: 'Proveedores',
-        link: 'suppliers'
+        link: '/suppliers'
       },
       {
         label: 'Usuarios',
-        link: 'users'
+        link: '/users'
       },
     ]
   },
@@ -74,21 +74,26 @@ export const MENU: MenuItem[] = [
     subItems: [
       {
         label: 'Mascotas',
-        link: 'pets',
+        link: '/pets',
       },
       {
         label: 'Especies',
-        link: 'species'
+        link: '/species'
       },
       {
         label: 'Vacunas',
-        link: 'vaccines'
+        link: '/vaccines'
       },
       {
         label: 'Razas',
-        link: 'breeds'
+        link: '/breeds'
       },
     ]
+  },
+  {
+    label: 'Configuraciones',
+    icon: 'settings',
+    link: '/settings'
   },
   {
     label: 'Components',

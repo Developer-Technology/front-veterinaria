@@ -85,6 +85,10 @@ const routes: Routes = [
         path: 'pets',
         loadChildren: () => import('./views/pages/pets/pets.module').then(m => m.PetsModule)
       },
+      {
+        path: 'settings',
+        loadChildren: () => import('./views/pages/settings/settings.module').then(m => m.SettingsModule)
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },

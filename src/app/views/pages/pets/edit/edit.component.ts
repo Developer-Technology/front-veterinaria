@@ -91,8 +91,6 @@ export class EditComponent implements OnInit {
           this.imageUrl = this.editPet.petPhoto
             ? `${this.serverUrl}${this.editPet.petPhoto}`
             : 'assets/images/default/blank-pet.png';  // Imagen por defecto si no tiene
-
-          console.log(this.imageUrl);
           this.loadBreedsBySpecies();  // Cargar las razas correspondientes a la especie seleccionada
           this.isLoading = false;
         }

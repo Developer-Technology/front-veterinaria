@@ -1,0 +1,134 @@
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/settings">Empresa</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Editar Empresa</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Editar Empresa</h4>
+                <p class="text-muted mb-3">Modifique los siguientes campos para actualizar la información de la empresa.
+                </p>
+
+                <!-- Spinner de carga -->
+                <div *ngIf="isLoading" class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                    </div>
+                </div>
+
+                <!-- Formulario para editar la empresa -->
+                <form *ngIf="!isLoading" (ngSubmit)="onUpdate()" #companyForm="ngForm" class="row g-3">
+
+                    <!-- Sección Izquierda: Información de la Empresa -->
+                    <div class="col-md-9">
+                        <div class="row">
+                            <!-- Documento de la Empresa -->
+                            <div class="col-md-6">
+                                <label for="companyDoc" class="form-label">Documento de la Empresa</label>
+                                <input type="text" class="form-control" id="companyDoc"
+                                    [(ngModel)]="editCompany.companyDoc" name="companyDoc" required maxlength="50">
+                                <div *ngIf="errors?.companyDoc" class="text-danger small">{{ errors.companyDoc[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Nombre de la Empresa -->
+                            <div class="col-md-6">
+                                <label for="companyName" class="form-label">Nombre de la Empresa</label>
+                                <input type="text" class="form-control" id="companyName"
+                                    [(ngModel)]="editCompany.companyName" name="companyName" required maxlength="100">
+                                <div *ngIf="errors?.companyName" class="text-danger small">{{ errors.companyName[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Dirección de la Empresa -->
+                            <div class="col-md-6 mt-3">
+                                <label for="companyAddress" class="form-label">Dirección</label>
+                                <input type="text" class="form-control" id="companyAddress"
+                                    [(ngModel)]="editCompany.companyAddress" name="companyAddress" required
+                                    maxlength="200">
+                                <div *ngIf="errors?.companyAddress" class="text-danger small">{{
+                                    errors.companyAddress[0] }}</div>
+                            </div>
+
+                            <!-- Teléfono de la Empresa -->
+                            <div class="col-md-6 mt-3">
+                                <label for="companyPhone" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" id="companyPhone"
+                                    [(ngModel)]="editCompany.companyPhone" name="companyPhone" required maxlength="20">
+                                <div *ngIf="errors?.companyPhone" class="text-danger small">{{ errors.companyPhone[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Correo Electrónico de la Empresa -->
+                            <div class="col-md-6 mt-3">
+                                <label for="companyEmail" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="companyEmail"
+                                    [(ngModel)]="editCompany.companyEmail" name="companyEmail" required maxlength="100">
+                                <div *ngIf="errors?.companyEmail" class="text-danger small">{{ errors.companyEmail[0] }}
+                                </div>
+                            </div>
+
+                            <!-- Moneda de la Empresa -->
+                            <div class="col-md-3 mt-3">
+                                <label for="companyCurrency" class="form-label">Moneda</label>
+                                <input type="text" class="form-control" id="companyCurrency"
+                                    [(ngModel)]="editCompany.companyCurrency" name="companyCurrency" required
+                                    maxlength="10">
+                                <div *ngIf="errors?.companyCurrency" class="text-danger small">{{
+                                    errors.companyCurrency[0] }}</div>
+                            </div>
+
+                            <!-- Impuesto de la Empresa -->
+                            <div class="col-md-3 mt-3">
+                                <label for="companyTax" class="form-label">Impuesto (%)</label>
+                                <input type="number" class="form-control" id="companyTax"
+                                    [(ngModel)]="editCompany.companyTax" name="companyTax" required min="0" step="0.01">
+                                <div *ngIf="errors?.companyTax" class="text-danger small">{{ errors.companyTax[0] }}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Sección Derecha: Logo de la Empresa -->
+                    <div class="col-md-3">
+                        <!-- CropperJS para la imagen del logo -->
+                        <div class="col-md-12 text-center">
+                            <label class="form-label">Logo de la Empresa</label>
+                            <angular-cropper #cropper [cropperOptions]="config" [imageUrl]="imageUrl"></angular-cropper>
+                            <img *ngIf="croppedImage" [src]="croppedImage" alt="Imagen Recortada" class="img-fluid mt-3"
+                                style="max-width: 150px;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="file-upload" class="btn btn-light mt-3 btn-wd-100">Buscar Logo</label>
+                                    <input id="file-upload" type="file" (change)="handleFileInput($event)"
+                                        accept="image/*" class="file-hidden">
+                                </div>
+                                <div class="col-md-6">
+                                    <div *ngIf="imageUrl" class="btn btn-primary mt-3 btn-wd-100" (click)="cropImage()">
+                                        Aceptar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 text-end">
+                        <!-- Botón para resetear el formulario -->
+                        <button type="button" class="btn btn-danger me-2" (click)="resetForm(companyForm)">
+                            <i class="feather icon-refresh-cw"></i> Resetear
+                        </button>
+                        <button type="submit" class="btn btn-primary" [disabled]="companyForm.invalid">
+                            <i class="feather icon-check-circle"></i> Guardar Cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
