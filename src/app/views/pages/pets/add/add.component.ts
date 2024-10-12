@@ -64,7 +64,8 @@ export class AddComponent implements OnInit {
         };
         reader.readAsDataURL(event.target.files[0]);
       } else {
-        alert('Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
+        this.showAlert('warning', 'Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
+        //alert('Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
       }
     }
   }
