@@ -2,7 +2,6 @@ import { Component, OnInit, TemplateRef } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { UtilitiesService } from '../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-vaccines',
@@ -104,41 +103,33 @@ export class VaccinesComponent implements OnInit {
   }
 
   deleteVaccine(id: string): void {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¡Esta acción no se puede deshacer!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.apiService.delete(`vaccines/${id}`, true).subscribe(
-          (response) => {
-            // Eliminar la mascota de la lista local sin recargar
-            this.vaccines = this.vaccines.filter(vaccine => vaccine.id !== id);
-            this.filteredVaccines = this.filteredVaccines.filter(vaccine => vaccine.id !== id);
+    this.utilitiesService
+      .showConfirmationDelet(
+        '¿Estás seguro?',
+        '¡Esta acción no se puede deshacer!'
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.apiService.delete(`vaccines/${id}`, true).subscribe(
+            (response) => {
+              // Eliminar la vacuna de la lista local sin recargar
+              this.vaccines = this.vaccines.filter(vaccine => vaccine.id !== id);
+              this.filteredVaccines = this.filteredVaccines.filter(vaccine => vaccine.id !== id);
 
-            // Verificar cuántos registros quedan en la página actual
-            const totalPages = Math.ceil(this.filteredVaccines.length / this.itemsPerPage);
+              const totalPages = Math.ceil(this.filteredVaccines.length / this.itemsPerPage);
+              if (this.currentPage > totalPages && this.currentPage > 1) {
+                this.currentPage--; // Retroceder una página si no hay más registros
+              }
 
-            // Si ya no quedan registros en la página actual y no estamos en la primera página
-            if (this.currentPage > totalPages && this.currentPage > 1) {
-              this.currentPage--; // Retroceder una página
+              this.utilitiesService.showAlert('success', 'La vacuna ha sido eliminada.');
+            },
+            (error) => {
+              const errorMessage = error?.error?.message || 'No se pudo eliminar la vacuna.';
+              this.utilitiesService.showAlert('error', errorMessage);
             }
-
-            this.utilitiesService.showAlert('success', 'La vacuna ha sido eliminada.');
-          },
-          (error) => {
-            // Mostrar el mensaje de error retornado por la API
-            const errorMessage = error?.error?.message || 'No se pudo eliminar la vacuna.';
-            this.utilitiesService.showAlert('error', errorMessage);
-          }
-        );
-      }
-    });
+          );
+        }
+      });
   }
 
   // Ordenar los datos

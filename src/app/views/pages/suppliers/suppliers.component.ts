@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { UtilitiesService } from '../../../services/utilities.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-suppliers',
@@ -53,41 +52,37 @@ export class SuppliersComponent implements OnInit {
   }
 
   deleteSupplier(id: string): void {
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¡Esta acción no se puede deshacer!',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.apiService.delete(`suppliers/${id}`, true).subscribe(
-          (response) => {
-            // Eliminar la mascota de la lista local sin recargar
-            this.suppliers = this.suppliers.filter(supplier => supplier.id !== id);
-            this.filteredSuppliers = this.filteredSuppliers.filter(supplier => supplier.id !== id);
+    this.utilitiesService
+      .showConfirmationDelet(
+        '¿Estás seguro?',
+        '¡Esta acción no se puede deshacer!'
+      )
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.apiService.delete(`suppliers/${id}`, true).subscribe(
+            (response) => {
+              // Eliminar la mascota de la lista local sin recargar
+              this.suppliers = this.suppliers.filter(supplier => supplier.id !== id);
+              this.filteredSuppliers = this.filteredSuppliers.filter(supplier => supplier.id !== id);
 
-            // Verificar cuántos registros quedan en la página actual
-            const totalPages = Math.ceil(this.filteredSuppliers.length / this.itemsPerPage);
+              // Verificar cuántos registros quedan en la página actual
+              const totalPages = Math.ceil(this.filteredSuppliers.length / this.itemsPerPage);
 
-            // Si ya no quedan registros en la página actual y no estamos en la primera página
-            if (this.currentPage > totalPages && this.currentPage > 1) {
-              this.currentPage--; // Retroceder una página
+              // Si ya no quedan registros en la página actual y no estamos en la primera página
+              if (this.currentPage > totalPages && this.currentPage > 1) {
+                this.currentPage--; // Retroceder una página
+              }
+
+              this.utilitiesService.showAlert('success', 'El proveedor ha sido eliminado.');
+            },
+            (error) => {
+              // Mostrar el mensaje de error retornado por la API
+              const errorMessage = error?.error?.message || 'No se pudo eliminar el proveedor.';
+              this.utilitiesService.showAlert('error', errorMessage);
             }
-
-            this.utilitiesService.showAlert('success', 'El proveedor ha sido eliminado.');
-          },
-          (error) => {
-            // Mostrar el mensaje de error retornado por la API
-            const errorMessage = error?.error?.message || 'No se pudo eliminar el proveedor.';
-            this.utilitiesService.showAlert('error', errorMessage);
-          }
-        );
-      }
-    });
+          );
+        }
+      });
   }
 
   // Ordenar los datos

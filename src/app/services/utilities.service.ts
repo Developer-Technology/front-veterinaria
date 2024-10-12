@@ -29,6 +29,25 @@ export class UtilitiesService {
         return text;
     }
 
+    // Función reutilizable para la confirmación de eliminación
+    showConfirmationDelet(
+        title: string,
+        text: string,
+        confirmButtonText: string = 'Sí, eliminar',
+        cancelButtonText: string = 'Cancelar'
+    ): Promise<any> {
+        return Swal.fire({
+            title: title,
+            text: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: confirmButtonText,
+            cancelButtonText: cancelButtonText
+        });
+    }
+
     // Calcular el rango de elementos a mostrar en la página actual
     getPaginatedData(data: any[], currentPage: number, itemsPerPage: number): any[] {
         const start = (currentPage - 1) * itemsPerPage;

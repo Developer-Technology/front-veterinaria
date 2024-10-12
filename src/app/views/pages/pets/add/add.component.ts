@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import { UtilitiesService } from '../../../../services/utilities.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from 'angular-cropperjs';
 
@@ -41,7 +41,11 @@ export class AddComponent implements OnInit {
     autoCropArea: 1,
   };
 
-  constructor(private apiService: ApiService, private router: Router) { }
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void {
     this.loadSpecies();
@@ -64,7 +68,7 @@ export class AddComponent implements OnInit {
         };
         reader.readAsDataURL(event.target.files[0]);
       } else {
-        this.showAlert('warning', 'Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
+        this.utilitiesService.showAlert('warning', 'Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
         //alert('Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
       }
     }
@@ -127,7 +131,7 @@ export class AddComponent implements OnInit {
     this.apiService.post('pets', formData, true).subscribe(
       (response) => {
         if (response.success) {
-          this.showAlert('success', response.message);
+          this.utilitiesService.showAlert('success', response.message);
           this.router.navigate(['/pets']);
         }
       },
@@ -135,7 +139,7 @@ export class AddComponent implements OnInit {
         if (error.status === 422) { // Errores de validación desde el backend
           this.errors = error.error.errors;
         } else {
-          this.showAlert('error', 'No se pudo agregar la mascota');
+          this.utilitiesService.showAlert('error', 'No se pudo agregar la mascota');
         }
       }
     );
@@ -189,19 +193,6 @@ export class AddComponent implements OnInit {
     this.router.navigate(['/pets']);
   }
 
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
-  }
-
   // Cargar especies desde el API
   loadSpecies(): void {
     this.apiService.get('species', true).subscribe(
@@ -211,7 +202,7 @@ export class AddComponent implements OnInit {
         }
       },
       (error) => {
-        Swal.fire('Error', 'No se pudieron cargar las especies', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las especies');
       }
     );
   }
@@ -226,7 +217,7 @@ export class AddComponent implements OnInit {
           }
         },
         (error) => {
-          Swal.fire('Error', 'No se pudieron cargar las razas', 'error');
+          this.utilitiesService.showAlert('error', 'No se pudieron cargar las razas');
         }
       );
     }
@@ -241,8 +232,9 @@ export class AddComponent implements OnInit {
         }
       },
       (error) => {
-        Swal.fire('Error', 'No se pudieron cargar los clientes', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar los clientes');
       }
     );
   }
+  
 }

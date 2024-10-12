@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import { UtilitiesService } from '../../../../services/utilities.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from 'angular-cropperjs';
 
@@ -43,7 +43,12 @@ export class EditComponent implements OnInit {
     autoCropArea: 1,
   };
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private router: Router) { }
+  constructor(
+    private apiService: ApiService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private utilitiesService: UtilitiesService
+  ) { }
 
   ngOnInit(): void {
     const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
@@ -91,7 +96,7 @@ export class EditComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        Swal.fire('Error', 'No se pudo cargar la información de la mascota', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudo cargar la información de la mascota');
         this.router.navigate(['/pets']);  // Redirigir si no se puede cargar la mascota
       }
     );
@@ -113,7 +118,7 @@ export class EditComponent implements OnInit {
         };
         reader.readAsDataURL(event.target.files[0]);
       } else {
-        this.showAlert('warning', 'Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
+        this.utilitiesService.showAlert('warning', 'Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
         //alert('Por favor, selecciona un archivo de imagen válido (jpg, jpeg o png).');
       }
     }
@@ -148,7 +153,7 @@ export class EditComponent implements OnInit {
     this.apiService.put(`pets/${this.petId}`, this.editPet, true).subscribe(
       (response) => {
         if (response.success) {
-          this.showAlert('success', response.message);
+          this.utilitiesService.showAlert('success', response.message);
 
           // Si la imagen fue modificada, hacemos la segunda solicitud
           if (this.croppedImage) {
@@ -163,7 +168,7 @@ export class EditComponent implements OnInit {
         if (error.status === 422) {  // Validación de errores
           this.errors = error.error.errors;
         } else {
-          this.showAlert('error', 'No se pudo actualizar la mascota');
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar la mascota');
         }
       }
     );
@@ -177,12 +182,12 @@ export class EditComponent implements OnInit {
     this.apiService.post(`pets/${this.petId}/upload`, imageData, true).subscribe(
       (response) => {
         if (response.success) {
-          this.showAlert('success', response.message);
+          this.utilitiesService.showAlert('success', response.message);
           this.router.navigate(['/pets']);
         }
       },
       (error) => {
-        this.showAlert('error', 'No se pudo subir la imagen');
+        this.utilitiesService.showAlert('error', 'No se pudo subir la imagen');
       }
     );
   }
@@ -203,7 +208,7 @@ export class EditComponent implements OnInit {
         }
       },
       (error) => {
-        Swal.fire('Error', 'No se pudieron cargar las especies', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las especies');
       }
     );
   }
@@ -218,7 +223,7 @@ export class EditComponent implements OnInit {
           }
         },
         (error) => {
-          Swal.fire('Error', 'No se pudieron cargar las razas', 'error');
+          this.utilitiesService.showAlert('error', 'No se pudieron cargar las razas');
         }
       );
     }
@@ -233,7 +238,7 @@ export class EditComponent implements OnInit {
         }
       },
       (error) => {
-        Swal.fire('Error', 'No se pudieron cargar los clientes', 'error');
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar los clientes');
       }
     );
   }
@@ -241,19 +246,6 @@ export class EditComponent implements OnInit {
   // Método para regresar a "/pets"
   goBack(): void {
     this.router.navigate(['/pets']);
-  }
-
-  // Mostrar alertas con SweetAlert2
-  showAlert(type: 'success' | 'error' | 'warning' | 'info' | 'question', message: string) {
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: type,
-      text: message,
-      showConfirmButton: false,
-      timer: 3000,
-      timerProgressBar: true
-    });
   }
 
   // Función para resetear el formulario
