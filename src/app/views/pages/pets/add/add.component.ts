@@ -30,7 +30,7 @@ export class AddComponent implements OnInit {
   breeds: any[] = []; // Lista de razas filtrada según la especie seleccionada
   clients: any[] = []; // Lista de clientes (dueños)
   errors: any = {}; // Para manejar errores del backend
-  imageUrl: string = 'assets/images/default/image-placeholder.png';  // Vista previa de la imagen antes del recorte
+  imageUrl: string = 'assets/images/default/blank-pet.png';  // Vista previa de la imagen antes del recorte
   croppedImage: string | ArrayBuffer | null = '';  // Imagen recortada
 
   config = {
@@ -236,5 +236,5 @@ export class AddComponent implements OnInit {
       }
     );
   }
-  
+
 }

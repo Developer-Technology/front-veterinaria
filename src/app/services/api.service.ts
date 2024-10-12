@@ -8,9 +8,14 @@ import { environment } from '../../environments/environment'; // Asegúrate de a
 })
 export class ApiService {
   private baseUrl: string = environment.URL_SERVICIOS; // Base URL desde el archivo de entorno
-  public userlServer: string = environment.URL_BACKEND;
+  private readonly serverUrl: string = environment.URL_BACKEND;
+  //public urlServer: string = environment.URL_BACKEND;
 
   constructor(private http: HttpClient) { }
+
+  getServerUrl(): string {
+    return this.serverUrl;
+  }
 
   // Obtener el token almacenado en localStorage
   private getToken(): string | null {

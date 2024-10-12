@@ -18,12 +18,15 @@ export class PetsComponent implements OnInit {
   isLoading: boolean = true;  // Variable de carga
   sortColumn: string = '';  // Columna que se está ordenando
   sortDirection: 'asc' | 'desc' = 'asc';  // Dirección de ordenación
+  serverUrl: string;
 
   constructor(
     private apiService: ApiService,
     private router: Router,
     private utilitiesService: UtilitiesService
-  ) { }
+  ) {
+    this.serverUrl = this.apiService.getServerUrl();
+  }
 
   ngOnInit(): void {
     this.loadPets();

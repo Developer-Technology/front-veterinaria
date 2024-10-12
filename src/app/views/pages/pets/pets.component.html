@@ -95,9 +95,19 @@
                                 <tr *ngFor="let pet of paginatedPets; let i = index">
                                     <td>{{ getRecordNumber(i) }}</td>
                                     <td><small>{{ pet.petCode }}</small></td>
-                                    <td>{{ pet.petName }} <br> <small>{{ pet.specieName }} - {{ pet.breedName }}</small>
+                                    <td class="d-flex flex-row">
+                                        <img [src]="pet.petPhoto ? (serverUrl + pet.petPhoto) : 'assets/images/default/blank-pet.png'" class="rounded-circle border-image">
+                                        <div class="d-flex flex-column text-left petData">
+                                            <span>{{ pet.petName}}</span>
+                                            <small>{{pet.specieName }} - {{ pet.breedName }}</small>
+                                        </div>
                                     </td>
-                                    <td>{{ formatText(pet.clientName, 15) }}</td>
+                                    <td>
+                                        <div class="d-flex flex-column text-left petData">
+                                            <span>{{ formatText(pet.clientName, 15) }}</span>
+                                            <small>Doc: {{ pet.clientDoc }}</small>
+                                        </div>
+                                    </td>
                                     <td>{{ pet.petGender }}</td>
                                     <td>{{ pet.petWeight }} kg</td>
                                     <td>{{ pet.petColor }}</td>

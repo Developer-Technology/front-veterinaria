@@ -31,9 +31,10 @@ export class EditComponent implements OnInit {
   breeds: any[] = [];
   clients: any[] = [];
   errors: any = {};
-  imageUrl: string = 'assets/images/default/image-placeholder.png';
+  imageUrl: string = 'assets/images/default/blank-pet.png';
   croppedImage: string | ArrayBuffer | null = '';
   petId: string;
+  serverUrl: string;
 
   config = {
     aspectRatio: 1,
@@ -48,7 +49,9 @@ export class EditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private utilitiesService: UtilitiesService
-  ) { }
+  ) {
+    this.serverUrl = this.apiService.getServerUrl();
+  }
 
   ngOnInit(): void {
     const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
@@ -86,8 +89,8 @@ export class EditComponent implements OnInit {
 
           // Construir la URL completa de la imagen de la mascota si existe
           this.imageUrl = this.editPet.petPhoto
-            ? `${this.apiService.userlServer}${this.editPet.petPhoto}`
-            : 'assets/images/default/image-placeholder.png';  // Imagen por defecto si no tiene
+            ? `${this.serverUrl}${this.editPet.petPhoto}`
+            : 'assets/images/default/blank-pet.png';  // Imagen por defecto si no tiene
 
           console.log(this.imageUrl);
           this.loadBreedsBySpecies();  // Cargar las razas correspondientes a la especie seleccionada
