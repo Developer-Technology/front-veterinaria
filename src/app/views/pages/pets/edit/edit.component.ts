@@ -256,4 +256,10 @@ export class EditComponent implements OnInit {
     });
   }
 
+  // Función para resetear el formulario
+  resetForm(form: any): void {
+    form.reset();
+    this.ngOnInit(); // Volver a cargar los datos originales
+  }
+
 }
