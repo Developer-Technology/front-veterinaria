@@ -128,6 +128,55 @@ export class UsersComponent implements OnInit {
     return `Total de registros: ${this.users.length}`;
   }
 
+  // Obtener el total de páginas en un formato compacto para paginación
+  get compactTotalPages(): number[] {
+    const totalPages = this.totalPages.length;
+    const pagesToShow = 5;  // Número fijo de páginas a mostrar
+    const visiblePages = [];
+
+    // Si hay menos páginas de las que queremos mostrar, mostrar todas
+    if (totalPages <= pagesToShow) {
+      for (let i = 1; i <= totalPages; i++) {
+        visiblePages.push(i);
+      }
+    } else {
+      // Calcular los límites de la "ventana" de páginas alrededor de la página actual
+      const halfWindow = Math.floor(pagesToShow / 2);
+      let startPage = Math.max(1, this.currentPage - halfWindow);
+      let endPage = Math.min(totalPages, this.currentPage + halfWindow);
+
+      // Ajustar para mantener la ventana de páginas completa si estamos al principio o al final
+      if (this.currentPage <= halfWindow) {
+        endPage = pagesToShow;
+      } else if (this.currentPage + halfWindow >= totalPages) {
+        startPage = totalPages - pagesToShow + 1;
+      }
+
+      // Siempre mostrar la primera página
+      if (startPage > 1) {
+        visiblePages.push(1);
+        if (startPage > 2) {
+          visiblePages.push(-1); // Puntos suspensivos si hay espacio entre 1 y startPage
+        }
+      }
+
+      // Agregar las páginas dentro de la ventana
+      for (let i = startPage; i <= endPage; i++) {
+        visiblePages.push(i);
+      }
+
+      // Siempre mostrar la última página
+      if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+          visiblePages.push(-1); // Puntos suspensivos si hay espacio entre endPage y la última página
+        }
+        visiblePages.push(totalPages);
+      }
+    }
+
+    return visiblePages;
+  }
+
   // Método para cambiar la cantidad de ítems por página
   onChangeItemsPerPage(event: Event): void {
     const target = event.target as HTMLSelectElement;
