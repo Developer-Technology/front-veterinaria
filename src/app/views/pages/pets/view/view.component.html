@@ -83,13 +83,27 @@
             </div>
             <div class="card-body">
                 <!-- Mostrar las notas si existen -->
-                <div *ngIf="visibleNotes && visibleNotes.length > 0; else noNotes" style="max-height: 160px; overflow-y: auto;" (scroll)="onScroll($event)" class="custom-scroll">
+                <div *ngIf="visibleNotes && visibleNotes.length > 0; else noNotes"
+                    style="max-height: 160px; overflow-y: auto;" (scroll)="onScroll($event)" class="custom-scroll">
                     <ul class="list-group">
-                        <li class="list-group-item" *ngFor="let note of visibleNotes">
-                            <small>
-                                <p>{{ note.noteDescription }}</p>
-                                <strong>{{ note.noteDate | date: 'yyyy-MM-dd' }}</strong>
-                            </small>
+                        <li class="list-group-item d-flex justify-content-between align-items-start note-item"
+                            *ngFor="let note of visibleNotes" (mouseenter)="showActions($event)"
+                            (mouseleave)="hideActions($event)">
+                            <div class="ms-2 me-auto">
+                                <small>
+                                    <p>{{ note.noteDescription }}</p>
+                                    <strong>{{ note.noteDate | date: 'yyyy-MM-dd' }}</strong>
+                                </small>
+                            </div>
+                            <!-- Opciones de edición y eliminación -->
+                            <div class="btn-group action-buttons" style="display: none;">
+                                <button class="btn btn-secondary btn-xs" (click)="openEditModal(note)">
+                                    <i class="feather icon-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-xs" (click)="deleteNote(note.id)">
+                                    <i class="feather icon-trash-2"></i>
+                                </button>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -120,7 +134,9 @@
         <form (ngSubmit)="onSubmit(modal)">
             <div class="mb-3">
                 <label for="noteDescription" class="form-label">Nota</label>
-                <textarea [(ngModel)]="newNote.noteDescription" name="noteDescription" maxlength="140" (input)="updateCharacterCount()" rows="3" style="resize: none;" required class="form-control"></textarea>
+                <textarea [(ngModel)]="newNote.noteDescription" name="noteDescription" maxlength="140"
+                    (input)="updateCharacterCount()" rows="3" style="resize: none;" required
+                    class="form-control"></textarea>
                 <div *ngIf="errors?.noteDescription" class="text-danger small">{{ errors.noteDescription[0] }}</div>
                 <div class="row">
                     <div class="col-md-6"><small>Máximo de 140 caracteres</small></div>
@@ -129,6 +145,33 @@
             </div>
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">Agregar</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- Modal para editar nota -->
+<ng-template #editModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Nota</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onEditSubmit(modal)">
+            <div class="mb-3">
+                <label for="noteDescription" class="form-label">Nota</label>
+
+                <textarea [(ngModel)]="selectedNote.noteDescription" name="noteDescription" maxlength="140"
+                    (input)="updateCharacterCountEdit()" rows="3" style="resize: none;" required
+                    class="form-control"></textarea>
+                <div *ngIf="errors?.noteDescription" class="text-danger small">{{ errors.noteDescription[0] }}</div>
+                <div class="row">
+                    <div class="col-md-6"><small>Máximo de 140 caracteres</small></div>
+                    <div class="col-md-6 text-end"><small>{{ remainingCharacters }}</small></div>
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
             </div>
         </form>
     </div>

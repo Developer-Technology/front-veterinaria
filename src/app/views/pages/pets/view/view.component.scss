@@ -20,3 +20,24 @@
     background-color: #f1f1f1;
     /* Color del fondo del scroll */
 }
+
+.note-item {
+    position: relative;
+    padding-right: 50px;
+    /* Espacio para los botones */
+}
+
+.action-buttons {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: opacity 0.5s;
+    display: none;
+    /* Ocultar los botones por defecto */
+}
+
+.note-item:hover .action-buttons {
+    display: inline-flex;
+    /* Mostrar los botones cuando se pasa el mouse sobre la nota */
+}

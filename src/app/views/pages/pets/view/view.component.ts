@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { UtilitiesService } from '../../../../services/utilities.service';
@@ -11,10 +11,13 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ViewComponent implements OnInit {
 
+  @ViewChild('editModal') editModal!: TemplateRef<any>;
+
   notes: any[] = [];
   visibleNotes: any[] = [];
   pet: any = {};  // Información de la mascota
   isLoading: boolean = true;
+  selectedNote: any = null;
   serverUrl: string;
   errors: any = {};
   newNote: any = {
@@ -167,13 +170,78 @@ export class ViewComponent implements OnInit {
     );
   }
 
+  openEditModal(note: any): void {
+    this.selectedNote = { ...note };  // Clonar el objeto de la nota completa
+    this.errors = {};
+    this.updateCharacterCountEdit();  // Actualizar el contador de caracteres basado en la nota
+    this.modalService.open(this.editModal);  // Abrir modal de edición
+  }
+
+  // Método para actualizar el contador de caracteres al editar
+  updateCharacterCountEdit(): void {
+    this.remainingCharacters = this.maxCharacters - (this.selectedNote.noteDescription?.length || 0);
+  }
+
+  // Enviar formulario para editar una nota existente
+  onEditSubmit(modal: any): void {
+    // Asegúrate de que pet_id esté en selectedNote
+    if (!this.selectedNote.pet_id) {
+      this.selectedNote.pet_id = this.pet.id;  // Asignar el pet_id correcto
+    }
+
+    this.apiService.put(`petnotes/${this.selectedNote.id}`, this.selectedNote, true).subscribe(
+      (response) => {
+        if (response.success) {
+          const index = this.notes.findIndex(s => s.id === this.selectedNote.id);
+          if (index !== -1) {
+            this.notes[index] = response.data;
+          }
+          modal.close();
+          this.utilitiesService.showAlert('success', 'Nota actualizada correctamente.');
+
+          // Asegúrate de que pet_id esté definido en el response.data
+          const petId = response.data.pet_id || this.selectedNote.pet_id;
+
+          this.loadNotes(petId);  // Llamar a loadNotes con el pet_id correcto
+        }
+      },
+      (error) => {
+        if (error.status === 422) {
+          this.errors = error.error.errors;
+        } else {
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar la especie.');
+        }
+      }
+    );
+  }
+
+  // Eliminar una nota y actualizar la tabla
+  deleteNote(id: string): void {
+    this.utilitiesService.showConfirmationDelet('¿Estás seguro?', '¡Esta acción no se puede deshacer!')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.apiService.delete(`petnotes/${id}`, true).subscribe(
+            (result) => {
+              this.utilitiesService.showAlert('success', 'La nota ha sido eliminada.');
+              // Usar el pet_id que ya tienes en el componente para recargar las notas
+              this.loadNotes(this.pet.id);
+            },
+            (error) => {
+              const errorMessage = error?.error?.message || 'No se pudo eliminar la nota.';
+              this.utilitiesService.showAlert('error', errorMessage);
+            }
+          );
+        }
+      });
+  }
+
   // Función para paginar las notas en el frontend
   paginateNotes(): void {
     if (this.allNotesLoaded) return; // Si ya se cargaron todas las notas, no continuar
 
     const start = (this.currentPage - 1) * this.notesPerPage;
     const end = this.currentPage * this.notesPerPage;
-    
+
     // Obtener las nuevas notas paginadas
     const newNotes = this.notes.slice(start, end);
 
@@ -194,6 +262,24 @@ export class ViewComponent implements OnInit {
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
       // Si se llega al final, cargar más notas
       this.paginateNotes();
+    }
+  }
+
+  // Método para mostrar las acciones al pasar el mouse
+  showActions(event: MouseEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    const actions = target.querySelector('.action-buttons');
+    if (actions) {
+      actions.setAttribute('style', 'display: inline-flex;');
+    }
+  }
+
+  // Método para ocultar las acciones al quitar el mouse
+  hideActions(event: MouseEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    const actions = target.querySelector('.action-buttons');
+    if (actions) {
+      actions.setAttribute('style', 'display: none;');
     }
   }
 
