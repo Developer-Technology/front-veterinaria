@@ -75,17 +75,17 @@
     <!-- Sección de Notas -->
     <div class="col-md-4" *ngIf="!isLoading">
         <div class="card">
-            <div class="card-header">
+            <div class="card-header" style="background: transparent;">
                 Nota
-                <button class="btn btn-xs btn-primary float-right">
+                <button class="btn btn-xs btn-primary float-right" (click)="openAddModal(basicModal)">
                     <i class="feather icon-plus"></i> Nueva
                 </button>
             </div>
             <div class="card-body">
                 <!-- Mostrar las notas si existen -->
-                <div *ngIf="pet.notes && pet.notes.length > 0; else noNotes">
+                <div *ngIf="visibleNotes && visibleNotes.length > 0; else noNotes" style="max-height: 160px; overflow-y: auto;" (scroll)="onScroll($event)" class="custom-scroll">
                     <ul class="list-group">
-                        <li class="list-group-item" *ngFor="let note of pet.notes">
+                        <li class="list-group-item" *ngFor="let note of visibleNotes">
                             <small>
                                 <p>{{ note.noteDescription }}</p>
                                 <strong>{{ note.noteDate | date: 'yyyy-MM-dd' }}</strong>
@@ -109,3 +109,27 @@
     </div>
 
 </div>
+
+<!-- Modal para agregar nueva nota -->
+<ng-template #basicModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Agregar Nota</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onSubmit(modal)">
+            <div class="mb-3">
+                <label for="noteDescription" class="form-label">Nota</label>
+                <textarea [(ngModel)]="newNote.noteDescription" name="noteDescription" maxlength="140" (input)="updateCharacterCount()" rows="3" style="resize: none;" required class="form-control"></textarea>
+                <div *ngIf="errors?.noteDescription" class="text-danger small">{{ errors.noteDescription[0] }}</div>
+                <div class="row">
+                    <div class="col-md-6"><small>Máximo de 140 caracteres</small></div>
+                    <div class="col-md-6 text-end"><small>{{ remainingCharacters }}</small></div>
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Agregar</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
