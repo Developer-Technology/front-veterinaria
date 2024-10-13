@@ -81,12 +81,28 @@
                     <i class="feather icon-plus"></i> Nueva
                 </button>
             </div>
-            <div class="card-body"></div>
+            <div class="card-body">
+                <!-- Mostrar las notas si existen -->
+                <div *ngIf="pet.notes && pet.notes.length > 0; else noNotes">
+                    <ul class="list-group">
+                        <li class="list-group-item" *ngFor="let note of pet.notes">
+                            <small>
+                                <p>{{ note.noteDescription }}</p>
+                                <strong>{{ note.noteDate | date: 'yyyy-MM-dd' }}</strong>
+                            </small>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Si no hay notas -->
+                <ng-template #noNotes>
+                    <small class="text-muted">No hay notas disponibles para esta mascota.</small>
+                </ng-template>
+            </div>
         </div>
     </div>
 
     <!-- Botones -->
-    <div class="col-12 text-end" *ngIf="!isLoading">
+    <div class="col-12 text-end mt-2" *ngIf="!isLoading">
         <button type="button" class="btn btn-dark me-2" (click)="goBack()">
             <i class="feather icon-arrow-left-circle"></i> Regresar
         </button>

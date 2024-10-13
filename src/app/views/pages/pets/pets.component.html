@@ -36,10 +36,10 @@
                         titleKey: 'petName',
                         subtitleKey: 'specieName'
                     },
-                    { label: 'Especie', key: 'specieName' },
                     { label: 'Raza', key: 'breedName', sortable: true },
                     { label: 'Dueño', key: 'clientName' },
-                    { label: 'Peso (kg)', key: 'petWeight' }
+                    { label: 'Peso (kg)', key: 'petWeight' },
+                    { label: 'Color', key: 'petColor' }
                   ]" [data]="pets" [itemsPerPage]="10" [actions]="actions">
                 </app-datatable>
             </div>
