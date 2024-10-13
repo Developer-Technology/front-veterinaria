@@ -2,9 +2,9 @@
   &.nav-tabs {
     .nav-item {
       .nav-link {
-        border-color: $nav-tabs-link-border-color;
+        /*border-color: $nav-tabs-link-border-color;*/
         color: $body-color;
-        background-color: $nav-tabs-link-bg;
+        /*background-color: $nav-tabs-link-bg;*/
         cursor: pointer;
         &.active {
           border-color: $nav-tabs-link-active-border-color;

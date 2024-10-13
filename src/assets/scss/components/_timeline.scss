@@ -2,12 +2,12 @@
   border-left: 3px solid $primary;
   border-bottom-right-radius: $border-radius;
   border-top-right-radius: $border-radius;    
-  background: rgba($primary, .2);
+  /*background: rgba($primary, .2);*/
   margin: 0 auto;  
   position: relative;
-  padding: 50px;
+  padding: 20px;
   list-style: none;
-  max-width: 40%; 
+  /*max-width: 40%;*/
   @media(max-width: 767px) {
     max-width: 98%;
     padding: 25px;
@@ -57,7 +57,7 @@
     &:after {
       -webkit-box-shadow: 0 0 0 3px $primary;
               box-shadow: 0 0 0 3px $primary;    
-      left: (50px + 3px + (8px * 0.35)) * -1;        
+      left: (20px + 3px + (8px * 0.35)) * -1;        
       background: $card-bg;    
       border-radius: 50%;  
       height: 9px;

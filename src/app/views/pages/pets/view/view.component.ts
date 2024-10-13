@@ -13,6 +13,7 @@ export class ViewComponent implements OnInit {
 
   @ViewChild('editModal') editModal!: TemplateRef<any>;
 
+  defaultNavActiveId = 1;
   notes: any[] = [];
   visibleNotes: any[] = [];
   pet: any = {};  // Información de la mascota
