@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../services/api.service';
 import { UtilitiesService } from '../../../services/utilities.service';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-users',
@@ -12,15 +11,8 @@ import Swal from 'sweetalert2';
 export class UsersComponent implements OnInit {
 
   users: any[] = [];  // Lista completa de usuarios
-  filteredUsers: any[] = [];  // Lista filtrada de usuarios
-  currentPage: number = 1;  // Página actual
-  itemsPerPage: number = 5;  // Cantidad de registros por página
-  searchQuery: string = '';  // Query de búsqueda
-  isDropdownOpen: boolean = false;
-  isLoading: boolean = true;  // Variable de carga
-  // Variables de ordenación
-  sortColumn: string = '';  // Columna que se está ordenando
-  sortDirection: 'asc' | 'desc' = 'asc';  // Dirección de ordenación
+  isLoading: boolean = true;  // Estado de carga
+  actions: any[] = []; // Lista de acciones
 
   constructor(
     private apiService: ApiService,
@@ -30,6 +22,7 @@ export class UsersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
+    this.setupActions();
   }
 
   // Cargar usuarios desde el API
@@ -38,10 +31,7 @@ export class UsersComponent implements OnInit {
     this.apiService.get('users', true).subscribe(
       (response) => {
         if (response.success) {
-          // Ordenar las mascotas de manera descendente por el campo 'id'
           this.users = response.data.sort((a: any, b: any) => b.id - a.id);
-          //this.users = response.data;
-          this.filteredUsers = this.users;  // Iniciar el filtrado con todos los usuarios
           this.isLoading = false;  // Desactivar el estado de carga
         }
       },
@@ -52,143 +42,36 @@ export class UsersComponent implements OnInit {
     );
   }
 
-  // Ordenar los datos
-  sortData(column: string): void {
-    if (this.sortColumn === column) {
-      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';  // Cambiar dirección si es la misma columna
-    } else {
-      this.sortColumn = column;
-      this.sortDirection = 'asc';  // Si es una nueva columna, orden ascendente
-    }
-
-    this.filteredUsers.sort((a, b) => {
-      const valueA = a[column];
-      const valueB = b[column];
-
-      let comparison = 0;
-      if (valueA > valueB) {
-        comparison = 1;
-      } else if (valueA < valueB) {
-        comparison = -1;
+  // Definir las acciones para cada usuario
+  setupActions(): void {
+    this.actions = [
+      {
+        label: 'Editar',
+        onClick: this.editUser.bind(this), // Pasamos la referencia de la función
+        condition: (user: any) => user.id !== 1 // Condición para habilitar la acción
+      },
+      {
+        label: 'Eliminar',
+        onClick: this.deleteUser.bind(this), // Pasamos la referencia de la función
+        condition: (user: any) => user.id !== 1 // Condición para habilitar la acción
       }
-
-      return this.sortDirection === 'asc' ? comparison : -comparison;
-    });
-  }
-
-  // Obtener el icono de ordenación para la columna actual
-  getSortIcon(column: string): string {
-    if (this.sortColumn === column) {
-      return this.sortDirection === 'asc' ? 'icon-arrow-up' : 'icon-arrow-down';
-    }
-    return '';
-  }
-
-  getRecordNumber(index: number): number {
-    return (this.currentPage - 1) * this.itemsPerPage + (index + 1);
-  }
-
-  // Paginación: Obtener usuarios de la página actual
-  get paginatedUsers(): any[] {
-    return this.utilitiesService.getPaginatedData(this.filteredUsers, this.currentPage, this.itemsPerPage);
-  }
-
-  // Cambiar página
-  changePage(page: number): void {
-    const totalPages = this.totalPages.length;
-    this.currentPage = this.utilitiesService.validatePageNumber(page, totalPages);
-  }
-
-  // Filtro de búsqueda: buscar en documento, nombre, apellido, email y teléfono
-  onSearch(): void {
-    this.filteredUsers = this.users.filter(user =>
-      user.doc.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      user.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      user.sex.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-      user.phone.toLowerCase().includes(this.searchQuery.toLowerCase())
-    );
-    this.changePage(1);  // Reiniciar a la primera página después de filtrar
-  }
-
-  // Obtener el total de páginas
-  get totalPages(): number[] {
-    return this.utilitiesService.getTotalPages(this.filteredUsers, this.itemsPerPage);
-  }
-
-  // Mostrar el número de resultados actuales
-  get showingRecords(): string {
-    const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-    const end = Math.min(this.currentPage * this.itemsPerPage, this.filteredUsers.length);
-    return `Mostrando ${start} - ${end} de ${this.filteredUsers.length} resultados`;
-  }
-
-  // Obtener el total de registros
-  get totalRecords(): string {
-    return `Total de registros: ${this.users.length}`;
-  }
-
-  // Obtener el total de páginas en un formato compacto para paginación
-  get compactTotalPages(): number[] {
-    const totalPages = this.totalPages.length;
-    const pagesToShow = 5;  // Número fijo de páginas a mostrar
-    const visiblePages = [];
-
-    // Si hay menos páginas de las que queremos mostrar, mostrar todas
-    if (totalPages <= pagesToShow) {
-      for (let i = 1; i <= totalPages; i++) {
-        visiblePages.push(i);
-      }
-    } else {
-      // Calcular los límites de la "ventana" de páginas alrededor de la página actual
-      const halfWindow = Math.floor(pagesToShow / 2);
-      let startPage = Math.max(1, this.currentPage - halfWindow);
-      let endPage = Math.min(totalPages, this.currentPage + halfWindow);
-
-      // Ajustar para mantener la ventana de páginas completa si estamos al principio o al final
-      if (this.currentPage <= halfWindow) {
-        endPage = pagesToShow;
-      } else if (this.currentPage + halfWindow >= totalPages) {
-        startPage = totalPages - pagesToShow + 1;
-      }
-
-      // Siempre mostrar la primera página
-      if (startPage > 1) {
-        visiblePages.push(1);
-        if (startPage > 2) {
-          visiblePages.push(-1); // Puntos suspensivos si hay espacio entre 1 y startPage
-        }
-      }
-
-      // Agregar las páginas dentro de la ventana
-      for (let i = startPage; i <= endPage; i++) {
-        visiblePages.push(i);
-      }
-
-      // Siempre mostrar la última página
-      if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-          visiblePages.push(-1); // Puntos suspensivos si hay espacio entre endPage y la última página
-        }
-        visiblePages.push(totalPages);
-      }
-    }
-
-    return visiblePages;
-  }
-
-  // Método para cambiar la cantidad de ítems por página
-  onChangeItemsPerPage(event: Event): void {
-    const target = event.target as HTMLSelectElement;
-    this.itemsPerPage = parseInt(target.value, 10);  // Obtener el valor seleccionado y convertirlo a número
-    this.currentPage = 1;  // Reinicia la página a la primera
-    this.changePage(1); // Actualiza la vista para respetar la cantidad seleccionada
+    ];
   }
 
   // Función para redirigir al formulario de edición
-  editUser(id: string): void {
-    const encodedId = btoa(id);
+  editUser(user: any): void {
+    const encodedId = btoa(user.id);
     this.router.navigate(['/users/edit', encodedId]);  // Redirige a la ruta de edición
+  }
+
+  // Función para eliminar un usuario
+  deleteUser(user: any): void {
+    if (user.id === 1) {
+      this.utilitiesService.showAlert('warning', 'No se puede eliminar al usuario con ID 1');
+    } else {
+      // Aquí agregar lógica para eliminar al usuario
+      this.utilitiesService.showAlert('success', 'Usuario eliminado correctamente');
+    }
   }
 
 }

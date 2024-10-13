@@ -4,6 +4,7 @@ import { VaccinesRoutingModule } from './vaccines-routing.module';
 import { VaccinesComponent } from './vaccines.component';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     VaccinesRoutingModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    SharedModule
   ]
 })
 export class VaccinesModule { }

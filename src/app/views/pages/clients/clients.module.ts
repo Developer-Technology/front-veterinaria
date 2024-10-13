@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     ClientsRoutingModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    SharedModule
   ]
 })
 export class ClientsModule { }

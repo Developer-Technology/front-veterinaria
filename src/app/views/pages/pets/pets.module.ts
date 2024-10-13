@@ -9,6 +9,7 @@ import { AngularCropperjsModule } from 'angular-cropperjs';
 import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
 import { ViewComponent } from './view/view.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ViewComponent } from './view/view.component';
     FormsModule,
     NgSelectModule,
     NgbModule,
-    AngularCropperjsModule
+    AngularCropperjsModule,
+    SharedModule
   ]
 })
 export class PetsModule { }

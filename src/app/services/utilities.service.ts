@@ -48,27 +48,4 @@ export class UtilitiesService {
         });
     }
 
-    // Calcular el rango de elementos a mostrar en la página actual
-    getPaginatedData(data: any[], currentPage: number, itemsPerPage: number): any[] {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        return data.slice(start, end);  // Retornar el subconjunto de datos para la página actual
-    }
-
-    // Calcular el número total de páginas
-    getTotalPages(data: any[], itemsPerPage: number): number[] {
-        const totalPages = Math.ceil(data.length / itemsPerPage);
-        return Array(totalPages).fill(0).map((_, i) => i + 1);
-    }
-
-    // Verificar que la página esté dentro del rango permitido
-    validatePageNumber(page: number, totalPages: number): number {
-        if (page < 1) {
-            return 1;
-        } else if (page > totalPages) {
-            return totalPages;
-        }
-        return page;
-    }
-
 }

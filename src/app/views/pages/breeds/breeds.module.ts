@@ -4,6 +4,7 @@ import { BreedsRoutingModule } from './breeds-routing.module';
 import { BreedsComponent } from './breeds.component';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SharedModule } from 'src/app/shared/shared.module'; 
 
 @NgModule({
   declarations: [
@@ -13,7 +14,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     BreedsRoutingModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    SharedModule
   ]
 })
 export class BreedsModule { }

@@ -24,140 +24,11 @@
                     </div>
                 </div>
 
-                <!-- Mostrar la imagen "not-found" cuando no hay vacunas registradas en la base de datos -->
-                <div *ngIf="!isLoading && vaccines.length === 0" class="text-center">
-                    <img src="assets/images/default/not-found.png" class="img-fluid" style="max-width: 90px;">
-                    <p class="text-muted mt-2">No hay vacunas registradas en el sistema.</p>
-                </div>
-
-                <!-- Mostrar el buscador, tabla y paginación cuando haya vacunas -->
-                <div *ngIf="!isLoading && vaccines.length > 0">
-                    <!-- Buscador -->
-                    <div class="row mb-2 align-items-center">
-                        <div class="col-md-6">
-                            <input type="text" class="form-control form-control-sm"
-                                placeholder="Buscar por vacuna o especie..." [(ngModel)]="searchQuery"
-                                (input)="onSearch()">
-                        </div>
-                        <!-- Aquí agregarás los futuros filtros o botones de exportación -->
-                        <div class="col-md-6 text-end">
-                            <div ngbDropdown>
-                                <button class="btn btn-outline-primary btn-xs" id="dropdownBasic1" ngbDropdownToggle><i
-                                        class="icon feather icon-download-cloud"></i> Exportar</button>
-                                <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-                                    <button ngbDropdownItem>PDF</button>
-                                    <button ngbDropdownItem>Excel</button>
-                                    <div class="dropdown-divider"></div>
-                                    <button ngbDropdownItem>Imprimir</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Mostrar el total de registros y resultados -->
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <p class="mb-0 text-muted small"><strong>{{ totalRecords }}</strong></p>
-                        <p class="mb-0 text-muted small"><strong>{{ showingRecords }}</strong></p>
-                    </div>
-
-                    <!-- Tabla de vacunas -->
-                    <div class="table-responsive" *ngIf="!isLoading && vaccines.length > 0">
-                        <table class="table table-sm table-bordered align-middle compact-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th (click)="sortData('vaccineName')" class="sortable-column">Nombre de Vacuna <i
-                                            class="feather icon-chevron-up-down"
-                                            [ngClass]="getSortIcon('vaccineName')"></i>
-                                    </th>
-                                    <th (click)="sortData('specieName')" class="sortable-column">Especie <i
-                                            class="feather icon-chevron-up-down"
-                                            [ngClass]="getSortIcon('specieName')"></i></th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr *ngFor="let vaccine of paginatedVaccines; let i = index">
-                                    <td>{{ getRecordNumber(i) }}</td>
-                                    <td>{{ vaccine.vaccineName }}</td>
-                                    <td>{{ vaccine.specieName }}</td>
-                                    <td class="text-center btn-table">
-                                        <div ngbDropdown>
-                                            <button class="btn btn-outline-primary btn-xs" id="dropdownBasic1"
-                                                ngbDropdownToggle><i class="icon feather icon-settings"></i></button>
-                                            <div ngbDropdownMenu aria-labelledby="dropdownBasic1"
-                                                class="dropdown-menu-end">
-                                                <button ngbDropdownItem
-                                                    (click)="openEditModal(editModal, vaccine)">Editar</button>
-                                                <button ngbDropdownItem
-                                                    (click)="deleteVaccine(vaccine.id)">Eliminar</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr *ngIf="!paginatedVaccines.length && !isLoading">
-                                    <td colspan="4" class="text-center">No se encontraron vacunas</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginación -->
-                    <div class="row align-items-center" *ngIf="paginatedVaccines.length > 0" style="margin-top: -4px;">
-                        <div class="col-md-6 d-flex align-items-center pagin">
-                            <span class="me-2">Ir a página:</span>
-                            <select class="form-select form-select-sm w-auto" [(ngModel)]="currentPage"
-                                (change)="changePage(currentPage)">
-                                <option *ngFor="let page of totalPages" [value]="page">{{ page }}</option>
-                            </select>
-                            <span class="ms-3 me-2">Mostrar:</span>
-                            <select class="form-select form-select-sm w-auto" [(ngModel)]="itemsPerPage"
-                                (change)="onChangeItemsPerPage($event)">
-                                <option [value]="5">5</option>
-                                <option [value]="10">10</option>
-                                <option [value]="20">20</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 text-end mt-3">
-                            <nav>
-                                <ul class="pagination pagination-sm justify-content-end">
-                                    <!-- Enlace para "Primero" -->
-                                    <li class="page-item" [class.disabled]="currentPage === 1">
-                                        <a class="page-link" (click)="changePage(1)" href="javascript:void(0)">««</a>
-                                    </li>
-
-                                    <!-- Enlace para "Anterior" -->
-                                    <li class="page-item" [class.disabled]="currentPage === 1">
-                                        <a class="page-link" (click)="changePage(currentPage - 1)"
-                                            href="javascript:void(0)">«</a>
-                                    </li>
-
-                                    <!-- Enlaces de paginación numerados con puntos suspensivos -->
-                                    <li *ngFor="let page of compactTotalPages" class="page-item"
-                                        [class.active]="currentPage === page" [class.disabled]="page === -1">
-                                        <a *ngIf="page !== -1" class="page-link" (click)="changePage(page)"
-                                            href="javascript:void(0)">{{ page }}</a>
-                                        <span *ngIf="page === -1" class="page-link">...</span>
-                                    </li>
-
-                                    <!-- Enlace para "Siguiente" -->
-                                    <li class="page-item" [class.disabled]="currentPage === totalPages.length">
-                                        <a class="page-link" (click)="changePage(currentPage + 1)"
-                                            href="javascript:void(0)">»</a>
-                                    </li>
-
-                                    <!-- Enlace para "Último" -->
-                                    <li class="page-item" [class.disabled]="currentPage === totalPages.length">
-                                        <a class="page-link" (click)="changePage(totalPages.length)"
-                                            href="javascript:void(0)">»»</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
-
-                </div>
-
+                <app-datatable *ngIf="!isLoading" [columns]="[
+                    { label: 'Nombre', key: 'vaccineName', sortable: true },
+                    { label: 'Especie', key: 'specieName', sortable: true }
+                  ]" [data]="vaccines" [itemsPerPage]="5" [actions]="actions">
+                </app-datatable>
             </div>
         </div>
     </div>
@@ -166,15 +37,15 @@
 <!-- Modal para agregar nueva vacuna -->
 <ng-template #basicModal let-modal>
     <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Agregar Vacuna</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <h5 class="modal-title">Agregar Vacuna</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
     <div class="modal-body">
-        <form (ngSubmit)="onSubmit(modal)" #vaccineForm="ngForm">
+        <form (ngSubmit)="onSubmit(modal)">
             <div class="mb-3">
                 <label for="vaccineName" class="form-label">Nombre de la Vacuna</label>
-                <input type="text" class="form-control" id="vaccineName" [(ngModel)]="newVaccine.vaccineName"
-                    name="vaccineName" required maxlength="150">
+                <input type="text" class="form-control" [(ngModel)]="newVaccine.vaccineName" name="vaccineName"
+                    required>
                 <div *ngIf="errors?.vaccineName" class="text-danger small">{{ errors.vaccineName[0] }}</div>
             </div>
             <div class="mb-3">
@@ -185,7 +56,7 @@
                 <div *ngIf="errors?.species_id" class="text-danger small">{{ errors.species_id[0] }}</div>
             </div>
             <div class="text-end">
-                <button type="submit" class="btn btn-primary" [disabled]="vaccineForm.invalid">Agregar</button>
+                <button type="submit" class="btn btn-primary">Agregar</button>
             </div>
         </form>
     </div>
@@ -195,27 +66,22 @@
 <ng-template #editModal let-modal>
     <div class="modal-header">
         <h5 class="modal-title">Editar Vacuna</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
     <div class="modal-body">
         <form (ngSubmit)="onEditSubmit(modal)">
             <div class="mb-3">
                 <label for="vaccineName" class="form-label">Nombre de la Vacuna</label>
-                <input type="text" id="vaccineName" class="form-control" [(ngModel)]="selectedVaccine.vaccineName"
-                    name="vaccineName" required maxlength="150">
-                <div *ngIf="errors.vaccineName" class="text-danger">
-                    {{ errors.vaccineName }}
-                </div>
+                <input type="text" class="form-control" [(ngModel)]="selectedVaccine.vaccineName" name="vaccineName"
+                    required>
+                <div *ngIf="errors.vaccineName" class="text-danger small">{{ errors.vaccineName }}</div>
             </div>
             <div class="mb-3">
                 <label for="species_id" class="form-label">Especie</label>
-                <select id="species_id" class="form-select" [(ngModel)]="selectedVaccine.species_id" name="species_id"
-                    required>
+                <select class="form-select" [(ngModel)]="selectedVaccine.species_id" name="species_id" required>
                     <option *ngFor="let specie of species" [value]="specie.id">{{ specie.specieName }}</option>
                 </select>
-                <div *ngIf="errors.species_id" class="text-danger">
-                    {{ errors.species_id }}
-                </div>
+                <div *ngIf="errors.species_id" class="text-danger small">{{ errors.species_id }}</div>
             </div>
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>

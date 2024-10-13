@@ -5,6 +5,7 @@ import { SuppliersComponent } from './suppliers.component';
 import { FormsModule } from '@angular/forms';
 import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
@@ -17,7 +18,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     SuppliersRoutingModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    SharedModule
   ]
 })
 export class SuppliersModule { }
