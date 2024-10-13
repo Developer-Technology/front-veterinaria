@@ -46,3 +46,14 @@
         </div>
     </div>
 </div>
+
+<!-- Modal para mostrar el spinner de carga -->
+<ng-template #loadingModal>
+    <div class="modal-backdrop show"></div>
+    <div class="modal d-flex justify-content-center align-items-center" tabindex="-1"
+        style="display:block; background: rgba(0, 0, 0, 0.5);">
+        <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+</ng-template>
