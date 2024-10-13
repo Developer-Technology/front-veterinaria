@@ -59,6 +59,11 @@ export class PetsComponent implements OnInit {
         label: 'Eliminar',
         onClick: this.deletePet.bind(this),  // Pasamos la referencia de la función
         condition: (pet: any) => true  // Condición para habilitar la acción
+      },
+      {
+        label: 'Perfil',
+        onClick: this.viewPet.bind(this),  // Pasamos la referencia de la función
+        condition: (pet: any) => true  // Condición para habilitar la acción
       }
     ];
   }
@@ -67,6 +72,12 @@ export class PetsComponent implements OnInit {
   editPet(pet: any): void {
     const encodedId = btoa(pet.id);
     this.router.navigate(['/pets/edit', encodedId]);  // Redirige a la ruta de edición
+  }
+
+  // Función para redirigir al formulario del perfil
+  viewPet(pet: any): void {
+    const encodedId = btoa(pet.id);
+    this.router.navigate(['/pets/view', encodedId]);  // Redirige a la ruta de edición
   }
 
   // Función para eliminar una mascota

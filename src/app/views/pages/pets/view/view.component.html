@@ -1,1 +1,95 @@
-<p>view works!</p>
+<nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/pets">Mascotas</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Perfil</li>
+    </ol>
+</nav>
+
+<div class="row">
+
+    <div class="col-md-12">
+        <!-- Spinner de carga -->
+        <div *ngIf="isLoading" class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de la imagen y la información principal -->
+    <div class="col-md-8" *ngIf="!isLoading">
+        <div class="card mb-4">
+            <div class="row no-gutters">
+                <!-- Imagen de la mascota -->
+                <div class="col-md-4 text-center">
+                    <img [src]="serverUrl + pet.petPhoto ? serverUrl + pet.petPhoto : 'assets/images/default/blank-pet.png'"
+                        class="card-img" alt="{{ pet.petName }}">
+                    <h5 class="card-title mt-2 mb-0">{{ pet.petName }}</h5>
+                    <p class="card-text mb-2">
+                        <small>{{ calculateAge(pet.petBirthDate) }}</small>
+                    </p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-header" style="background: transparent;">Información General</div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Código: </strong>{{ pet.petCode }}</p>
+                                <p class="mt-2"><strong>Fecha N.: </strong>{{ pet.petBirthDate | date: 'yyyy-MM-dd' }}
+                                </p>
+                                <p class="mt-2"><strong>Sexo: </strong>{{ pet.petGender }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Peso: </strong>{{ pet.petWeight }} Kg</p>
+                                <p class="mt-2"><strong>Especie: </strong>{{ pet.specieName }}</p>
+                                <p class="mt-2"><strong>Raza: </strong>{{ pet.breedName }}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <p class="mt-2"><strong>Dueño: </strong>{{ pet.clientName }}</p>
+                            </div>
+                            <div *ngIf="pet.petAdditional">
+                                <hr class="mt-2 mb-0">
+                                <div class="col-md-12 mt-2">
+                                    <strong>Información adicional: </strong>
+                                    <p>{{pet.petAdditional}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="card mb-4">
+            <div class="card-header">
+                Historia
+                <button class="btn btn-xs btn-primary float-right">
+                    <i class="feather icon-plus"></i> Nueva Historia
+                </button>
+            </div>
+            <div class="card-body"></div>
+        </div>
+    </div>
+
+    <!-- Sección de Notas -->
+    <div class="col-md-4" *ngIf="!isLoading">
+        <div class="card">
+            <div class="card-header">
+                Nota
+                <button class="btn btn-xs btn-primary float-right">
+                    <i class="feather icon-plus"></i> Nueva
+                </button>
+            </div>
+            <div class="card-body"></div>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="col-12 text-end" *ngIf="!isLoading">
+        <button type="button" class="btn btn-dark me-2" (click)="goBack()">
+            <i class="feather icon-arrow-left-circle"></i> Regresar
+        </button>
+    </div>
+
+</div>
