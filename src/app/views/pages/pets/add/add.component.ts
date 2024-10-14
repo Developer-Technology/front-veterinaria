@@ -94,7 +94,7 @@ export class AddComponent implements OnInit {
 
   // Enviar el formulario con la imagen
   onSubmit(): void {
-    const formattedBirthDate = this.convertDateToString(this.newPet.petBirthDate);
+    const formattedBirthDate = this.utilitiesService.convertDateToString(this.newPet.petBirthDate);
     const registrationDate = new Date();
     const generatedCode = this.generatePetCode(
       this.newPet.petName,
@@ -143,15 +143,6 @@ export class AddComponent implements OnInit {
         }
       }
     );
-  }
-
-  convertDateToString(date: NgbDateStruct): string {
-    if (!date) {
-      return '';
-    }
-    const month = date.month < 10 ? `0${date.month}` : date.month;
-    const day = date.day < 10 ? `0${date.day}` : date.day;
-    return `${date.year}-${month}-${day}`;
   }
 
   generatePetCode(petName: string, speciesId: number, breedId: number, clientId: number, registrationDate: Date): string {

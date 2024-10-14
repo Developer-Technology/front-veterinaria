@@ -62,20 +62,6 @@ export class EditComponent implements OnInit {
     this.loadClients();
   }
 
-  // Convertir la fecha desde el formato 'yyyy-mm-dd' a un objeto NgbDateStruct
-  convertStringToDateStruct(dateString: string): NgbDateStruct | null {
-    if (!dateString) return null;
-
-    const dateParts = dateString.split('-');
-    if (dateParts.length !== 3) return null;
-
-    return {
-      year: +dateParts[0],
-      month: +dateParts[1],
-      day: +dateParts[2]
-    };
-  }
-
   // Cargar los datos de la mascota desde el backend
   loadPetData(id: string): void {
     this.isLoading = true;
@@ -85,7 +71,7 @@ export class EditComponent implements OnInit {
           this.editPet = response.data;
 
           // Convertir la fecha de nacimiento para usarla en ngbDatepicker
-          this.editPet.petBirthDate = this.convertStringToDateStruct(this.editPet.petBirthDate);
+          this.editPet.petBirthDate = this.utilitiesService.convertStringToDateStruct(this.editPet.petBirthDate);
 
           // Construir la URL completa de la imagen de la mascota si existe
           this.imageUrl = this.editPet.petPhoto

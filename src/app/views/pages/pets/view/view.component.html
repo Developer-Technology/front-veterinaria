@@ -68,7 +68,7 @@
                     <a ngbNavLink>Historia</a>
                     <ng-template ngbNavContent>
                         <button class="btn btn-xs btn-primary" style="border-bottom-left-radius: 0;">
-                            <i class="feather icon-plus"></i> Nueva
+                            <i class="feather icon-plus"></i> Agregar Historia
                         </button>
                         <ul class="timeline ">
                             <li class="event">
@@ -86,19 +86,33 @@
                     </ng-template>
                 </li>
                 <li [ngbNavItem]="2">
-                    <a ngbNavLink>Vacunas</a>
+                    <a ngbNavLink (click)="loadVaccines(pet.id)">Vacunas</a>
                     <ng-template ngbNavContent>
-                        <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan
-                            four loko
-                            farm-to-table craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk
-                            aliquip jean shorts
-                            ullamco ad vinyl cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus
-                            mollit. Keytar
-                            helvetica VHS salvia yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio
-                            cillum wes anderson
-                            8-bit, sustainable jean shorts beard ut DIY ethical culpa terry richardson biodiesel. Art
-                            party scenester
-                            stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.</p>
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h4 class="card-title mb-0">Gestión de Vacunas</h4>
+                            <!-- Botón Agregar Mascota alineado a la derecha -->
+                            <button class="btn btn-primary btn-sm" (click)="openAddModal(vaccineModal)">
+                                <i class="feather icon-plus"></i> Agregar Vacuna
+                            </button>
+                        </div>
+
+                        <div class="col-md-12">
+                            <!-- Spinner de carga -->
+                            <div *ngIf="vaccinesLoading" class="text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Tabla de mascotas -->
+                        <app-datatable *ngIf="!vaccinesLoading" [columns]="[
+                        { label: 'Nombre', key: 'vaccineName', sortable: true },
+                        { label: 'Fecha', key: 'vaccineDate', sortable: true },
+                        { label: 'Producto (Lote)', key: 'productUsed' },
+                        { label: 'Obervaciones', key: 'observations' },
+                    ]" [data]="vaccines" [itemsPerPage]="10" [actions]="actions">
+                        </app-datatable>
                     </ng-template>
                 </li>
                 <li [ngbNavItem]="3">
@@ -223,6 +237,114 @@
                     <div class="col-md-6"><small>Máximo de 140 caracteres</small></div>
                     <div class="col-md-6 text-end"><small>{{ remainingCharacters }}</small></div>
                 </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- Modal para agregar nueva vacuna -->
+<ng-template #vaccineModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Agregar Vacuna</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onSubmitVaccine(modal)">
+            <div class="row mb-3">
+
+                <div class="col-md-6 mb-2">
+                    <label for="vaccineName" class="form-label">Vacuna</label>
+                    <ng-select [items]="allVaccines" bindLabel="vaccineName" bindValue="id"
+                        placeholder="Seleccione la vacuna" [(ngModel)]="newVaccine.vaccine_id" name="vaccine_id"
+                        required>
+                    </ng-select>
+                    <div *ngIf="errors?.vaccine_id" class="text-danger small">{{ errors.vaccine_id[0] }}
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label for="vaccine_date" class="form-label">Fecha Aplicada</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="yyyy-mm-dd" name="dp"
+                            [(ngModel)]="newVaccine.vaccine_date" ngbDatepicker #d="ngbDatepicker">
+                        <button class="input-group-text" type="button" (click)="d.toggle()">
+                            <i class="feather icon-calendar icon-md text-muted"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="errors?.vaccine_date" class="text-danger small">{{ errors.vaccine_date[0] }}
+                    </div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <label for="product" class="form-label">Producto (Fabricante, lote)</label>
+                    <input type="text" class="form-control" id="product" [(ngModel)]="newVaccine.product" name="product"
+                        required>
+                    <div *ngIf="errors?.product" class="text-danger small">{{ errors.product[0] }}</div>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="observation" class="form-label">Observaciones</label>
+                    <textarea [(ngModel)]="newVaccine.observation" name="observation" rows="3" style="resize: none;"
+                        required class="form-control"></textarea>
+                    <div *ngIf="errors?.observation" class="text-danger small">{{ errors.observation[0] }}</div>
+                </div>
+
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">Agregar</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- Modal para editar vacuna -->
+<ng-template #editVaccineModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">Editar Vacuna</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+        <form (ngSubmit)="onEditSubmitVaccine(modal)">
+            <div class="row mb-3">
+
+                <div class="col-md-6 mb-2">
+                    <label for="vaccineName" class="form-label">Vacuna</label>
+                    <ng-select [items]="allVaccines" bindLabel="vaccineName" bindValue="id"
+                        placeholder="Seleccione la vacuna" [(ngModel)]="selectedVaccine.vaccineId" name="vaccine_id"
+                        required>
+                    </ng-select>
+                    <div *ngIf="errors?.vaccine_id" class="text-danger small">{{ errors.vaccine_id[0] }}</div>
+                </div>
+
+                <div class="col-md-6 mb-2">
+                    <label for="vaccine_date" class="form-label">Fecha Aplicada</label>
+                    <div class="input-group">
+                        <input class="form-control" placeholder="yyyy-mm-dd" name="dp"
+                            [(ngModel)]="selectedVaccine.vaccineDate" ngbDatepicker #d="ngbDatepicker">
+                        <button class="input-group-text" type="button" (click)="d.toggle()">
+                            <i class="feather icon-calendar icon-md text-muted"></i>
+                        </button>
+                    </div>
+                    <div *ngIf="errors?.vaccine_date" class="text-danger small">{{ errors.vaccine_date[0] }}</div>
+                </div>
+
+                <div class="col-md-12 mb-2">
+                    <label for="product" class="form-label">Producto (Fabricante, lote)</label>
+                    <input type="text" class="form-control" id="product" [(ngModel)]="selectedVaccine.productUsed"
+                        name="product" required>
+                    <div *ngIf="errors?.product" class="text-danger small">{{ errors.product[0] }}</div>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="observation" class="form-label">Observaciones</label>
+                    <textarea [(ngModel)]="selectedVaccine.observations" name="observation" rows="3"
+                        style="resize: none;" required class="form-control"></textarea>
+                    <div *ngIf="errors?.observation" class="text-danger small">{{ errors.observation[0] }}</div>
+                </div>
+
             </div>
             <div class="text-end">
                 <button type="submit" class="btn btn-primary">Guardar Cambios</button>

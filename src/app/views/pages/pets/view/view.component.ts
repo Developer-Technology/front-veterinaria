@@ -12,12 +12,17 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class ViewComponent implements OnInit {
 
   @ViewChild('editModal') editModal!: TemplateRef<any>;
+  @ViewChild('editVaccineModal') editVaccineModal!: TemplateRef<any>;
 
   defaultNavActiveId = 1;
   notes: any[] = [];
+  vaccines: any[] = [];
+  allVaccines: any[] = [];
   visibleNotes: any[] = [];
   pet: any = {};  // Información de la mascota
   isLoading: boolean = true;
+  vaccinesLoading: boolean = false;  // Nueva bandera para el estado de carga de vacunas
+  vaccinesLoaded: boolean = false;   // Nueva bandera para saber si ya se han cargado las vacunas
   selectedNote: any = null;
   serverUrl: string;
   errors: any = {};
@@ -26,19 +31,33 @@ export class ViewComponent implements OnInit {
     noteDescription: '',
     noteDate: ''
   };
+  newVaccine: any = {
+    pet_id: '',
+    vaccine_id: '',
+    observation: '',
+    product: '',
+    vaccine_date: ''
+  };
+  selectedVaccine: any = {
+    id: '',
+    vaccine_id: '',
+    observation: '',
+    product: '',
+    vaccine_date: ''
+  };
   maxCharacters = 140;  // Máximo número de caracteres permitidos
   remainingCharacters = this.maxCharacters;  // Caracteres restantes
-  // Variables para manejar la paginación
   notesPerPage: number = 5; // Número de notas por página
   currentPage: number = 1;  // Página actual
   allNotesLoaded: boolean = false;
+  actions: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService,
     private utilitiesService: UtilitiesService,
-    private modalService: NgbModal,
+    private modalService: NgbModal
   ) {
     this.serverUrl = this.apiService.getServerUrl();
   }
@@ -49,6 +68,7 @@ export class ViewComponent implements OnInit {
       const decodedId = atob(encodedId);  // Decodificar el ID
       this.loadPet(decodedId);
       this.loadNotes(decodedId);
+      this.setupActions();
     }
   }
 
@@ -88,6 +108,30 @@ export class ViewComponent implements OnInit {
       },
       (error) => {
         this.utilitiesService.showAlert('error', 'No se pudieron cargar las notas');
+      }
+    );
+  }
+
+  // Función para cargar las notas con paginación
+  loadVaccines(petId: string): void {
+    // Evitar recargar vacunas si ya se han cargado antes
+    //if (this.vaccinesLoaded) return;
+
+    // Marcar que estamos cargando las vacunas
+    this.vaccinesLoading = true;
+
+    this.apiService.get(`pets/${petId}/vaccine-history`, true).subscribe(
+      (response) => {
+        if (response.success) {
+          this.vaccines = response.data.sort((a: any, b: any) => b.id - a.id);
+          this.loadAllVaccines();
+          this.vaccinesLoading = false;
+          this.vaccinesLoaded = true;  // Marcar que ya se han cargado las vacunas
+        }
+      },
+      (error) => {
+        this.vaccinesLoading = false;
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las vacunas');
       }
     );
   }
@@ -282,6 +326,145 @@ export class ViewComponent implements OnInit {
     if (actions) {
       actions.setAttribute('style', 'display: none;');
     }
+  }
+
+  // Definir las acciones para cada vacuna
+  setupActions(): void {
+    this.actions = [
+      {
+        label: 'Editar',
+        onClick: (vaccine: any) => this.openEditModalVaccine(vaccine),  // Pasamos la referencia de la función
+        condition: (vaccine: any) => true  // Condición para habilitar la acción
+      },
+      {
+        label: 'Eliminar',
+        onClick: (vaccine: any) => this.deleteVaccine(vaccine.id),  // Pasamos la referencia de la función
+        condition: (vaccine: any) => true  // Condición para habilitar la acción
+      }
+    ];
+  }
+
+  // Carga todas las vacunas registradas
+  loadAllVaccines(): void {
+    this.apiService.get('vaccines', true).subscribe(
+      (response) => {
+        if (response.success) {
+          this.allVaccines = response.data;
+        }
+      },
+      (error) => {
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las vacunas');
+      }
+    );
+  }
+
+  // Abre la ventana modal para agregar la vacuna
+  openAddModalVaccine(content: TemplateRef<any>): void {
+    this.newVaccine = {
+      pet_id: this.pet.id,  // Mantener el pet_id correcto
+      vaccine_id: '',
+      observation: '',
+      product: '',
+      vaccine_date: ''
+    };
+    this.errors = {};
+    this.modalService.open(content);
+  }
+
+  // Guarda el registro de la vacuna aplicada
+  onSubmitVaccine(modal: any): void {
+    // Asignar el pet_id si no está presente por alguna razón
+    if (!this.newVaccine.pet_id) {
+      this.newVaccine.pet_id = this.pet.id;
+    }
+    // Asignar la fecha actual antes de enviar el formulario
+    const formattedVaccineDate = this.utilitiesService.convertDateToString(this.newVaccine.vaccine_date);
+    this.newVaccine.vaccine_date = formattedVaccineDate;
+
+    // Hacer la petición para crear la nota
+    this.apiService.post('vaccineshistory', this.newVaccine, true).subscribe(
+      (response) => {
+        if (response.success) {
+          // Agregar la nueva nota al principio de la lista de notas y actualizar la vista
+          this.loadVaccines(this.pet.id); // Recargar las notas paginadas desde el inicio
+          this.newVaccine = { pet_id: this.pet.id, vaccine_id: '', product: '', observation: '' };  // Restablecer los datos de la nota
+          this.errors = {};
+          modal.close();
+          this.utilitiesService.showAlert('success', 'Vacuna agregada correctamente.');
+        }
+      },
+      (error) => {
+        if (error.status === 422) {
+          this.errors = error.error.errors;
+        } else {
+          this.utilitiesService.showAlert('error', 'No se pudo agregar la vacuna.');
+        }
+      }
+    );
+  }
+
+  // Eliminar una vacuna y actualizar la tabla
+  deleteVaccine(id: string): void {
+    this.utilitiesService.showConfirmationDelet('¿Estás seguro?', '¡Esta acción no se puede deshacer!')
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.apiService.delete(`vaccineshistory/${id}`, true).subscribe(
+            (result) => {
+              this.utilitiesService.showAlert('success', 'La vacuna ha sido eliminada.');
+              // Usar el pet_id que ya tienes en el componente para recargar las vacunas
+              this.loadVaccines(this.pet.id);
+            },
+            (error) => {
+              const errorMessage = error?.error?.message || 'No se pudo eliminar la vacuna.';
+              this.utilitiesService.showAlert('error', errorMessage);
+            }
+          );
+        }
+      });
+  }
+
+  openEditModalVaccine(vaccine: any): void {
+    this.selectedVaccine = { ...vaccine };  // Clonar el objeto de la vacuna
+    // Convertir la fecha de nacimiento para usarla en ngbDatepicker
+    this.selectedVaccine.vaccineDate = this.utilitiesService.convertStringToDateStruct(this.selectedVaccine.vaccineDate);
+    this.errors = {};  // Limpiar los errores previos si los hubiera
+    console.log(this.selectedVaccine);
+    this.modalService.open(this.editVaccineModal);  // Abrir el modal de edición
+  }
+
+  // Método para guardar los cambios de la vacuna editada
+  onEditSubmitVaccine(modal: any): void {
+
+    // Asignar la fecha en el formato adecuado antes de enviar el formulario
+    const formattedVaccineDate = this.utilitiesService.convertDateToString(this.selectedVaccine.vaccineDate);
+    this.selectedVaccine.vaccineDate = formattedVaccineDate;
+
+    const payload = {
+      vaccine_id: this.selectedVaccine.vaccineId,
+      vaccine_date: this.selectedVaccine.vaccineDate,
+      product: this.selectedVaccine.productUsed,
+      observation: this.selectedVaccine.observations
+    };
+
+    // Hacer la petición para actualizar la vacuna
+    this.apiService.put(`vaccineshistory/${this.selectedVaccine.id}`, payload, true).subscribe(
+      (response) => {
+        if (response.success) {
+          // Recargar las vacunas de la mascota
+          this.loadVaccines(this.pet.id);
+          modal.close();
+          this.utilitiesService.showAlert('success', 'Vacuna actualizada correctamente.');
+        }
+      },
+      (error) => {
+        if (error.status === 422) {
+          this.selectedVaccine.vaccineDate = this.utilitiesService.convertStringToDateStruct(this.selectedVaccine.vaccineDate);
+          this.errors = error.error.errors;
+        } else {
+          this.utilitiesService.showAlert('error', 'No se pudo actualizar la vacuna.');
+        }
+      }
+    );
   }
 
 }
