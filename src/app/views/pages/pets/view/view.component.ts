@@ -4,6 +4,7 @@ import { ApiService } from '../../../../services/api.service';
 import { UtilitiesService } from '../../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { Lightbox } from 'ngx-lightbox';
 
 @Component({
   selector: 'app-view-pet',
@@ -55,6 +56,7 @@ export class ViewComponent implements OnInit {
   actions: any[] = [];
   historiesLoading: boolean = false;
   pdfToDisplay: SafeResourceUrl = '';
+  lightboxImages: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -62,7 +64,8 @@ export class ViewComponent implements OnInit {
     private apiService: ApiService,
     private utilitiesService: UtilitiesService,
     private modalService: NgbModal,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private lightbox: Lightbox
   ) {
     this.serverUrl = this.apiService.getServerUrl();
   }
@@ -499,6 +502,16 @@ export class ViewComponent implements OnInit {
   // Añade esto a tu componente .ts
   isImage(fileType: string): boolean {
     return ['jpg', 'jpeg', 'png', 'gif'].includes(fileType.toLowerCase());
+  }
+
+  // Método para abrir el Lightbox con las imágenes
+  openLightbox(imagePath: string): void {
+    const album = [{
+      src: this.serverUrl + imagePath,
+      caption: 'Imagen adjunta',
+      thumb: this.serverUrl + imagePath,
+    }];
+    this.lightbox.open(album, 0);
   }
 
   // Método para abrir el PDF en una ventana modal

@@ -10,6 +10,7 @@ import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
 import { ViewComponent } from './view/view.component';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { LightboxModule } from 'ngx-lightbox';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     NgSelectModule,
     NgbModule,
     AngularCropperjsModule,
-    SharedModule
+    SharedModule,
+    LightboxModule
   ]
 })
 export class PetsModule { }
