@@ -4,7 +4,6 @@ import { UtilitiesService } from '../../../../services/utilities.service';
 import { UserService } from '../../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropzoneDirective, DropzoneConfigInterface, DropzoneComponent } from 'ngx-dropzone-wrapper';
-import { HttpClient, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-add',
@@ -34,12 +33,10 @@ export class AddComponent implements OnInit {
 
   public config: DropzoneConfigInterface = {
     clickable: true,
-    autoReset: null,
-    errorReset: null,
-    cancelReset: null,
-    dictDefaultMessage: 'Arrastra los archivos aquí para subirlos',
+    autoProcessQueue: false,  // No subas los archivos automáticamente
     addRemoveLinks: true,
-    acceptedFiles: 'image/*,application/pdf'
+    acceptedFiles: 'image/*,application/pdf',
+    dictDefaultMessage: 'Arrastra los archivos aquí para subirlos',
   };
 
   @ViewChild(DropzoneDirective, { static: false }) directiveRef?: DropzoneDirective;
@@ -50,8 +47,7 @@ export class AddComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private utilitiesService: UtilitiesService,
-    private userService: UserService,
-    private http: HttpClient
+    private userService: UserService
   ) {
     this.serverUrl = this.apiService.getServerUrl();
   }
@@ -94,7 +90,8 @@ export class AddComponent implements OnInit {
     const formData = new FormData();
     const formattedDateHistory = this.utilitiesService.convertDateToString(this.newHistory.history_date);
     this.newHistory.history_date = formattedDateHistory;
-    //formData.append('history_date', this.newHistory.history_date);
+
+    formData.append('history_date', this.newHistory.history_date);
     formData.append('history_time', this.newHistory.history_time);
     formData.append('history_reason', this.newHistory.history_reason);
     formData.append('history_symptoms', this.newHistory.history_symptoms);
@@ -104,29 +101,20 @@ export class AddComponent implements OnInit {
     formData.append('pet_id', this.newHistory.pet_id);
 
     // Agregar los archivos al FormData
-    this.attachedFiles.forEach((file) => {
-      formData.append('files[]', file, file.name);
+    console.log("Archivos adjuntos antes de enviar:", this.attachedFiles);  // Para verificar los archivos adjuntos
+    this.attachedFiles.forEach((file: any) => {
+      formData.append('files[]', file, file.name);  // Usa 'files[]' como clave para múltiples archivos
     });
 
-    this.uploading = true; // Cambia el estado de la carga a 'en proceso'
-
-    this.http.post(`${this.serverUrl}/pet-history`, formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).subscribe(
-      (event: any) => {
-        if (event.type === HttpEventType.UploadProgress) {
-          const progress = Math.round((100 * event.loaded) / event.total);
-          console.log(`Progreso: ${progress}%`); // Para mostrar el progreso si es necesario
-        } else if (event.type === HttpEventType.Response) {
-          this.uploading = false; // Restablecer el estado de la carga
+    this.apiService.post(`pet-history`, formData).subscribe(
+      (response) => {
+        if (response.success) {
           this.utilitiesService.showAlert('success', 'Historia clínica registrada con éxito');
           const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
           this.router.navigate([`/pets/view/${encodedPetId}`]);
         }
       },
       (error) => {
-        this.uploading = false; // Restablecer el estado de la carga
         if (error.status === 422) {
           this.errors = error.error.errors;
         } else {
@@ -141,20 +129,14 @@ export class AddComponent implements OnInit {
     this.router.navigate(['/pets']);
   }
 
-  // Perfil de la mascota
-  goProfile(): void {
-    const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
-    this.router.navigate([`/pets/view/${encodedPetId}`]); // Interpolación correcta
-  }
-
-  // Función para eliminar un archivo específico
-  removeFile(file: any): void {
-    this.attachedFiles = this.attachedFiles.filter((f) => f !== file);
+  // Función para manejar cuando se elimina un archivo
+  onRemovedFile(file: any): void {
+    this.attachedFiles = this.attachedFiles.filter((f: any) => f !== file);
   }
 
   // Función para manejar cuando se añade un archivo
-  onUploadSuccess(event: any): void {
-    this.attachedFiles.push(event[0]);
+  onAddedFile(file: any): void {
+    this.attachedFiles.push(file);
   }
 
   // Función para manejar cuando se elimina un archivo de la vista
@@ -167,6 +149,25 @@ export class AddComponent implements OnInit {
       this.directiveRef.reset();
     }
     this.attachedFiles = []; // Vaciar la lista de archivos adjuntos
+  }
+
+  // Configurar Dropzone cuando se monta el componente
+  onDropzoneInit(dropzone: any): void {
+    dropzone.on("addedfile", (file: any) => {
+      console.log("File added:", file);
+      this.onAddedFile(file);
+    });
+
+    dropzone.on("removedfile", (file: any) => {
+      console.log("File removed:", file);
+      this.onRemovedFile(file);
+    });
+  }
+
+  // Perfil de la mascota
+  goProfile(): void {
+    const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
+    this.router.navigate([`/pets/view/${encodedPetId}`]); // Interpolación correcta
   }
 
 }

@@ -97,13 +97,12 @@
                     <!-- Archivos Adjuntos -->
                     <div class="col-md-12">
                         <label class="form-label">Archivos Adjuntos</label>
-                        <div class="dropzone" [dropzone]="config"></div>
-                        <button class="btn btn-secondary mt-2 d-block ms-auto" (click)="resetDropzoneUploads()">Borrar
-                            Archivos</button>
+                        <dropzone [config]="config" (init)="onDropzoneInit($event)"></dropzone> <!-- Cambiado a <dropzone> -->
+                        <!--<button class="btn btn-secondary mt-2 d-block ms-auto" (click)="resetDropzoneUploads()">Borrar Archivos</button>-->
                     </div>
 
                     <!-- Listado de archivos adjuntos -->
-                    <div class="row" *ngIf="attachedFiles.length > 0">
+                    <div class="row" *ngIf="attachedFiles.length > 0" style="display: none;">
                         <div class="col-md-2" *ngFor="let file of attachedFiles; let i = index">
                             <div class="card">
                                 <img [src]="file.dataURL" class="card-img-top" alt="Archivo adjunto">
