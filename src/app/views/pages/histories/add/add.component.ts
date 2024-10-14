@@ -4,6 +4,7 @@ import { UtilitiesService } from '../../../../services/utilities.service';
 import { UserService } from '../../../../services/user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DropzoneDirective, DropzoneConfigInterface, DropzoneComponent } from 'ngx-dropzone-wrapper';
+import { HttpClient, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-add',
@@ -29,6 +30,7 @@ export class AddComponent implements OnInit {
   time = { hour: 13, minute: 30 };
   serverUrl: string;
   attachedFiles: any[] = []; // Para almacenar los archivos adjuntos
+  uploading: boolean = false;
 
   public config: DropzoneConfigInterface = {
     clickable: true,
@@ -36,6 +38,8 @@ export class AddComponent implements OnInit {
     errorReset: null,
     cancelReset: null,
     dictDefaultMessage: 'Arrastra los archivos aquí para subirlos',
+    addRemoveLinks: true,
+    acceptedFiles: 'image/*,application/pdf'
   };
 
   @ViewChild(DropzoneDirective, { static: false }) directiveRef?: DropzoneDirective;
@@ -46,7 +50,8 @@ export class AddComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private utilitiesService: UtilitiesService,
-    private userService: UserService
+    private userService: UserService,
+    private http: HttpClient
   ) {
     this.serverUrl = this.apiService.getServerUrl();
   }
@@ -61,7 +66,7 @@ export class AddComponent implements OnInit {
     });
     const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
     this.petId = atob(encodedPetId);
-    this.newHistory.pet_id = this.petId; 
+    this.newHistory.pet_id = this.petId;
     this.loadPetData(this.petId);
   }
 
@@ -86,21 +91,46 @@ export class AddComponent implements OnInit {
 
   // Enviar formulario para agregar historia
   onSubmit(): void {
+    const formData = new FormData();
     const formattedDateHistory = this.utilitiesService.convertDateToString(this.newHistory.history_date);
     this.newHistory.history_date = formattedDateHistory;
-    this.apiService.post('pet-history', this.newHistory, true).subscribe(
-      (response) => {
-        if (response.success) {
-          this.utilitiesService.showAlert('success', response.message);
+    //formData.append('history_date', this.newHistory.history_date);
+    formData.append('history_time', this.newHistory.history_time);
+    formData.append('history_reason', this.newHistory.history_reason);
+    formData.append('history_symptoms', this.newHistory.history_symptoms);
+    formData.append('history_diagnosis', this.newHistory.history_diagnosis);
+    formData.append('history_treatment', this.newHistory.history_treatment);
+    formData.append('user_id', this.newHistory.user_id);
+    formData.append('pet_id', this.newHistory.pet_id);
+
+    // Agregar los archivos al FormData
+    this.attachedFiles.forEach((file) => {
+      formData.append('files[]', file, file.name);
+    });
+
+    this.uploading = true; // Cambia el estado de la carga a 'en proceso'
+
+    this.http.post(`${this.serverUrl}/pet-history`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    }).subscribe(
+      (event: any) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          const progress = Math.round((100 * event.loaded) / event.total);
+          console.log(`Progreso: ${progress}%`); // Para mostrar el progreso si es necesario
+        } else if (event.type === HttpEventType.Response) {
+          this.uploading = false; // Restablecer el estado de la carga
+          this.utilitiesService.showAlert('success', 'Historia clínica registrada con éxito');
           const encodedPetId = this.route.snapshot.paramMap.get('id') || '';
           this.router.navigate([`/pets/view/${encodedPetId}`]);
         }
       },
       (error) => {
-        if (error.status === 422) { // Errores de validación desde el backend
+        this.uploading = false; // Restablecer el estado de la carga
+        if (error.status === 422) {
           this.errors = error.error.errors;
         } else {
-          this.utilitiesService.showAlert('error', 'No se pudo agregar la historia');
+          this.utilitiesService.showAlert('error', 'Error al registrar la historia clínica');
         }
       }
     );
@@ -119,14 +149,12 @@ export class AddComponent implements OnInit {
 
   // Función para eliminar un archivo específico
   removeFile(file: any): void {
-    if (this.directiveRef) {
-      this.directiveRef.dropzone().removeFile(file); // Eliminar el archivo específico
-    }
+    this.attachedFiles = this.attachedFiles.filter((f) => f !== file);
   }
 
   // Función para manejar cuando se añade un archivo
   onUploadSuccess(event: any): void {
-    this.attachedFiles.push(event[0]); // Almacenar el archivo cargado
+    this.attachedFiles.push(event[0]);
   }
 
   // Función para manejar cuando se elimina un archivo de la vista
@@ -138,6 +166,7 @@ export class AddComponent implements OnInit {
     if (this.directiveRef) {
       this.directiveRef.reset();
     }
+    this.attachedFiles = []; // Vaciar la lista de archivos adjuntos
   }
 
 }

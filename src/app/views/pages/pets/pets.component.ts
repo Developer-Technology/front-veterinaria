@@ -66,6 +66,11 @@ export class PetsComponent implements OnInit {
         label: 'Perfil',
         onClick: this.viewPet.bind(this),  // Pasamos la referencia de la función
         condition: (pet: any) => true  // Condición para habilitar la acción
+      },
+      {
+        label: 'Nueva Historia',
+        onClick: this.addHistoy.bind(this),  // Pasamos la referencia de la función
+        condition: (pet: any) => true  // Condición para habilitar la acción
       }
     ];
   }
@@ -80,6 +85,12 @@ export class PetsComponent implements OnInit {
   viewPet(pet: any): void {
     const encodedId = btoa(pet.id);
     this.router.navigate(['/pets/view', encodedId]);  // Redirige a la ruta de edición
+  }
+
+  // Función para redirigir al formulario de edición
+  addHistoy(pet: any): void {
+    const encodedId = btoa(pet.id);
+    this.router.navigate(['/histories/add', encodedId]);  // Redirige a la ruta de para agregar historia
   }
 
   // Función para eliminar todas las notas relacionadas a una mascota
