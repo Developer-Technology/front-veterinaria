@@ -49,6 +49,7 @@
     "ngx-custom-validators": "^8.0.0",
     "ngx-dropzone-wrapper": "^13.0.0",
     "ngx-highlightjs": "^7.0.1",
+    "ngx-lightbox": "^3.0.0",
     "ngx-mask": "^14.2.4",
     "ngx-owl-carousel-o": "^14.0.1",
     "ngx-perfect-scrollbar": "^10.1.1",

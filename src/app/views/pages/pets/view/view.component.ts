@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { UtilitiesService } from '../../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-view-pet',
@@ -53,13 +54,15 @@ export class ViewComponent implements OnInit {
   allNotesLoaded: boolean = false;
   actions: any[] = [];
   historiesLoading: boolean = false;
+  pdfToDisplay: SafeResourceUrl = '';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService,
     private utilitiesService: UtilitiesService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private sanitizer: DomSanitizer
   ) {
     this.serverUrl = this.apiService.getServerUrl();
   }
@@ -496,6 +499,13 @@ export class ViewComponent implements OnInit {
   // Añade esto a tu componente .ts
   isImage(fileType: string): boolean {
     return ['jpg', 'jpeg', 'png', 'gif'].includes(fileType.toLowerCase());
+  }
+
+  // Método para abrir el PDF en una ventana modal
+  openPdfModal(content: TemplateRef<any>, filePath: string): void {
+    const fullPath = this.serverUrl + filePath;
+    this.pdfToDisplay = this.sanitizer.bypassSecurityTrustResourceUrl(fullPath);  // Evitar problemas de seguridad
+    this.modalService.open(content, { size: 'lg', scrollable: true });
   }
 
 }
