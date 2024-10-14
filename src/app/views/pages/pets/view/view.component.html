@@ -65,22 +65,40 @@
 
             <ul ngbNav #defaultNav="ngbNav" [(activeId)]="defaultNavActiveId" class="nav-tabs nav">
                 <li [ngbNavItem]="1">
-                    <a ngbNavLink>Historia</a>
+                    <a ngbNavLink (click)="loadHistories(pet.id)">Historia</a>
                     <ng-template ngbNavContent>
-                        <button class="btn btn-xs btn-primary" style="border-bottom-left-radius: 0;">
+                        <button class="btn btn-xs btn-primary" (click)="addHistoy(pet.id)"
+                            style="border-bottom-left-radius: 0;">
                             <i class="feather icon-plus"></i> Agregar Historia
                         </button>
-                        <ul class="timeline ">
-                            <li class="event">
+
+                        <div class="col-md-12">
+                            <!-- Spinner de carga -->
+                            <div *ngIf="historiesLoading" class="text-center">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mostrar la imagen "not-found" cuando no hay registros en la tabla -->
+                        <div *ngIf="!historiesLoading && histories.length === 0" class="text-center">
+                            <img src="assets/images/default/not-found.png" class="img-fluid" style="max-width: 90px;">
+                            <p class="text-muted mt-2">No se encontraron historias para la mascota.</p>
+                        </div>
+
+                        <ul class="timeline" *ngIf="!historiesLoading && histories.length > 0">
+                            <li class="event" *ngFor="let history of histories">
                                 <ngb-accordion [closeOthers]="true">
-                                    <ngb-panel id="static-1" title="Titulo Historia">
+                                    <ngb-panel id="static-1" title="{{history.history_code}}">
                                         <ng-template ngbPanelContent>
                                             Contenido Historia
                                         </ng-template>
                                     </ngb-panel>
                                 </ngb-accordion>
-                                <span class="badge bg-light text-dark"><strong>Fecha: </strong> 2020-01-14 <strong>Hora:
-                                    </strong>10:00:00 | <strong>Creado por: </strong>Super Administrador</span>
+                                <span class="badge bg-light text-dark"><strong>Fecha: </strong> {{history.history_date}}
+                                    <strong>Hora:
+                                    </strong>{{history.history_time}} | <strong>Creado por: </strong>{{history.userName}}</span>
                             </li>
                         </ul>
                     </ng-template>
@@ -113,24 +131,6 @@
                         { label: 'Obervaciones', key: 'observations' },
                     ]" [data]="vaccines" [itemsPerPage]="10" [actions]="actions">
                         </app-datatable>
-                    </ng-template>
-                </li>
-                <li [ngbNavItem]="3">
-                    <a ngbNavLink>Citas</a>
-                    <ng-template ngbNavContent>
-                        <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id
-                            diam. Nulla facilisi.
-                            Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt
-                            eu, congue et odio.
-                            Duis pharetra et nisl at faucibus. Quisque luctus pulvinar arcu, et molestie lectus ultrices
-                            et. Sed diam urna,
-                            egestas ut ipsum vel, volutpat volutpat neque. Praesent fringilla tortor arcu. Vivamus
-                            faucibus nisl enim, nec
-                            tristique ipsum euismod facilisis. Morbi ut bibendum est, eu tincidunt odio. Orci varius
-                            natoque penatibus et
-                            magnis dis parturient montes, nascetur ridiculus mus. Mauris aliquet odio ac lorem aliquet
-                            ultricies in eget
-                            neque. Phasellus nec tortor vel tellus pulvinar feugiat.</p>
                     </ng-template>
                 </li>
             </ul>

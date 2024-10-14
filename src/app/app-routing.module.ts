@@ -89,6 +89,11 @@ const routes: Routes = [
         path: 'settings',
         loadChildren: () => import('./views/pages/settings/settings.module').then(m => m.SettingsModule)
       },
+      {
+        path: 'histories',
+        loadChildren: () => import('./views/pages/histories/histories.module').then(m => m.HistoriesModule)
+
+      },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ]
   },

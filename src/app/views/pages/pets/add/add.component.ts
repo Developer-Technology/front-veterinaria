@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { UtilitiesService } from '../../../../services/utilities.service';
 import { Router } from '@angular/router';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { CropperComponent } from 'angular-cropperjs';
 
 @Component({

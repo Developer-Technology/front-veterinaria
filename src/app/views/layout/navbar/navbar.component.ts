@@ -1,7 +1,8 @@
-import { Component, OnInit, ViewChild, ElementRef, Inject, Renderer2 } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { Router } from '@angular/router';
-import { ApiService } from '../../../services/api.service';
+import { UserService } from '../../../services/user.service'; // Importa el servicio UserService
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -10,44 +11,29 @@ import { ApiService } from '../../../services/api.service';
 })
 export class NavbarComponent implements OnInit {
 
-  userData: any = {};
+  userData$: Observable<any>; // Usamos un Observable para los datos del usuario
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2,
     private router: Router,
-    private apiService: ApiService
+    private userService: UserService // Inyectamos el servicio UserService
   ) { }
 
   ngOnInit(): void {
-    this.apiService.post('auth/me', true).subscribe(
-      (response) => {
-        if (response.success) {
-          this.userData = response.data;
-        }
-      },
-      (error) => {
-        console.log('Error al obtener los datos del usuario', error);
-      }
-    );
+    // Nos suscribimos al observable de los datos del usuario
+    this.userData$ = this.userService.getUserData();
   }
 
-  /**
-   * Sidebar toggle on hamburger button click
-   */
   toggleSidebar(e: Event) {
     e.preventDefault();
     this.document.body.classList.toggle('sidebar-open');
   }
 
-  /**
-   * Logout
-   */
   onLogout(e: Event) {
     e.preventDefault();
     localStorage.removeItem('isLoggedin');
     localStorage.removeItem('token');
-
+    
     if (!localStorage.getItem('isLoggedin')) {
       this.router.navigate(['/auth/login']);
     }

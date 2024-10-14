@@ -16,6 +16,7 @@ export class ViewComponent implements OnInit {
 
   defaultNavActiveId = 1;
   notes: any[] = [];
+  histories: any[] = [];
   vaccines: any[] = [];
   allVaccines: any[] = [];
   visibleNotes: any[] = [];
@@ -51,6 +52,7 @@ export class ViewComponent implements OnInit {
   currentPage: number = 1;  // Página actual
   allNotesLoaded: boolean = false;
   actions: any[] = [];
+  historiesLoading: boolean = false; 
 
   constructor(
     private route: ActivatedRoute,
@@ -68,6 +70,7 @@ export class ViewComponent implements OnInit {
       const decodedId = atob(encodedId);  // Decodificar el ID
       this.loadPet(decodedId);
       this.loadNotes(decodedId);
+      this.loadHistories(decodedId);
       this.setupActions();
     }
   }
@@ -132,6 +135,23 @@ export class ViewComponent implements OnInit {
       (error) => {
         this.vaccinesLoading = false;
         this.utilitiesService.showAlert('error', 'No se pudieron cargar las vacunas');
+      }
+    );
+  }
+
+  // Función para cargar las notas con paginación
+  loadHistories(petId: string): void {
+    this.historiesLoading = true;
+    this.apiService.get(`pet-histories/${petId}`, true).subscribe(
+      (response) => {
+        if (response.success) {
+          const loadedHistories = response.data;
+          this.histories = loadedHistories.sort((a: any, b: any) => b.id - a.id);
+          this.historiesLoading = false;
+        }
+      },
+      (error) => {
+        this.utilitiesService.showAlert('error', 'No se pudieron cargar las historias');
       }
     );
   }
@@ -465,6 +485,12 @@ export class ViewComponent implements OnInit {
         }
       }
     );
+  }
+
+  // Función para redirigir al formulario de edición
+  addHistoy(pet: any): void {
+    const encodedId = this.route.snapshot.paramMap.get('id');
+    this.router.navigate(['/histories/add', encodedId]);  // Redirige a la ruta de para agregar historia
   }
 
 }
