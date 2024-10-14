@@ -52,7 +52,7 @@ export class ViewComponent implements OnInit {
   currentPage: number = 1;  // Página actual
   allNotesLoaded: boolean = false;
   actions: any[] = [];
-  historiesLoading: boolean = false; 
+  historiesLoading: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -491,6 +491,11 @@ export class ViewComponent implements OnInit {
   addHistoy(pet: any): void {
     const encodedId = this.route.snapshot.paramMap.get('id');
     this.router.navigate(['/histories/add', encodedId]);  // Redirige a la ruta de para agregar historia
+  }
+
+  // Añade esto a tu componente .ts
+  isImage(fileType: string): boolean {
+    return ['jpg', 'jpeg', 'png', 'gif'].includes(fileType.toLowerCase());
   }
 
 }
