@@ -83,46 +83,19 @@ export class PetsComponent implements OnInit {
   }
 
   // Función para eliminar todas las notas relacionadas a una mascota
-  deleteAllNotes(petId: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.apiService.get(`pets/${petId}`, true).subscribe(
-        (response) => {
-          if (response.success) {
-            const notes = response.data.notes;
+  deleteAllNotes(id: string): void {
+    this.apiService.delete(`pets/${id}/notes/`, true).subscribe(
+      (result) => { },
+      (error) => { }
+    );
+  }
 
-            if (notes && notes.length > 0) {
-              let notesDeleted = 0;
-
-              // Bucle para eliminar cada nota
-              notes.forEach((note: any) => {
-                this.apiService.delete(`petnotes/${note.id}`, true).subscribe(
-                  () => {
-                    notesDeleted++;
-
-                    // Resolver la promesa cuando todas las notas hayan sido eliminadas
-                    if (notesDeleted === notes.length) {
-                      resolve();
-                    }
-                  },
-                  (error) => {
-                    console.error(`Error al eliminar la nota con id: ${note.id}`, error);
-                    reject(error);
-                  }
-                );
-              });
-            } else {
-              // Si no hay notas, resolver la promesa inmediatamente
-              resolve();
-            }
-          } else {
-            reject('No se pudieron cargar las notas');
-          }
-        },
-        (error) => {
-          reject(error);
-        }
-      );
-    });
+  // Eliminar una nota y actualizar la tabla
+  deleteVaccines(id: string): void {
+    this.apiService.delete(`pets/${id}/vaccine-history/`, true).subscribe(
+      (result) => { },
+      (error) => { }
+    );
   }
 
   // Función para mostrar el modal de carga
@@ -138,33 +111,26 @@ export class PetsComponent implements OnInit {
   // Función para eliminar una mascota y sus notas
   deletePet(pet: any): void {
     this.utilitiesService
-      .showConfirmationDelet('¿Estás seguro?', '¡Esta acción no se puede deshacer!')
+      .showConfirmationDelet('¿Estás seguro?', '¡Esta acción no se puede deshacer! Se eliminará la mascota con todos sus registros asociados.')
       .then((result) => {
         if (result.isConfirmed) {
           this.showLoadingModal();  // Mostrar el modal de carga antes de la operación
 
-          // Primero eliminar todas las notas relacionadas
-          this.deleteAllNotes(pet.id)
-            .then(() => {
-              // Después de eliminar las notas, eliminar la mascota
-              this.apiService.delete(`pets/${pet.id}`, true).subscribe(
-                (response) => {
-                  this.hideLoadingModal();  // Ocultar el modal de carga cuando se complete la eliminación
-                  this.utilitiesService.showAlert('success', 'Mascota y notas eliminadas correctamente');
-                  this.loadPets(); // Actualizar la lista de mascotas
-                },
-                (error) => {
-                  this.hideLoadingModal();  // Ocultar el modal de carga en caso de error
-                  const errorMessage = error?.error?.message || 'No se pudo eliminar la mascota.';
-                  this.utilitiesService.showAlert('error', errorMessage);
-                }
-              );
-            })
-            .catch((error) => {
+          this.apiService.delete(`pets/${pet.id}`, true).subscribe(
+            (response) => {
+              this.deleteVaccines(pet.id);
+              this.deleteAllNotes(pet.id);
+              this.hideLoadingModal();  // Ocultar el modal de carga cuando se complete la eliminación
+              this.utilitiesService.showAlert('success', 'Mascota y registros asociados eliminados correctamente');
+              this.loadPets(); // Actualizar la lista de mascotas
+            },
+            (error) => {
               this.hideLoadingModal();  // Ocultar el modal de carga en caso de error
-              this.utilitiesService.showAlert('error', 'No se pudieron eliminar las notas relacionadas.');
-              console.error(error);
-            });
+              const errorMessage = error?.error?.message || 'No se pudo eliminar la mascota.';
+              this.utilitiesService.showAlert('error', errorMessage);
+            }
+          );
+
         }
       });
   }
