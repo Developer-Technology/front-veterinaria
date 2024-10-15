@@ -1,0 +1,6 @@
+<div class="lightbox-backdrop" [ngClass]="{'show': isOpen}" (click)="closeLightbox()">
+    <div class="lightbox-container" (click)="$event.stopPropagation()">
+        <button class="lightbox-close" (click)="closeLightbox()">&times;</button>
+        <img [src]="currentImage" class="lightbox-image" alt="Lightbox image">
+    </div>
+</div>

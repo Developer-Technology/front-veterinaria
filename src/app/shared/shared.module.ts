@@ -4,11 +4,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms'; // Para usar 
 import { DatatableComponent } from './datatable/datatable.component'; // Importa el DatatableComponent
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { CustomFieldComponent } from './custom-field/custom-field.component';
+import { LightboxComponent } from './lightbox/lightbox.component';
 
 @NgModule({
     declarations: [
         DatatableComponent,
-        CustomFieldComponent // Declara el componente Datatable
+        CustomFieldComponent,
+        LightboxComponent // Declara el componente Datatable
     ],
     imports: [
         CommonModule, // Importa CommonModule para directivas comunes como *ngIf y *ngFor
@@ -17,7 +19,8 @@ import { CustomFieldComponent } from './custom-field/custom-field.component';
         NgbModule
     ],
     exports: [
-        DatatableComponent // Exporta DatatableComponent para usarlo en otros módulos
+        DatatableComponent, // Exporta DatatableComponent para usarlo en otros módulos
+        LightboxComponent
     ]
 })
 export class SharedModule { }

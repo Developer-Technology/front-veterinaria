@@ -4,7 +4,7 @@ import { ApiService } from '../../../../services/api.service';
 import { UtilitiesService } from '../../../../services/utilities.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { Lightbox } from 'ngx-lightbox';
+import { LightboxComponent } from 'src/app/shared/lightbox/lightbox.component';
 
 @Component({
   selector: 'app-view-pet',
@@ -15,6 +15,7 @@ export class ViewComponent implements OnInit {
 
   @ViewChild('editModal') editModal!: TemplateRef<any>;
   @ViewChild('editVaccineModal') editVaccineModal!: TemplateRef<any>;
+  @ViewChild('lightbox') lightbox!: LightboxComponent;
 
   defaultNavActiveId = 1;
   notes: any[] = [];
@@ -65,7 +66,6 @@ export class ViewComponent implements OnInit {
     private utilitiesService: UtilitiesService,
     private modalService: NgbModal,
     private sanitizer: DomSanitizer,
-    private lightbox: Lightbox
   ) {
     this.serverUrl = this.apiService.getServerUrl();
   }
@@ -505,13 +505,8 @@ export class ViewComponent implements OnInit {
   }
 
   // Método para abrir el Lightbox con las imágenes
-  openLightbox(imagePath: string): void {
-    const album = [{
-      src: this.serverUrl + imagePath,
-      caption: 'Imagen adjunta',
-      thumb: this.serverUrl + imagePath,
-    }];
-    this.lightbox.open(album, 0);
+  openLightbox(image: string): void {
+    this.lightbox.openLightbox(image);
   }
 
   // Método para abrir el PDF en una ventana modal
