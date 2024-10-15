@@ -93,34 +93,67 @@
                                 <ngb-accordion [closeOthers]="true">
                                     <ngb-panel id="static-1" title="{{history.history_code}}">
                                         <ng-template ngbPanelContent>
-                                            <p><strong>N. Historia:</strong> {{history.history_code}}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <p><strong>N. Historia:</strong> {{history.history_code}}</p>
+                                                </div>
+                                                <div class="btn-group" role="group" aria-label="Basic example">
+                                                    <button type="button" class="btn btn-outline-secondary btn-xs"
+                                                        (click)="editHistory(history)"><i
+                                                            class="feather icon-edit"></i></button>
+                                                    <button type="button" class="btn btn-outline-danger btn-xs"
+                                                        (click)="deleteHistory(history.id)"><i
+                                                            class="feather icon-trash-2"></i></button>
+                                                </div>
+                                            </div>
+
                                             <p class="mt-3"><strong>Motivo Consulta:</strong></p>
                                             <p>{{history.history_reason}}</p>
+
                                             <p class="mt-3"><strong>Síntomas:</strong></p>
                                             <p>{{history.history_symptoms}}</p>
+
                                             <p class="mt-3"><strong>Diagnóstico:</strong></p>
                                             <p>{{history.history_diagnosis}}</p>
+
                                             <p class="mt-3"><strong>Tratamiento:</strong></p>
                                             <p>{{history.history_treatment}}</p>
-                                            <!-- Mostrar las imágenes -->
+
+                                            <!-- Mostrar las imágenes adjuntas -->
                                             <div *ngIf="history.files.length > 0">
                                                 <p class="mt-3"><strong>Archivos Adjuntos:</strong></p>
                                                 <div class="row">
-                                                    <div class="col-md-3" *ngFor="let file of history.files">
+                                                    <div class="col-md-3 position-relative img-th-card"
+                                                        *ngFor="let file of history.files">
                                                         <ng-container *ngIf="isImage(file.file_type); else pdfTemplate">
                                                             <div class="image-gallery">
                                                                 <img [src]="serverUrl + file.file_path"
                                                                     class="img-thumbnail clickable-image cursor-pointer"
                                                                     alt="Imagen adjunta"
                                                                     (click)="lightbox.openLightbox(serverUrl + file.file_path)" />
+                                                                <!-- Botón de eliminar en la esquina superior derecha -->
+                                                                <button type="button"
+                                                                    class="btn btn-danger btn-xs position-absolute top-0 end-0 btn-delete-adjunt"
+                                                                    (click)="deleteFile(file.id)">
+                                                                    <i class="feather icon-trash-2"></i>
+                                                                </button>
                                                             </div>
                                                         </ng-container>
                                                         <ng-template #pdfTemplate>
-                                                            <a href="javascript:void(0)"
-                                                                (click)="openPdfModal(pdfModal, file.file_path)">
-                                                                <img src="assets/images/default/pdf.png"
-                                                                    class="img-thumbnail cursor-pointer" alt="PDF adjunto" />
-                                                            </a>
+                                                            <div class="position-relative img-th-card">
+                                                                <a href="javascript:void(0)"
+                                                                    (click)="openPdfModal(pdfModal, file.file_path)">
+                                                                    <img src="assets/images/default/pdf.png"
+                                                                        class="img-thumbnail cursor-pointer"
+                                                                        alt="PDF adjunto" />
+                                                                </a>
+                                                                <!-- Botón de eliminar para PDF en la esquina superior derecha -->
+                                                                <button type="button"
+                                                                    class="btn btn-danger btn-xs position-absolute top-0 end-0 btn-delete-adjunt"
+                                                                    (click)="deleteFile(file.id)">
+                                                                    <i class="feather icon-trash-2"></i>
+                                                                </button>
+                                                            </div>
                                                         </ng-template>
                                                     </div>
                                                 </div>
@@ -128,12 +161,14 @@
                                         </ng-template>
                                     </ngb-panel>
                                 </ngb-accordion>
+
                                 <span class="badge bg-light text-dark">
-                                    <strong>Fecha: </strong> {{history.history_date}} <strong>Hora:
-                                    </strong>{{history.history_time}} |
-                                    <strong>Creado por: </strong>{{history.userName}}
+                                    <strong>Fecha:</strong> {{history.history_date}}
+                                    <strong>Hora:</strong> {{history.history_time}} |
+                                    <strong>Creado por:</strong> {{history.userName}}
                                 </span>
                             </li>
+
                         </ul>
                     </ng-template>
                 </li>
@@ -144,7 +179,7 @@
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h4 class="card-title mb-0">Gestión de Vacunas</h4>
                             <!-- Botón Agregar Mascota alineado a la derecha -->
-                            <button class="btn btn-primary btn-sm" (click)="openAddModal(vaccineModal)">
+                            <button class="btn btn-xs btn-primary" (click)="openAddModal(vaccineModal)">
                                 <i class="feather icon-plus"></i> Agregar Vacuna
                             </button>
                         </div>
@@ -199,20 +234,23 @@
                             </div>
                             <!-- Opciones de edición y eliminación -->
                             <div class="btn-group action-buttons" style="display: none;">
-                                <button class="btn btn-secondary btn-xs" (click)="openEditModal(note)">
+                                <button class="btn btn-outline-secondary btn-xs" (click)="openEditModal(note)">
                                     <i class="feather icon-edit"></i>
                                 </button>
-                                <button class="btn btn-danger btn-xs" (click)="deleteNote(note.id)">
+                                <button class="btn btn-outline-danger btn-xs" (click)="deleteNote(note.id)">
                                     <i class="feather icon-trash-2"></i>
                                 </button>
                             </div>
                         </li>
                     </ul>
                 </div>
+                 <!-- Mostrar la imagen "not-found" cuando no hay registros en la tabla -->
+                <div *ngIf="visibleNotes.length === 0" class="text-center">
+                    <img src="assets/images/default/not-found.png" class="img-fluid" style="max-width: 90px;">
+                    <p class="text-muted mt-2"><small class="text-muted">No hay notas disponibles para esta mascota.</small></p>
+                </div>
                 <!-- Si no hay notas -->
-                <ng-template #noNotes>
-                    <small class="text-muted">No hay notas disponibles para esta mascota.</small>
-                </ng-template>
+                <ng-template #noNotes></ng-template>
             </div>
         </div>
     </div>

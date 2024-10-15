@@ -516,4 +516,53 @@ export class ViewComponent implements OnInit {
     this.modalService.open(content, { size: 'lg', scrollable: true });
   }
 
+  // Función para editar la historia
+  editHistory(history: any): void {
+    // Implementar lógica de edición
+    console.log('Editando historia:', history);
+  }
+
+  // Función para eliminar la historia
+  deleteHistory(historyId: number): void {
+    this.utilitiesService
+      .showConfirmationDelet('¿Estás seguro?', '¡Esta acción no se puede deshacer! Se eliminará la historia con todos los archivos adjuntos.')
+      .then((result) => {
+        if (result.isConfirmed) {
+
+          this.apiService.delete(`pet-history/${historyId}`, true).subscribe(
+            (response) => {
+              this.utilitiesService.showAlert('success', 'Historia y archivos asociados eliminados correctamente');
+              this.loadHistories(this.pet.id);
+            },
+            (error) => {
+              const errorMessage = error?.error?.message || 'No se pudo eliminar la historia.';
+              this.utilitiesService.showAlert('error', errorMessage);
+            }
+          );
+
+        }
+      });
+  }
+
+  deleteFile(fileId: number): void {
+    this.utilitiesService
+      .showConfirmationDelet('¿Estás seguro?', '¡Esta acción no se puede deshacer!')
+      .then((result) => {
+        if (result.isConfirmed) {
+
+          this.apiService.delete(`files-history/${fileId}`, true).subscribe(
+            (response) => {
+              this.utilitiesService.showAlert('success', 'Archivo eliminado correctamente');
+              this.loadHistories(this.pet.id);
+            },
+            (error) => {
+              const errorMessage = error?.error?.message || 'No se pudo eliminar el archivo.';
+              this.utilitiesService.showAlert('error', errorMessage);
+            }
+          );
+
+        }
+      });
+  }
+
 }
