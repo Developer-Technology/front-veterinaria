@@ -49,10 +49,10 @@
                 <div *ngIf="errors?.breedName" class="text-danger small">{{ errors.breedName[0] }}</div>
             </div>
             <div class="mb-3">
-                <label for="species_id" class="form-label">Especie</label>
-                <select class="form-select" [(ngModel)]="newBreed.species_id" name="species_id" required>
-                    <option *ngFor="let specie of species" [value]="specie.id">{{ specie.specieName }}</option>
-                </select>
+                <label for="species" class="form-label">Especie</label>
+                <ng-select [items]="species" bindLabel="specieName" bindValue="id" placeholder="Seleccione la especie"
+                    [(ngModel)]="newBreed.species_id" name="species_id" required>
+                </ng-select>
                 <div *ngIf="errors?.species_id" class="text-danger small">{{ errors.species_id[0] }}</div>
             </div>
             <div class="text-end">
@@ -77,9 +77,9 @@
             </div>
             <div class="mb-3">
                 <label for="species_id" class="form-label">Especie</label>
-                <select class="form-select" [(ngModel)]="selectedBreed.species_id" name="species_id" required>
-                    <option *ngFor="let specie of species" [value]="specie.id">{{ specie.specieName }}</option>
-                </select>
+                <ng-select [items]="species" bindLabel="specieName" bindValue="id" placeholder="Seleccione la especie"
+                    [(ngModel)]="selectedBreed.species_id" name="species_id" required>
+                </ng-select>
                 <div *ngIf="errors.species_id" class="text-danger small">{{ errors.species_id }}</div>
             </div>
             <div class="text-end">

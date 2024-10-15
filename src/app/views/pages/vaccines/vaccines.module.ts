@@ -5,6 +5,7 @@ import { VaccinesComponent } from './vaccines.component';
 import { FormsModule } from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
     VaccinesRoutingModule,
     FormsModule,
     NgbModule,
-    SharedModule
+    SharedModule,
+    NgSelectModule
   ]
 })
 export class VaccinesModule { }
