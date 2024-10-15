@@ -22,7 +22,7 @@
             <div class="row no-gutters">
                 <!-- Imagen de la mascota -->
                 <div class="col-md-4 text-center">
-                    <img [src]="serverUrl + pet.petPhoto ? serverUrl + pet.petPhoto : 'assets/images/default/blank-pet.png'"
+                    <img [src]="pet.petPhoto ? serverUrl + pet.petPhoto : 'assets/images/default/blank-pet.png'"
                         class="card-img cursor-pointer" alt="{{ pet.petName }}"
                         (click)="openLightbox(pet.petPhoto ? serverUrl + pet.petPhoto : 'assets/images/default/blank-pet.png')">
                     <h5 class="card-title mt-2 mb-0">{{ pet.petName }}</h5>
